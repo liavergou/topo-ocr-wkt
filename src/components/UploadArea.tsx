@@ -14,8 +14,8 @@ const UploadArea = ({
     return (
 
         <div
-            className={`flex items-center justify-center  border-5 border-dashed rounded-xl p-8 min-h-[400px]
-          ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}
+            className={`flex items-center justify-center border-8 border-dashed rounded-xl p-8 min-h-[400px]
+          ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-700 bg-gray-100'}`}
 
             onDragOver={onDragOver}    // Ενεργοποιείται όταν σύρουμε πάνω από το element
             onDragLeave={onDragLeave}  // Ενεργοποιείται όταν φεύγουμε από το element
