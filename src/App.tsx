@@ -13,7 +13,7 @@ function App() {
             <Routes>
                 <Route element={<Dashboard/>}>
                     <Route index element={<HomePage />}/>
-                    <Route path="/test-upload-area" element={<Cropper />}/>
+                    <Route path="/cropper" element={<Cropper />}/>
 
                 </Route>
             </Routes>
