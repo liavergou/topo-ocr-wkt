@@ -39,27 +39,25 @@ const Dashboard =   ()=> {
 
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <Box className="flex flex-col min-h-screen">
             <CssBaseline />
-            <Box sx={{ display: 'flex', flexGrow: 1 }}>
+            <Box className="flex flex-grow">
 
                 {/* APPBAR */}
                 <AppBar
                     position="fixed"
-                    sx={{ width: `calc(100% - ${drawerWidth}px)`,
+                    sx={{
+                        width: `calc(100% - ${drawerWidth}px)`,
                         ml: `${drawerWidth}px`,
-                    bgcolor: '#314a66'}}
+                        bgcolor: '#314a66'
+                    }}
                 >
-
                     <Toolbar>
                         <Typography variant="h6" noWrap component="div">
                             GeoCoordExtractor
                         </Typography>
-
                     </Toolbar>
                 </AppBar>
-
-
 
                 {/*DRAWER*/}
                 <Drawer
@@ -92,14 +90,12 @@ const Dashboard =   ()=> {
                     </List>
                     <Divider />
                 </Drawer>
-                <Toolbar />
-
-
 
                 <Box
                     component="main"
-                    sx={{ flexGrow: 1, bgcolor: 'background.dark', p: 2 }}
+                    className="flex-grow bg-gray-50 p-2"
                 >
+                    <Toolbar />
                     <div className="container mx-auto pt-24">
                         <Outlet/>
                     </div>
@@ -108,8 +104,6 @@ const Dashboard =   ()=> {
             <Box sx={{ ml: `${drawerWidth}px` }}>
                 <Footer />
             </Box>
-
-
         </Box>
     )
 }
