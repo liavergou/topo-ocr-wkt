@@ -1,5 +1,5 @@
 // Import των types που ορίζουν τη δομή των props του component
-import type { UploadAreaProps } from '../types';
+import type { UploadAreaProps } from '../../types';
 //https://claritydev.net/blog/react-typescript-drag-drop-file-upload-guide
 //https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/file
 

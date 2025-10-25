@@ -1,4 +1,4 @@
-import UploadArea from "./UploadArea.tsx";
+import UploadArea from "./pages/UploadArea.tsx";
 import {useState} from "react";
 
 const Cropper = () => {

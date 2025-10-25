@@ -2,7 +2,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Dashboard from "./layout/Dashboard.tsx";
 import HomePage from "./components/pages/HomePage.tsx";
 import Cropper from "./components/Cropper.tsx";
-import ImageToolbar from "./components/ImageToolbar.tsx";
+import ImageToolbar from "./components/pages/ImageToolbar.tsx";
+
 function App() {
 
 
