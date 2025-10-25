@@ -12,7 +12,7 @@ const ImageToolbar = () =>{
     return (
 
         <>
-            <div className="flex items-center justify-center gap-4 p-4 bg-slate-800 rounded-xl w-[80%]">
+            <div className="flex items-center justify-center gap-4 p-4 bg-slate-800 rounded-xl ">
 
                 <div className="flex items-center gap-10">
                     <span className="text-sm font-semibold text-gray-300">Zoom:</span>
@@ -27,7 +27,7 @@ const ImageToolbar = () =>{
                         size="small">-</Button>
                 </div>
                 <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-white">Rotate:</span>
+                    <span className="text-sm font-semibold text-gray-300">Rotate:</span>
                     <IconButton aria-label="rotate left" sx={{ color: 'white' }}>
                         <RotateLeftOutlinedIcon />
                     </IconButton>
