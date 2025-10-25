@@ -25,7 +25,7 @@ const Dashboard =   ()=> {
 
     const menuItems: MenuItemProps[] = [
         { label: 'Αρχική', icon: <HomeIcon />, path: '/' },
-        { label: 'Επεξεργασία Τοπογραφικών', icon: <CropIcon />, path: '/cropper' },
+        { label: 'OCR Τοπογραφικών', icon: <CropIcon />, path: '/cropper' },
         { label: 'Μελέτες', icon: <FolderIcon />, path: '/projects' },
         { label: 'Διαχείριση Χρηστών', icon: <FolderIcon />, path: '/users' }
     ];
@@ -42,16 +42,26 @@ const Dashboard =   ()=> {
         <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <CssBaseline />
             <Box sx={{ display: 'flex', flexGrow: 1 }}>
+
+                {/* APPBAR */}
                 <AppBar
                     position="fixed"
-                    sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}
+                    sx={{ width: `calc(100% - ${drawerWidth}px)`,
+                        ml: `${drawerWidth}px`,
+                    bgcolor: '#314a66'}}
                 >
+
                     <Toolbar>
                         <Typography variant="h6" noWrap component="div">
-                            Test
+                            GeoCoordExtractor
                         </Typography>
+
                     </Toolbar>
                 </AppBar>
+
+
+
+                {/*DRAWER*/}
                 <Drawer
                     sx={{
                         width: drawerWidth,
@@ -66,6 +76,7 @@ const Dashboard =   ()=> {
                 >
                     <Toolbar />
                     <Divider />
+
                     <List>
                         {menuItems.map((item) => (
                             <ListItem key={item.label} disablePadding>
@@ -80,13 +91,15 @@ const Dashboard =   ()=> {
                         ))}
                     </List>
                     <Divider />
-
                 </Drawer>
+                <Toolbar />
+
+
+
                 <Box
                     component="main"
-                    sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
+                    sx={{ flexGrow: 1, bgcolor: 'background.dark', p: 2 }}
                 >
-                    <Toolbar />
                     <div className="container mx-auto pt-24">
                         <Outlet/>
                     </div>
@@ -95,6 +108,8 @@ const Dashboard =   ()=> {
             <Box sx={{ ml: `${drawerWidth}px` }}>
                 <Footer />
             </Box>
+
+
         </Box>
     )
 }
