@@ -5,7 +5,6 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -18,7 +17,9 @@ import FolderIcon from '@mui/icons-material/Folder';
 import CropIcon from '@mui/icons-material/Crop';
 import cflogo from "../assets/img/cf.jpg";
 
+
 //https://mui.com/material-ui/react-drawer/#permanent-drawer
+//https://www.youtube.com/watch?v=ZZPCXhw0WZM
 
 const Dashboard =   ()=> {
     const drawerWidth = 'clamp(250px, 20vw, 400px)'; // Min 250px, Max 400px, Ideal 20vw
@@ -39,6 +40,7 @@ const Dashboard =   ()=> {
 
 
     return (
+        // min-height όσο η οθόνη
         <Box className="flex flex-col min-h-screen">
             <CssBaseline />
 
@@ -60,6 +62,7 @@ const Dashboard =   ()=> {
                     <Typography variant="h3" noWrap component="div">
                         CoordAiExtractor
                     </Typography>
+
                 </Toolbar>
             </AppBar>
 
@@ -73,31 +76,49 @@ const Dashboard =   ()=> {
                             width: drawerWidth,
                             boxSizing: 'border-box',
                             bgcolor: '#c9cdd1',
+                            color: '#272a2e',
                             marginTop: '125px'
                         },
                     }}
                     variant="permanent"
                     anchor="left"
                 >
-                    <Divider/>
 
                     <List sx={{ py: 6 }}>
                         {menuItems.map((item) => (
                             <ListItem key={item.label} disablePadding sx={{ mb: 6 }}>
                                 <ListItemButton
                                     onClick={() => handleMenuClick(item.path)}>
+
                                     <ListItemIcon>
                                         {item.icon}
+
                                     </ListItemIcon>
-                                    <ListItemText primary={item.label} />
+
+                                    <ListItemText
+                                        primary={item.label}
+                                        sx={{
+                                            // ρυθμίσεις text μέσα στο LIST
+                                            '& .MuiTypography-root': {
+                                                fontWeight: 500,
+                                                fontSize: '1.2rem'
+                                            }
+                                        }}/>
+
                                 </ListItemButton>
+
+
                             </ListItem>
+
+
                         ))}
+
+
+
                     </List>
 
+
                 </Drawer>
-
-
                 <Box
                     component="main"
                     className="flex-grow bg-white p-2 overflow-x-hidden"
