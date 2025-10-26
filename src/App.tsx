@@ -2,6 +2,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Dashboard from "./layout/Dashboard.tsx";
 import HomePage from "./components/pages/HomePage.tsx";
 import Cropper from "./components/Cropper.tsx";
+import {ThemeProvider} from "@mui/material";
+import theme from "./theme.ts";
 
 function App() {
 
@@ -9,7 +11,7 @@ function App() {
   return (
     <>
 
-
+        <ThemeProvider theme={theme}>
         <BrowserRouter>
             <Routes>
                 <Route element={<Dashboard/>}>
@@ -20,6 +22,7 @@ function App() {
                 </Route>
             </Routes>
         </BrowserRouter>
+        </ThemeProvider>
 
     </>
   )
