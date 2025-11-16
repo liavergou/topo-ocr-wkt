@@ -1,4 +1,6 @@
 import * as React from "react";
+import type {UserRole} from "@/schemas/users.ts";
+
 
 export type MenuItemProps = {
     label: string;
@@ -28,4 +30,5 @@ export type UserInfoProps = {
 
 // roles για το protected route Admin,Manager μαζί ["Admin","Manager"]
     export type ProtectedRouteProps = {
-    roles?: string[]};
+    roles?: UserRole[]
+};
