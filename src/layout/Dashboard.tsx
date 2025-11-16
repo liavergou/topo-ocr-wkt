@@ -15,7 +15,11 @@ import type {MenuItemProps} from "../types.ts";
 import HomeIcon from '@mui/icons-material/Map';
 import FolderIcon from '@mui/icons-material/Folder';
 import CropIcon from '@mui/icons-material/Crop';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { IconButton } from '@mui/material';
+import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
 import cflogo from "../assets/img/cf.jpg";
+import useAuth from "@/hooks/useAuth.ts";
 
 
 //https://mui.com/material-ui/react-drawer/#permanent-drawer
@@ -24,11 +28,18 @@ import cflogo from "../assets/img/cf.jpg";
 const Dashboard =   ()=> {
     const drawerWidth = 'clamp(250px, 20vw, 400px)'; // Min 250px, Max 400px, Ideal 20vw
 
+    // Παίρνουμε authentication info
+    const { userInfo:{name},logout, hasAnyRole } = useAuth();
+
     const menuItems: MenuItemProps[] = [
-        { label: 'Αρχική', icon: <HomeIcon />, path: '/' },
-        { label: 'OCR Τοπογραφικών', icon: <CropIcon />, path: '/cropper' },
-        { label: 'Μελέτες', icon: <FolderIcon />, path: '/projects' },
-        { label: 'Διαχείριση Χρηστών', icon: <FolderIcon />, path: '/users' }
+        { label: 'Αρχική', path: '/', icon: <HomeIcon /> },
+        { label: 'OCR Τοπογραφικών', path: '/cropper', icon: <CropIcon /> },
+
+        // Conditional rendering - μόνο Admin/Manager βλέπουν αυτό το menu
+        ...(hasAnyRole(['Admin', 'Manager']) ? [
+            { label: 'Διαχείριση Χρηστών', path: '/users', icon: <PeopleOutlineIcon /> },
+            { label: 'Διαχείριση Μελετών', path: '/projects', icon: <FolderIcon /> },
+        ] : []),
     ];
 
     const navigate = useNavigate();
@@ -63,6 +74,19 @@ const Dashboard =   ()=> {
                         CoordAiExtractor
                     </Typography>
 
+                    {/* LOGOUT */}
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 'auto' }}>
+                        <Typography variant="body2">{name}</Typography>
+                        <IconButton
+                            color="inherit"
+                            onClick={() => logout()}
+                            title="Αποσύνδεση"
+                        >
+                            <LogoutIcon />
+                        </IconButton>
+                    </Box>
+
+
                 </Toolbar>
             </AppBar>
 
@@ -92,7 +116,6 @@ const Dashboard =   ()=> {
 
                                     <ListItemIcon>
                                         {item.icon}
-
                                     </ListItemIcon>
 
                                     <ListItemText
@@ -106,8 +129,6 @@ const Dashboard =   ()=> {
                                         }}/>
 
                                 </ListItemButton>
-
-
                             </ListItem>
 
 

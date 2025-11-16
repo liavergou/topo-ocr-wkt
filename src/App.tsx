@@ -4,28 +4,32 @@ import HomePage from "./components/pages/HomePage.tsx";
 import Cropper from "./components/Cropper.tsx";
 import {ThemeProvider} from "@mui/material";
 import theme from "./theme.ts";
+import ProtectedRoute from "@/ui/ProtectedRoute.tsx";
 
 function App() {
 
 
-  return (
-    <>
-
+    return (
         <ThemeProvider theme={theme}>
-        <BrowserRouter>
-            <Routes>
-                <Route element={<Dashboard/>}>
-                    <Route index element={<HomePage />}/>
-                    <Route path="/cropper" element={<Cropper />}/>
-                    {/*<Route path="/projects" element={<ImageToolbar />}/>*/}
+            <BrowserRouter>
+                <Routes>
+                    <Route element={<ProtectedRoute />}>
+                        <Route element={<Dashboard />}>
+                            {/* Οι authenticated users */}
+                            <Route index element={<HomePage />} />
+                            <Route path="/cropper" element={<Cropper />} />
 
-                </Route>
-            </Routes>
-        </BrowserRouter>
+                            {/*Admin και Manager μόνο*/}
+                            <Route element={<ProtectedRoute roles={['Admin', 'Manager']} />}>
+                                {/*TODO: να μπει το Users, Projects, Prompts*/}
+                            </Route>
+
+                        </Route>
+                    </Route>
+                </Routes>
+            </BrowserRouter>
         </ThemeProvider>
-
-    </>
-  )
+    );
 }
 
-export default App
+export default App;

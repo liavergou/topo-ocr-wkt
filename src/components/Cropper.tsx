@@ -1,6 +1,10 @@
 import UploadArea from "./pages/UploadArea.tsx";
 import {useState} from "react";
 import ImageToolbar from "./pages/ImageToolbar.tsx";
+// import * as pdfjsLib from 'pdfjs-dist';
+// Το PDF.js χρησιμοποιεί έναν "Web Worker" για να μην "παγώνει" το UI κατά την επεξεργασία.
+//είναι στα Modules.
+//https://www.youtube.com/watch?v=zbL2Z4ZhLlo STATES και για multipage
 
 const Cropper = () => {
 
@@ -8,7 +12,7 @@ const Cropper = () => {
     const [isDragging, setIsDragging] = useState(false);
     const [showToolbar, setShowToolbar] = useState(false);
     const [image, setImage] = useState<string>(''); //για να κρατήσει το url της εικόνας που εχει ανέβει
-    const [fileName, setFileName] = useState<string>('');
+    const [fileName, setFileName] = useState<string>(''); //αρχικό
 
     const handleFileChange = (file: File) => {
         setImage(URL.createObjectURL(file)); //αποθηκευω στη μνήμη το url του αρχείου
@@ -58,6 +62,11 @@ const Cropper = () => {
             {showToolbar && (
                 <div className="mt-8">
                     <ImageToolbar />
+                    <div className="max-w-full max-h-[60vh] object-contain mx-auto">
+                        <img
+                        src={image}
+                        alt={fileName}/>
+                    </div>
                 </div>
             )}
         </div>
