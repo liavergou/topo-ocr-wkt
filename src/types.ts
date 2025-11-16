@@ -28,4 +28,4 @@ export type UserInfoProps = {
 
 // roles για το protected route Admin,Manager μαζί ["Admin","Manager"]
     export type ProtectedRouteProps = {
-    roles: string[]};
+    roles?: string[]};
