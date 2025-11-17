@@ -5,6 +5,8 @@ import Cropper from "./components/Cropper.tsx";
 import {ThemeProvider} from "@mui/material";
 import theme from "./theme.ts";
 import ProtectedRoute from "@/ui/ProtectedRoute.tsx";
+import UserPage from "@/components/pages/UserPage.tsx";
+import UsersPage from "@/components/pages/UsersPage.tsx";
 
 function App() {
 
@@ -21,7 +23,25 @@ function App() {
 
                             {/*Admin και Manager μόνο*/}
                             <Route element={<ProtectedRoute roles={['Admin', 'Manager']} />}>
-                                {/*TODO: να μπει το Users, Projects, Prompts*/}
+                                <Route path="/users" element={<UsersPage />} />
+                                {/*create*/}
+                                <Route path="/users/new" element={<UserPage />} />
+                                {/*edit*/}
+                                <Route path="/users/:userId" element={<UserPage />} />
+
+                                {/*<Route path="/projects" element={<ProjectsPage />} />*/}
+                                {/*/!*create*!/*/}
+                                {/*<Route path="/projects/new" element={<ProjectPage />} />*/}
+                                {/*/!*edit*!/*/}
+                                {/*<Route path="/projects/:projectId" element={<ProjectPage />} />*/}
+
+                                {/*<Route path="/prompts" element={<PromptsPage />} />*/}
+                                {/*/!*create*!/*/}
+                                {/*<Route path="/prompts/new" element={<PromptPage />} />*/}
+                                {/*/!*edit*!/*/}
+                                {/*<Route path="/prompts/:projectId" element={<PromptPage />} />*/}
+
+
                             </Route>
 
                         </Route>

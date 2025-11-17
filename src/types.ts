@@ -29,6 +29,16 @@ export type UserInfoProps = {
     }
 
 // roles για το protected route Admin,Manager μαζί ["Admin","Manager"]
-    export type ProtectedRouteProps = {
+export type ProtectedRouteProps = {
     roles?: UserRole[]
+};
+
+// User type (για display μόνο - από UserReadOnlyDTO backend)
+export type User = {
+    id: number;
+    username: string;
+    email: string;
+    firstname: string;
+    lastname: string;
+    role: UserRole;
 };
