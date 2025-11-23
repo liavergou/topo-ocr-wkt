@@ -9,6 +9,8 @@ import UserPage from "@/components/pages/UserPage.tsx";
 import UsersPage from "@/components/pages/UsersPage.tsx";
 import ProjectsPage from "@/components/pages/ProjectsPage.tsx";
 import ProjectPage from "@/components/pages/ProjectPage.tsx";
+import PromptsPage from "@/components/pages/PromptsPage.tsx";
+import PromptPage from "@/components/pages/PromptPage.tsx";
 
 function App() {
 
@@ -37,11 +39,11 @@ function App() {
                                 {/*/!*edit*!/*/}
                                 <Route path="/projects/:projectId" element={<ProjectPage />} />
 
-                                {/*<Route path="/prompts" element={<PromptsPage />} />*/}
+                                <Route path="/prompts" element={<PromptsPage />} />
                                 {/*/!*create*!/*/}
-                                {/*<Route path="/prompts/new" element={<PromptPage />} />*/}
+                                <Route path="/prompts/new" element={<PromptPage />} />
                                 {/*/!*edit*!/*/}
-                                {/*<Route path="/prompts/:projectId" element={<PromptPage />} />*/}
+                                <Route path="/prompts/:promptId" element={<PromptPage />} />
 
 
                             </Route>

@@ -39,6 +39,7 @@ const Dashboard =   ()=> {
         ...(hasAnyRole(['Admin', 'Manager']) ? [
             { label: 'Διαχείριση Χρηστών', path: '/users', icon: <PeopleOutlineIcon /> },
             { label: 'Διαχείριση Μελετών', path: '/projects', icon: <FolderIcon /> },
+            { label: 'Διαχείριση Prompts', path: '/prompts', icon: <FolderIcon /> },
         ] : []),
     ];
 
@@ -150,7 +151,7 @@ const Dashboard =   ()=> {
                     <Toolbar sx={{ height: 50 }} />
 
                     {/* Το περιεχόμενο ξεκινάει ΕΔΩ */}
-                    <div className="w-full flex justify-center ">
+                    <div className="w-full ">
                         <Outlet/>
                     </div>
                 </Box>
