@@ -9,6 +9,7 @@ import {getPaginatedProjects} from "@/services/api.projects.ts";
 import {deleteProject} from "@/services/api.projects.ts";
 import type {Project} from "@/schemas/projects.ts";
 import {getErrorMessage} from "@/utils/errorHandler.ts";
+import { Pagination } from '@mui/material';
 
 
 const ProjectsPage = () => {
@@ -18,20 +19,28 @@ const ProjectsPage = () => {
 
     const [filter, setFilter] = useState('');
 
+    // Paginated
+    const [page, setPage] = useState(1);
+    const [pageCount, setPageCount] = useState(0);
+    const pageSize = 5;
+
 
     // Φόρτωση projects από API
     useEffect(() => {
         setLoading(true);
 
+        getPaginatedProjects(page,pageSize, filter)
+            .then((response) => {
+                setProjects(response.data);
+            const pageCount = Math.ceil(response.totalRecords / pageSize);
+            setPageCount(pageCount)})
 
-        getPaginatedProjects(1,10, filter)
-            .then((response) => setProjects(response.data))
             .catch((err) => {
                 console.error("Error loading projects:", err);
                 alert(getErrorMessage(err));
             })
             .finally(() => setLoading(false));
-    }, [filter]);
+    }, [filter, page]);
 
     // Delete project
     const handleDelete = async (id: number) => {
@@ -55,7 +64,6 @@ const ProjectsPage = () => {
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'projectName', headerName: 'Μελέτη', width: 250 },
     { field: 'description', headerName: 'Περιγραφή', width: 250 },
-    { field: 'jobsCount', headerName: 'Πλήθος Πολυγώνων', width:150},
 
     {
         field: 'actions',
@@ -86,7 +94,7 @@ const ProjectsPage = () => {
 ];
 
     return (
-        <Box sx={{ p: 3, width: '100%' }}>
+        <Box sx={{ p: 2, width: '100%' }}>
             {/*φιλτρο*/}
             <Box sx={{ my: 2 }}>
                 <TextField
@@ -94,7 +102,10 @@ const ProjectsPage = () => {
                     variant="outlined"
                     label="Αναζήτηση Μελέτης"
                     value={filter}
-                    onChange={(e) => setFilter(e.target.value)}
+                    onChange={(e) => {
+                        setFilter(e.target.value);
+                        setPage(1);
+                }}
                 />
             </Box>
             {/* Header με τίτλο και κουμπί */}
@@ -118,14 +129,18 @@ const ProjectsPage = () => {
                     rows={projects}
                     columns={columns}
                     loading={loading}
-                    initialState={{
-                        pagination: {
-                            paginationModel: { pageSize: 10 },
-                        },
-                    }}
-                    pageSizeOptions={[10, 25, 50]}
-                    disableRowSelectionOnClick
-                    checkboxSelection={false}
+                    hideFooterPagination
+                />
+
+        </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center', pt: 2 }}>
+                <Pagination
+                    count={pageCount}
+                    page={page}
+                    onChange={(_,value) => setPage(value)} //ΙΔΙΑΙΤΕΡΗ ΔΙΟΡΘΩΣΗ***** Για να μη χρησιμοποιήσουμε την πρώτη παράμετρο του event που δεν τη χρησιμοποιούμε βάζουμε "_"
+                    color="primary"
+                    showFirstButton
+                    showLastButton
                 />
             </Box>
         </Box>

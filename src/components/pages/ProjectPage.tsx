@@ -87,19 +87,19 @@ const ProjectPage = () => {
 
                     {/* ProjectName - μόνο σε create mode */}
 
-                        <Controller
-                            name="projectName"
-                            control={control}
-                            render={({ field }) => (
-                                <TextField
-                                    {...field}
-                                    label="Μελέτη"
-                                    error={!!errors.projectName}
-                                    helperText={errors.projectName?.message}
-                                    fullWidth
-                                />
-                            )}
-                        />
+                    <Controller
+                        name="projectName"
+                        control={control}
+                        render={({ field }) => (
+                            <TextField
+                                {...field}
+                                label="Μελέτη"
+                                error={!!errors.projectName}
+                                helperText={errors.projectName?.message}
+                                fullWidth
+                            />
+                        )}
+                    />
 
 
 
