@@ -7,6 +7,8 @@ import theme from "./theme.ts";
 import ProtectedRoute from "@/ui/ProtectedRoute.tsx";
 import UserPage from "@/components/pages/UserPage.tsx";
 import UsersPage from "@/components/pages/UsersPage.tsx";
+import ProjectsPage from "@/components/pages/ProjectsPage.tsx";
+import ProjectPage from "@/components/pages/ProjectPage.tsx";
 
 function App() {
 
@@ -29,11 +31,11 @@ function App() {
                                 {/*edit*/}
                                 <Route path="/users/:userId" element={<UserPage />} />
 
-                                {/*<Route path="/projects" element={<ProjectsPage />} />*/}
+                                <Route path="/projects" element={<ProjectsPage />} />
                                 {/*/!*create*!/*/}
-                                {/*<Route path="/projects/new" element={<ProjectPage />} />*/}
+                                <Route path="/projects/new" element={<ProjectPage />} />
                                 {/*/!*edit*!/*/}
-                                {/*<Route path="/projects/:projectId" element={<ProjectPage />} />*/}
+                                <Route path="/projects/:projectId" element={<ProjectPage />} />
 
                                 {/*<Route path="/prompts" element={<PromptsPage />} />*/}
                                 {/*/!*create*!/*/}
