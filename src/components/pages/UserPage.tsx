@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import {TextField, Box, Stack, FormControl, InputLabel, Select, MenuItem, FormHelperText} from "@mui/material";
 import Button from "@mui/material/Button";
 import { getUser, createUser, updateUser } from "@/services/api.users";
+import {getErrorMessage} from "@/utils/errorHandler.ts";
 
 
 
@@ -44,16 +45,17 @@ const UserPage = () => {
 
         getUser(Number(userId))
             .then((data) => {
-                reset({
+                const values={
                     email: data.email,
                     firstname: data.firstname,
                     lastname: data.lastname,
                     role: data.role,
-                });
+                };
+                reset(values);
             })
             .catch((err) => {
                 console.error("Error loading user:", err);
-                alert('Σφάλμα κατά τη φόρτωση χρήστη');
+                alert(getErrorMessage(err));
             });
     }, [isEdit, userId, reset]);
 
@@ -67,16 +69,14 @@ const UserPage = () => {
                 alert("Ο χρήστης δημιουργήθηκε επιτυχώς");
             }
             navigate("/users");
-        } catch (error) {
-            console.error("Error:", error);
-            alert(
-                error instanceof Error ? error.message : "Σφάλμα κατά την αποθήκευση"
-            );
+        } catch (err) {
+            console.error("Error:", err);
+            alert(getErrorMessage(err));
         }
     };
 
     return (
-        <Box className="max-w-sm mx-auto mt-12 p-8 border rounded-md space-y-4">
+        <Box className="max-w-xl mx-auto mt-12 p-8 border rounded-md space-y-4">
             <h1 className="text-2xl font-bold mb-6">
                 {isEdit ? 'Επεξεργασία Χρήστη' : 'Νέος Χρήστης'}
             </h1>

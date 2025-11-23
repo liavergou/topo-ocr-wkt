@@ -7,6 +7,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import type { User } from '@/types';
 import { getUsers, deleteUser } from '@/services/api.users';
+import {getErrorMessage} from "@/utils/errorHandler.ts";
 
 const UsersPage = () => {
     const navigate = useNavigate();
@@ -20,7 +21,7 @@ const UsersPage = () => {
             .then((data) => setUsers(data))
             .catch((err) => {
                 console.error("Error loading users:", err);
-                alert('Σφάλμα κατά τη φόρτωση χρηστών');
+                alert(getErrorMessage(err));
             })
             .finally(() => setLoading(false));
     }, []);
@@ -37,9 +38,9 @@ const UsersPage = () => {
             // Αφαίρεση από το state
             setUsers(users.filter(user => user.id !== id));
             alert('Ο χρήστης διαγράφηκε επιτυχώς');
-        } catch (error) {
-            console.error("Failed to delete user:", error);
-            alert('Σφάλμα κατά τη διαγραφή');
+        } catch (err) {
+            console.error("Failed to delete user:", err);
+            alert(getErrorMessage(err));
         }
     };
 
@@ -91,7 +92,7 @@ const UsersPage = () => {
                     startIcon={<AddIcon />}
                     onClick={() => navigate('/users/new')}
                 >
-                    Νέος Χρήστης
+                    ΝΕΟΣ ΧΡΗΣΤΗΣ
                 </Button>
             </Box>
 
