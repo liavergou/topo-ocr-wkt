@@ -65,7 +65,7 @@ const ProjectPage = () => {
     return (
         <Box
             sx={{
-                maxWidth: '36rem', // max-w-xl
+                maxWidth: '48rem',
                 mx: 'auto',
                 mt: 6,
                 p: 4,

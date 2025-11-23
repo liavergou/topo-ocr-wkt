@@ -55,7 +55,7 @@ const ProjectsPage = () => {
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'projectName', headerName: 'Μελέτη', width: 250 },
     { field: 'description', headerName: 'Περιγραφή', width: 250 },
-    { field: 'jobsCount', headerName: 'Πλήθος Πολυγώνων', flex: 1 },
+    { field: 'jobsCount', headerName: 'Πλήθος Πολυγώνων', width:150},
 
     {
         field: 'actions',
