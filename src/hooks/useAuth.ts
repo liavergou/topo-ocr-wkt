@@ -1,6 +1,6 @@
 import { useKeycloak } from "@react-keycloak/web";
 import type {UserInfoProps} from "@/types.ts";
-import {useCallback} from "react";
+import {useCallback, useMemo} from "react";
 
 //authentication state
 const useAuth = () => {
@@ -11,7 +11,9 @@ const useAuth = () => {
 
     // Εξαγωγή User Info από το JWT Token
     // αντιστοίχιση JWT claims σε UserInfoProps
-    const userInfo: UserInfoProps = {
+    //χωρις το useMemo πέφτω σε loop rerender γιατί στο select project page κανει render, δημιουργεί νέο userInfo και θεωρεί ότι αλλάζει συνέχεια! Το memo το κρατάει και επιστρέφει ίδιο object.
+    //βλέπω το memo στο Inspect/components SelectProjectsPage hooks/auth/
+    const userInfo: UserInfoProps = useMemo(() => ({
         keycloakId: keycloak.tokenParsed?.sub,
         username: keycloak.tokenParsed?.preferred_username,
         email: keycloak.tokenParsed?.email,
@@ -19,7 +21,7 @@ const useAuth = () => {
         firstname: keycloak.tokenParsed?.given_name,
         name: keycloak.tokenParsed?.name,
         role: keycloak.tokenParsed?.role
-    };
+    }), [keycloak.tokenParsed]); //υπολογισμός μονο αν αλλάξει το keycloak.tokenParsed
 
     //USER LOGIN Keycloak.login
     const login = useCallback(() => { //callback για να μη καλεί ξανά το function σε κάθε render, παρά μόνο αν αλλάξει το instance
