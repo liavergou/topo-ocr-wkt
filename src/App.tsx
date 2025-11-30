@@ -11,6 +11,7 @@ import ProjectPage from "@/components/pages/ProjectPage.tsx";
 import PromptsPage from "@/components/pages/PromptsPage.tsx";
 import PromptPage from "@/components/pages/PromptPage.tsx";
 import SelectProjectPage from "@/components/pages/SelectProjectPage.tsx";
+import Cropper from "@/components/Cropper.tsx";
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
                             {/* Οι authenticated users */}
                             <Route index element={<HomePage />} />
                             <Route path="/select-project" element={<SelectProjectPage />} />
+                            <Route path={"/projects/:projectId/cropper"} element={<Cropper />}/>
 
                             {/*Admin και Manager μόνο*/}
                             <Route element={<ProtectedRoute roles={['Admin', 'Manager']} />}>
