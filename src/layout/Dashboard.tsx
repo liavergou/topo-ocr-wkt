@@ -33,7 +33,7 @@ const Dashboard =   ()=> {
 
     const menuItems: MenuItemProps[] = [
         { label: 'Αρχική', path: '/', icon: <HomeIcon /> },
-        { label: 'OCR Τοπογραφικών', path: '/cropper', icon: <CropIcon /> },
+        { label: 'OCR Τοπογραφικών', path: '/select-project', icon: <CropIcon /> },
 
         // Conditional rendering - μόνο Admin/Manager βλέπουν αυτό το menu
         ...(hasAnyRole(['Admin', 'Manager']) ? [
@@ -60,7 +60,7 @@ const Dashboard =   ()=> {
             <AppBar
                 position="fixed"
                 sx={{
-                    bgcolor: '#314a66',
+                    bgcolor: 'primary.main',
                     zIndex: (theme) => theme.zIndex.drawer + 1 //για να καθεται απο πανω
                 }}
             >
@@ -144,7 +144,7 @@ const Dashboard =   ()=> {
                 <Box
                     component="main"
                     className="flex-grow bg-white p-2 overflow-x-hidden"
-                    sx={{ width: `calc(100% - ${drawerWidth})`,marginTop: '125px' }}
+                    sx={{ width: `calc(100% - ${drawerWidth})`,marginTop: '115px' }}
                     // viewport-sidebar*************αλλιως δεν κρατάει το κεντράρισμα
                 >
                     {/*Αδειο toolbar που δημιουργεί spacing*/}

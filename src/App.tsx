@@ -1,7 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Dashboard from "./layout/Dashboard.tsx";
 import HomePage from "./components/pages/HomePage.tsx";
-import Cropper from "./components/Cropper.tsx";
 import {ThemeProvider} from "@mui/material";
 import theme from "./theme.ts";
 import ProtectedRoute from "@/ui/ProtectedRoute.tsx";
@@ -11,6 +10,7 @@ import ProjectsPage from "@/components/pages/ProjectsPage.tsx";
 import ProjectPage from "@/components/pages/ProjectPage.tsx";
 import PromptsPage from "@/components/pages/PromptsPage.tsx";
 import PromptPage from "@/components/pages/PromptPage.tsx";
+import SelectProjectPage from "@/components/pages/SelectProjectPage.tsx";
 
 function App() {
 
@@ -23,7 +23,7 @@ function App() {
                         <Route element={<Dashboard />}>
                             {/* Οι authenticated users */}
                             <Route index element={<HomePage />} />
-                            <Route path="/cropper" element={<Cropper />} />
+                            <Route path="/select-project" element={<SelectProjectPage />} />
 
                             {/*Admin και Manager μόνο*/}
                             <Route element={<ProtectedRoute roles={['Admin', 'Manager']} />}>
