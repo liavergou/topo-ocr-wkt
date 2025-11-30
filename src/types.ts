@@ -42,3 +42,11 @@ export type User = {
     lastname: string;
     role: UserRole;
 };
+
+//Project type για τα Project Card
+export type ProjectCardProps={
+    id: number;
+    projectName: string;
+    jobsCount: number;
+    onClick?:()=>void;
+}
