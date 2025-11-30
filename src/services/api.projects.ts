@@ -23,14 +23,14 @@ export const getPaginatedProjects = async (page: number, pageSize: number, filte
     return response.data
 };
 
-// GET /api/projects/all
-export async function getProjects(): Promise<Project[]> {
+// GET /api/projects/all (select project page ολα τα project με role checking. Μονο admin, manager.
+export async function getAllProjects(): Promise<Project[]> {
     const response = await apiService.get<Project[]>(`${PROJECTS_ENDPOINT}/all`);
     return response.data;
 }
 
-// GET /api/projects/:id για ενα project
-export async function getProjectById(id: number): Promise<Project>  {
+// GET /api/projects/:id για ενα project (management console)
+export async function getAllProjectById(id: number): Promise<Project>  {
     const response = await apiService.get<Project>(`${PROJECTS_ENDPOINT}/${id}`);
     return response.data;
 }

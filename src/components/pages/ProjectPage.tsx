@@ -5,7 +5,7 @@ import {type Project, projectSchema} from "@/schemas/projects";
 import { useEffect } from "react";
 import {TextField, Box, Stack} from "@mui/material";
 import Button from "@mui/material/Button";
-import { getProjectById, createProject, updateProject } from "@/services/api.projects";
+import { getAllProjectById, createProject, updateProject } from "@/services/api.projects";
 import Typography from "@mui/material/Typography";
 import {getErrorMessage} from "@/utils/errorHandler.ts";
 
@@ -24,14 +24,16 @@ const ProjectPage = () => {
         resolver: zodResolver(projectSchema.omit({id:true})),
         defaultValues: {
             projectName: "",
-            description: ""
+            description: "",
+            jobsCount:0
         }
     });
 
     useEffect(() => {
-        if (!isEdit && !projectId) return;
+        if (!isEdit && !projectId)
+            return;
 
-        getProjectById(Number(projectId))
+        getAllProjectById(Number(projectId))
             .then((data) => {
                 const values = {
                     projectName: data.projectName,
