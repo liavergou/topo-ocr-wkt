@@ -6,8 +6,12 @@ const theme = createTheme({
 
         mode: 'light',
         primary: {
-            // βασικο χρώμα
-            main: '#1976d2',
+            // βασικο χρώμα ραφ
+            main: '#314a66',
+        },
+        secondary: {
+            // δευτερευον χρώμα
+            main: '#fedc97',
         },
         //σελίδα
         background: {
