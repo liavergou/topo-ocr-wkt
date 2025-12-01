@@ -148,10 +148,10 @@ const Dashboard =   ()=> {
                     // viewport-sidebar*************αλλιως δεν κρατάει το κεντράρισμα
                 >
                     {/*Αδειο toolbar που δημιουργεί spacing*/}
-                    <Toolbar sx={{ height: 50 }} />
+                    {/*<Toolbar sx={{ height:50 }} />*/}
 
                     {/* Το περιεχόμενο ξεκινάει ΕΔΩ */}
-                    <div className="w-full ">
+                    <div className="w-full h-full ">
                         <Outlet/>
                     </div>
                 </Box>

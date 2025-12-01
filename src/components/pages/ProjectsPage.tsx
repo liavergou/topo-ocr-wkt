@@ -116,7 +116,7 @@ const ProjectsPage = () => {
                 </Typography>
                 <Button
                     variant="contained"
-                    color="primary"
+                    color="secondary"
                     startIcon={<AddIcon />}
                     onClick={() => navigate('/projects/new')}
                 >

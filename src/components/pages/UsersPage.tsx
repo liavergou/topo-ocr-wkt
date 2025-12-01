@@ -88,7 +88,7 @@ const UsersPage = () => {
                 </Typography>
                 <Button
                     variant="contained"
-                    color="primary"
+                    color="secondary"
                     startIcon={<AddIcon />}
                     onClick={() => navigate('/users/new')}
                 >

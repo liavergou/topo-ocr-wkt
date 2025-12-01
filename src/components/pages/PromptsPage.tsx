@@ -150,7 +150,7 @@ const PromptsPage = () => {
                 </Typography>
                 <Button
                     variant="contained"
-                    color="primary"
+                    color="secondary"
                     startIcon={<AddIcon />}
                     onClick={() => navigate('/prompts/new')}
                 >
