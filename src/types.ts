@@ -1,5 +1,6 @@
 import * as React from "react";
 import type {UserRole} from "@/schemas/users.ts";
+import type {Prompt} from "@/schemas/prompts.ts";
 
 
 export type MenuItemProps = {
@@ -49,4 +50,22 @@ export type ProjectCardProps={
     projectName: string;
     jobsCount: number;
     onClick?:()=>void;
+}
+
+
+//Props για το ImageToolbar component
+export type ImageToolbarProps = {
+    // onZoomIn: () => void;
+    // onZoomOut: () => void;
+    // onRotateLeft: () => void;
+    // onRotateRight: () => void;
+    // onReset: () => void;
+    // onClearAll: () => void;
+    // onStartCrop: () => void;
+    // onCancelCrop: () => void;
+    // onCropAndUpload: () => void;
+    // isCropping: boolean;
+    prompts: Prompt[];
+    selectedPromptId: number | null;
+    onPromptChange: (promptId: number) =>void;
 }
