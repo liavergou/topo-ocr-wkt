@@ -48,6 +48,12 @@ const Cropper = () => {
         localStorage.setItem("lastPromptId", String(promptId));
     }
 
+    const handleClearAll = ()=>{
+        setImage('');
+        setShowToolbar(false);
+        setFileName('');
+    }
+
     const handleFileChange = (file: File) => {
         setImage(URL.createObjectURL(file)); //αποθηκευω στη μνήμη το url του αρχείου
         setFileName(file.name);
@@ -98,7 +104,9 @@ const Cropper = () => {
                     <ImageToolbar
                         prompts={prompts}
                         selectedPromptId={selectedPromptId}
-                        onPromptChange={handlePromptChange}/>
+                        onPromptChange={handlePromptChange}
+                        onClearAll={handleClearAll}
+                    />
                     <div className="max-w-full max-h-[60vh] object-contain mx-auto">
                         <img
                         src={image}

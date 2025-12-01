@@ -10,7 +10,9 @@ import type {ImageToolbarProps} from '@/types.ts';
 const ImageToolbar = ({
     prompts,
     selectedPromptId,
-    onPromptChange}: ImageToolbarProps
+    onPromptChange,
+    onClearAll
+}: ImageToolbarProps
 ) =>{
 
     return (
@@ -45,7 +47,7 @@ const ImageToolbar = ({
                 variant="contained"
                 size="small">Reset</Button>
             <Button
-                // onClick={onClearAll}
+                onClick={onClearAll}
                 variant="contained" color="error"
                 size="small">Καθαρισμός</Button>
 
