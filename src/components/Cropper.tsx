@@ -48,9 +48,19 @@ const Cropper = () => {
         });
         },[]);
 
+    //memory management προσοχη - https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Schemes/blob ****To release an object URL, call revokeObjectURL().
+    useEffect(() => {
+        return () => {
+            if (image && image.startsWith("blob:")) //react dev tools στο hooks στο Cropper component είναι "blob:http://localhost:5173/147bfe22-9e8e-4063-93e5-3a0fa9c7dfea"
+            URL.revokeObjectURL(image);
+        };
+    }, [image]);
+
+
+
 
     const handleFileChange = (file: File) => {
-        setImage(URL.createObjectURL(file)); //αποθηκευω στη μνήμη το url του αρχείου https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL_static και https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Schemes/blob ****To release an object URL, call revokeObjectURL().
+        setImage(URL.createObjectURL(file)); //αποθηκευω στη μνήμη το url του αρχείου https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL_static
         setFileName(file.name);
         setShowToolbar(true); //για να ενεργοποιήσει το conditional rendering για την εμφάνιση της εικόνας
     }
