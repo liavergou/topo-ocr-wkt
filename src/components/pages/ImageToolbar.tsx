@@ -8,78 +8,138 @@ import type {ImageToolbarProps} from '@/types.ts';
 //area-label είναι accessibility attribute
 
 const ImageToolbar = ({
-    prompts,
-    selectedPromptId,
-    onPromptChange,
-    onClearAll
-}: ImageToolbarProps
-) =>{
+                          prompts,
+                          selectedPromptId,
+                          onPromptChange,
+                          onClearAll,
+                          // onZoomIn,
+                          // onZoomOut,
+                          onRotateLeft,
+                          onRotateRight,
+                          onReset,
+                          onStartCrop,
+                          onCancelCrop,
+                          // onCropAndUpload,
+                          isCropping,
+                      }: ImageToolbarProps
+) => {
 
     return (
 
         <>
-            <div className="flex items-center justify-center gap-4 p-4 bg-slate-800 rounded-xl ">
+            <div className="flex flex-col gap-4 p-4 bg-gray-500 rounded">
 
-                <div className="flex items-center gap-10">
-                    <span className="text-sm font-semibold text-gray-300">Zoom:</span>
+                {/*ΠΆΝΩ ΣΕΙΡΑ*/}
+                <div className="flex items-center justify-center gap-4">
 
+                    {/*    /!*ZOOM*!/*/}
+                    {/*    <div className="flex items-center gap-2">*/}
+                    {/*    <span className="text-sm font-semibold text-gray-300">Zoom:</span>*/}
+
+                    {/*    <div className="flex items-center justify-center gap-4 flex-wrap">*/}
+
+                    {/*    <Button*/}
+                    {/*        onClick={onZoomIn}*/}
+                    {/*        variant="contained"*/}
+                    {/*        size="small">+</Button>*/}
+                    {/*    <Button*/}
+                    {/*        onClick={onZoomOut}*/}
+                    {/*        variant="contained"*/}
+                    {/*        size="small">-</Button>*/}
+                    {/*</div>*/}
+
+
+                    {/*ROTATE*/}
+                    <div className="flex items-center gap-2">
+                        <span className="text-lg font-semibold text-gray-300">Rotate:</span>
+                        <IconButton aria-label="rotate left" sx={{color: 'white'}} onClick={onRotateLeft}>
+                            <RotateLeftOutlinedIcon/>
+                        </IconButton>
+
+                        <IconButton aria-label="rotate right" sx={{color: 'white'}} onClick={onRotateRight}>
+                            <RotateRightOutlinedIcon/>
+                        </IconButton>
+                    </div>
+
+
+                    {/*RESET*/}
                     <Button
-                        // onClick={onZoomIn}
+                        onClick={onReset}
                         variant="contained"
-                        size="small">+</Button>
-                    <Button
-                        // onClick={onZoomOut}
-                        variant="contained"
-                        size="small">-</Button>
+                        size="medium">ΕΠΑΝΑΦΟΡΑ</Button>
+
+
+
+                    {/*PROMPTS DROPDOWN*/}
+                    <div className="flex items-center gap-6">
+                        <span className="text-md font-semibold text-gray-300">PROMPT:</span>
+                        <FormControl size='small' sx={{width: 300}}>
+                            <Select
+                                value={selectedPromptId || 'Prompt'}
+                                onChange={(e) => onPromptChange(Number(e.target.value))}
+                                displayEmpty sx={{bgcolor: 'white'}}
+                            >
+
+                                {prompts.map((prompt) =>
+                                    <MenuItem key={prompt.id} value={prompt.id}>
+                                        {prompt.promptName}
+                                    </MenuItem>
+                                )}
+                            </Select>
+
+                        </FormControl>
+
+                        {/*CLEAR*/}
+                        <Button
+                            onClick={onClearAll}
+                            variant="contained" color="error"
+                            size="small">Καθαρισμός</Button>
+                    </div>
+
                 </div>
-                <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-gray-300">Rotate:</span>
-                    <IconButton aria-label="rotate left" sx={{ color: 'white' }}>
-                        <RotateLeftOutlinedIcon />
-                    </IconButton>
-                    <IconButton aria-label="rotate right" sx={{ color: 'white' }}>
-                        <RotateRightOutlinedIcon />
-                    </IconButton>
-
-            </div>
-            <Button
-                // onClick={onReset}
-                variant="contained"
-                size="small">Reset</Button>
-            <Button
-                onClick={onClearAll}
-                variant="contained" color="error"
-                size="small">Καθαρισμός</Button>
 
 
+                {/*Η CROP ΚΟΥΜΠΙ Ή CANCEL*/}
+                <div className="flex items-center justify-center px-8 w-full gap-4">
+                    {!isCropping ? (
+                        <Button
+                            onClick={onStartCrop}
+                            variant="contained"
+                            color="secondary"
+                            size="large"
+                            sx={{width:'50%'}}
+                        >Crop</Button>
+                    ) : (
+                        <>
+                        <Button
+                            onClick={onCancelCrop}
+                            variant="outlined"
+                            color='secondary'
+                            size="large"
+                            sx={{width:'25%'}}
+                        >Cancel Crop
+
+                        </Button>
+
+                        <Button
+                            variant="contained"
+                            color='secondary'
+                            size="large"
+                            sx={{width:'25%'}}
+                        >UPLOAD
+
+                        </Button>
+                        </>
+
+                    )}
+                </div>
 
 
-            {/*PROMPTS DROPDOWN*/}
-            <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold text-gray-500">Prompt:</span>
-                <FormControl size='medium' sx={{width: 300}}>
-                    <Select
-                        value={selectedPromptId || 'Prompt'}
-                        onChange={(e) => onPromptChange(Number(e.target.value))}
-                        displayEmpty sx={{bgcolor : 'white'}}
-                        >
-
-                        {prompts.map((prompt) =>
-                            <MenuItem key={prompt.id} value={prompt.id}>
-                                {prompt.promptName}
-                            </MenuItem>
-                        )}
-                    </Select>
-
-                </FormControl>
             </div>
 
 
-        </div>
-
-
-    </>
-)
+        </>
+    )
 }
 
 export default ImageToolbar;
