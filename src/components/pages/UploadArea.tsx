@@ -1,4 +1,4 @@
-import type { UploadAreaProps } from '../../types';
+import type { UploadAreaProps } from '@/types.ts';
 //https://claritydev.net/blog/react-typescript-drag-drop-file-upload-guide
 //https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/file
 
@@ -13,7 +13,7 @@ const UploadArea = ({
     return (
 
         <div
-            className={`flex items-center justify-center border-8 border-dashed rounded-xl p-8 min-h-[400px]
+            className={`flex items-center justify-center border-8 border-dashed rounded-xl p-8 min-h-[400px] mt-20
           ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-700 bg-gray-100'}`}
             //conditional για αλλαγη χρώματος στο drag πανω απο το element
 
@@ -35,7 +35,7 @@ const UploadArea = ({
                 <input
                     id="file-upload"
                     type="file"
-                    accept="image/*,application/pdf,image/tiff"
+                    accept="image/*" //,application/pdf,image/tiff
                     onChange={onFileChange}
                     className="hidden"
                 />
