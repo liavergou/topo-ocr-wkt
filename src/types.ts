@@ -1,6 +1,7 @@
 import * as React from "react";
 import type {UserRole} from "@/schemas/users.ts";
 import type {Prompt} from "@/schemas/prompts.ts";
+import type {ReactCropperElement} from 'react-cropper';
 
 
 export type MenuItemProps = {
@@ -57,15 +58,24 @@ export type ProjectCardProps={
 export type ImageToolbarProps = {
     // onZoomIn: () => void;
     // onZoomOut: () => void;
-    // onRotateLeft: () => void;
-    // onRotateRight: () => void;
-    // onReset: () => void;
+    onRotateLeft: () => void;
+    onRotateRight: () => void;
+    onReset: () => void;
     onClearAll: () => void;
-    // onStartCrop: () => void;
-    // onCancelCrop: () => void;
-    // onCropAndUpload: () => void;
-    // isCropping: boolean;
+    onStartCrop: () => void;
+    onCancelCrop: () => void;
+    isCropping: boolean;
     prompts: Prompt[];
     selectedPromptId: number | null;
     onPromptChange: (promptId: number) =>void;
+    // onCropAndUpload: () => void;
+}
+
+//Το react-cropper αποθηκευει το Cropper.js instance στο ReactCropperElement.cropper. cropperRef.current?.cropper?.rotate()
+//https://www.jsdocs.io/package/react-cropper#Cropper
+//https://github.com/react-cropper/react-cropper
+export type ImageDisplayProps = {
+    src: string; //blob url από URL.createObjectURL() στο cropper.tsx
+    cropperRef: React.RefObject<ReactCropperElement | null>; //ref για προσβαση στο cropper instance χωρίς να κάνει rerender
+    dragMode: 'move' | 'crop';
 }
