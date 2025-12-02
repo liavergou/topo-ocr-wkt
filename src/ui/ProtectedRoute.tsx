@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router';
 import useAuth from '@/hooks/useAuth';
-import { Typography } from '@mui/material';
+import {CircularProgress, Typography} from '@mui/material';
 import type {ProtectedRouteProps} from "@/types.ts";
 
 const ProtectedRoute= ({roles}:ProtectedRouteProps) => {
@@ -8,9 +8,11 @@ const ProtectedRoute= ({roles}:ProtectedRouteProps) => {
 
     const { isAuthenticated, hasAnyRole, login } = useAuth();
 
+
     //ΕΛΕΓΧΟΣ AUTHENTICATION
     if (!isAuthenticated) {
         login(); // Redirect στο Keycloak login
+        return <CircularProgress/>; //
     }
 
     //ΕΛΕΓΧΟΣ AUTHORIZATION
