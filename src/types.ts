@@ -68,7 +68,7 @@ export type ImageToolbarProps = {
     prompts: Prompt[];
     selectedPromptId: number | null;
     onPromptChange: (promptId: number) =>void;
-    // onCropAndUpload: () => void;
+    onUpload: () => void;
 }
 
 //Το react-cropper αποθηκευει το Cropper.js instance στο ReactCropperElement.cropper. cropperRef.current?.cropper?.rotate()
@@ -79,3 +79,42 @@ export type ImageDisplayProps = {
     cropperRef: React.RefObject<ReactCropperElement | null>; //ref για προσβαση στο cropper instance χωρίς να κάνει rerender
     dragMode: 'move' | 'crop';
 }
+
+//REQUEST
+export type UploadJobRequest ={
+    imageFile: Blob;
+    projectId: number;
+    promptId: number;
+    fileName?: string;
+}
+//RESPONSE
+export type UploadJobResponse={
+    id: number;
+    originalFileName: string;
+    croppedFileName: string;
+    modelUsed?: string;
+    status: JobStatus; //καλύτερα
+    wkt?: string; //TODO ΠΡΟΣΩΡΙΝΟ. ΘΑ ΑΦΑΙΡΕΘΕΙ.
+    errorMessage: string;
+    coordinates?: Coordinate[];
+}
+
+// {
+//     "id": 45,
+//     "originalFileName": "K51669186.jpg",
+//     "croppedFileName": "31942e88-295a-4462-b28c-06ba33f59499.jpg",
+//     "modelUsed": null,
+//     "coordinates": [],
+//     "wkt": null,
+//     "status": "Failed",
+//     "errorMessage": "Gemini returned errors:Δεν βρέθηκαν συντεταγμένες"
+// }
+
+export type Coordinate = {
+    order: number;
+    x: number;
+    y: number;
+
+}
+//για ελεγχο του status του response
+export type JobStatus = 'Processing'|'Completed'|'Failed';
