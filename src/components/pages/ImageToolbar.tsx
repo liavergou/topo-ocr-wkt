@@ -19,7 +19,7 @@ const ImageToolbar = ({
                           onReset,
                           onStartCrop,
                           onCancelCrop,
-                          // onCropAndUpload,
+                          onUpload,
                           isCropping,
                       }: ImageToolbarProps
 ) => {
@@ -122,6 +122,7 @@ const ImageToolbar = ({
                         </Button>
 
                         <Button
+                            onClick={onUpload}
                             variant="contained"
                             color='secondary'
                             size="large"

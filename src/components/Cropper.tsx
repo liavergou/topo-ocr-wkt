@@ -6,13 +6,23 @@ import type {Prompt} from '@/schemas/prompts.ts'
 import {getPrompts} from "@/services/api.prompts.ts";
 import {getErrorMessage} from "@/utils/errorHandler.ts";
 import type {ReactCropperElement} from 'react-cropper';
-
+import {useParams} from "react-router-dom";
+import {uploadImage} from "@/services/api.jobs.ts";
+import {Backdrop, CircularProgress} from "@mui/material";
 
 
 // import * as pdfjsLib from 'pdfjs-dist';
 // Το PDF.js χρησιμοποιεί έναν "Web Worker" για να μην "παγώνει" το UI κατά την επεξεργασία.
 //είναι στα Modules.
 //https://www.youtube.com/watch?v=zbL2Z4ZhLlo STATES και για multipage
+//https://react-leaflet.js.org/docs/start-introduction/
+//https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z} google satellite
+
+//<MapContainer>->Map Container
+//<TileLayer>->Tile basemap (Google)
+//<WMSTileLayer>->WMS layers (GeoServer)
+//<Popup>-> Popups
+//<Polygon>->Polygons
 
 const Cropper = () => {
 
@@ -29,13 +39,17 @@ const Cropper = () => {
 
     const cropperRef = useRef<ReactCropperElement>(null);
 
+    const {projectId} = useParams(); //πιάνουμε το projectId απο το url
+    const [isUploading, setIsUploading] = useState(false); //για mui elements. Backdrop https://mui.com/material-ui/react-backdrop/ The Backdrop component narrows the user's focus to a particular element on the screen.
+
+
     useEffect(() => {
         getPrompts()
             .then((data) => {
                 setPrompts(data);
 
                 const prevPromptId = localStorage.getItem("lastPromptId");
-                if (prevPromptId && data.some(p=> p.id === Number(prevPromptId))) //αν υπάρχει τιμή στο local storage και είναι ακόμα υπαρκτή, προσοχη ειναι text να γινει Number
+                if (prevPromptId && data.some(p => p.id === Number(prevPromptId))) //αν υπάρχει τιμή στο local storage και είναι ακόμα υπαρκτή, προσοχη ειναι text να γινει Number
                 {
                     setSelectedPromptId(Number(prevPromptId));
                 } else if (data.length > 0) {
@@ -55,8 +69,6 @@ const Cropper = () => {
             URL.revokeObjectURL(image);
         };
     }, [image]);
-
-
 
 
     const handleFileChange = (file: File) => {
@@ -101,7 +113,74 @@ const Cropper = () => {
             cropper.clear(); //αφαιρεί το selection box
             cropper.setDragMode('move'); //ξαναπάει σε move mode
         }
+    };
 
+    //εχω το cropper instance, καλώ το getCroppedCanvas ->μετατροπή σε Blob canvas.toBlob
+    const getCropperBlob = (): Promise<Blob | null>=>{
+        return new Promise((resolve) => {
+            const cropper = cropperRef.current?.cropper;
+            if(!cropper){
+                resolve(null);
+                return;
+            }
+
+            const canvas = cropper.getCroppedCanvas();
+            if (!canvas){
+                resolve(null);
+                return;
+            }
+            canvas.toBlob((blob) => resolve(blob), 'image/jpeg',0.9);
+        });
+    };
+
+    //UPLOAD IMAGE HANDLER******
+    const handleUpload = async()=>{
+        try{
+            //έλεγχος promptId
+            if (selectedPromptId === null){
+                alert("Παρακαλούμε επιλέξτε το κατάλληλο Prompt από την προτεινόμενη λίστα")
+            }
+            //ελεγχος projectId
+            if (!projectId){
+                alert("Δεν βρέθηκε επιλεγμένο projectId")
+            }
+
+            //getCroppedBlob
+            setIsUploading(true);
+            const blob = await getCropperBlob();
+
+            //ελεγχος blob
+            if (!blob){
+                alert("Δεν βρέθηκε ο αποκομμένος πίνακας συντεταγμένων προς αποστολή")
+                setIsUploading(false);
+                return;
+            }
+
+            //UPLOAD
+            const result = await uploadImage({
+                imageFile: blob,
+                projectId: Number(projectId),
+                promptId: selectedPromptId!, //αναγκαστικά ! γιατι εχω κανει ήδη ελεγχο για null
+                fileName: fileName
+            });
+
+            //TODO:ΕΛΕΓΧΟΣ ΤΟΥ RESPONSE ΓΙΑ errorMessage ή Failed
+
+            setIsUploading(false);
+            alert("Επιτυχής επεξεργασία! Job ID: ${result.id}");
+
+            handleCancelCrop(); //TODO ΕΔΩ ΘΑ ΓΙΝΕΙ Η ΕΜΦΑΝΙΣΗ ΠΙΝΑΚΑ ΚΑΙ ΧΑΡΤΗ
+            handleReset();
+
+            console.log("OCR Result:", result); //προσωρινα
+
+        } catch (err){
+            console.error ("Upload error:", err)
+            alert(getErrorMessage(err))
+            setIsUploading(false);
+            handleCancelCrop();
+            handleReset();
+        }
     };
 
 
@@ -155,7 +234,7 @@ const Cropper = () => {
                         onStartCrop={handleStartCrop}
                         onCancelCrop={handleCancelCrop}
                         isCropping={isCropping}
-                        // onCropAndUpload={handleCropAndUpload}
+                        onUpload={handleUpload}
                     />
                     {/*<div className="max-w-full max-h-[60vh] object-contain mx-auto">*/}
                     {/*    <img*/}
@@ -169,6 +248,19 @@ const Cropper = () => {
                 </div>
             )}
         </div>
+            {/*https://api.reactrouter.com/v7/functions/react_router.useLocation.html*/}
+            <Backdrop sx={{
+                color: '#fff',
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                zIndex: (theme) => theme.zIndex.drawer + 1,
+                backdropFilter: 'blur(2px)', // Adds a blur effect
+            }}
+                      open={isUploading}>
+
+                <CircularProgress size={50}/>
+
+            </Backdrop>
+
         </>
     )}
 export default Cropper;
