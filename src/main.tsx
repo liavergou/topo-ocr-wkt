@@ -12,7 +12,7 @@ createRoot(document.getElementById('root')!).render(
         <ReactKeycloakProvider
             authClient={keycloak}
             initOptions={initOptions}
-            LoadingComponent={<div className="text-2xl font-bold text-center mt-20">Loading...</div>}
+            LoadingComponent={<div className="text-6xl text-center mt-40 text-gray-500">Loading...</div>}
         >
 
         <App />
