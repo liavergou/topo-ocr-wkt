@@ -62,7 +62,6 @@ const SelectProjectPage =() => {
                         <ProjectCard
                             id={p.id}
                             projectName={p.projectName}
-                            jobsCount={p.jobsCount}
                             onClick={() => navigate(`/projects/${p.id}/cropper`)}
                         />
                     ))}

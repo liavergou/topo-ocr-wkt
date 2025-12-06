@@ -49,7 +49,6 @@ export type User = {
 export type ProjectCardProps={
     id: number;
     projectName: string;
-    jobsCount: number;
     onClick?:()=>void;
 }
 
@@ -98,17 +97,6 @@ export type UploadJobResponse={
     errorMessage: string;
     coordinates?: Coordinate[];
 }
-
-// {
-//     "id": 45,
-//     "originalFileName": "K51669186.jpg",
-//     "croppedFileName": "31942e88-295a-4462-b28c-06ba33f59499.jpg",
-//     "modelUsed": null,
-//     "coordinates": [],
-//     "wkt": null,
-//     "status": "Failed",
-//     "errorMessage": "Gemini returned errors:Δεν βρέθηκαν συντεταγμένες"
-// }
 
 export type Coordinate = {
     order: number;
