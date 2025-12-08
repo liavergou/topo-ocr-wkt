@@ -9,7 +9,8 @@ import type {ReactCropperElement} from 'react-cropper';
 import {useParams} from "react-router-dom";
 import {uploadImage} from "@/services/api.jobs.ts";
 import {Backdrop, CircularProgress} from "@mui/material";
-
+import type {Coordinate} from "@/types.ts";
+import OcrResult from "@/components/pages/OcrResult.tsx";
 
 // import * as pdfjsLib from 'pdfjs-dist';
 // Το PDF.js χρησιμοποιεί έναν "Web Worker" για να μην "παγώνει" το UI κατά την επεξεργασία.
@@ -42,6 +43,7 @@ const Cropper = () => {
     const {projectId} = useParams(); //πιάνουμε το projectId απο το url
     const [isUploading, setIsUploading] = useState(false); //για mui elements. Backdrop https://mui.com/material-ui/react-backdrop/ The Backdrop component narrows the user's focus to a particular element on the screen.
 
+    const [uploadedCoordinates, setUploadedCoordinates] = useState<Coordinate[]>([]);
 
     useEffect(() => {
         getPrompts()
@@ -88,6 +90,7 @@ const Cropper = () => {
         setImage('');
         setShowToolbar(false);
         setFileName('');
+        setUploadedCoordinates([]);
     }
 
 
@@ -164,10 +167,23 @@ const Cropper = () => {
                 fileName: fileName
             });
 
-            //TODO:ΕΛΕΓΧΟΣ ΤΟΥ RESPONSE ΓΙΑ errorMessage ή Failed
+            if (result.status === 'Failed') {
+                setIsUploading(false);
+                alert(`OCR Failed: ${result.errorMessage || 'Unknown error'}`);
+                return;
+            }
 
+            if (!result.coordinates || result.coordinates.length === 0) {
+                setIsUploading(false);
+                alert('Δεν βρέθηκαν συντεταγμένες στην εικόνα');
+                return;
+            }
+
+            setUploadedCoordinates(result.coordinates);
             setIsUploading(false);
-            alert("Επιτυχής επεξεργασία! Job ID: ${result.id}");
+            alert(`Επιτυχής επεξεργασία! Βρέθηκαν ${result.coordinates.length} σημεία`);
+            handleCancelCrop();
+
 
             handleCancelCrop(); //TODO ΕΔΩ ΘΑ ΓΙΝΕΙ Η ΕΜΦΑΝΙΣΗ ΠΙΝΑΚΑ ΚΑΙ ΧΑΡΤΗ
             handleReset();
@@ -220,34 +236,40 @@ const Cropper = () => {
             )}
 
             {showToolbar && (
-                <div className="mt-8">
-                    <ImageToolbar
-                        prompts={prompts}
-                        selectedPromptId={selectedPromptId}
-                        onPromptChange={handlePromptChange}
-                        onClearAll={handleClearAll}
-                        // onZoomIn={handleZoomIn}
-                        // onZoomOut={handleZoomOut}
-                        onRotateLeft={handleRotateLeft}
-                        onRotateRight={handleRotateRight}
-                        onReset={handleReset}
-                        onStartCrop={handleStartCrop}
-                        onCancelCrop={handleCancelCrop}
-                        isCropping={isCropping}
-                        onUpload={handleUpload}
-                    />
-                    {/*<div className="max-w-full max-h-[60vh] object-contain mx-auto">*/}
-                    {/*    <img*/}
-                    {/*    src={image}*/}
-                    {/*    alt={fileName}/>*/}
-                    {/*</div>*/}
-                    <ImageDisplay
-                        src={image}
-                        cropperRef={cropperRef}
-                        dragMode={isCropping?'crop':'move'}/>
+                <div className={`grid gap-6 ${uploadedCoordinates.length > 0 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
+                    {/* Left Column - Image Display */}
+                    <div className="space-y-4">
+                        <ImageToolbar
+                            prompts={prompts}
+                            selectedPromptId={selectedPromptId}
+                            onPromptChange={handlePromptChange}
+                            onClearAll={handleClearAll}
+                            onRotateLeft={handleRotateLeft}
+                            onRotateRight={handleRotateRight}
+                            onReset={handleReset}
+                            onStartCrop={handleStartCrop}
+                            onCancelCrop={handleCancelCrop}
+                            isCropping={isCropping}
+                            onUpload={handleUpload}
+                        />
+                        <ImageDisplay
+                            src={image}
+                            cropperRef={cropperRef}
+                            dragMode={isCropping ? 'crop' : 'move'}
+                        />
+                    </div>
+
+                    {/* Right Column - OCR Results (conditional) */}
+                    {uploadedCoordinates.length > 0 && (
+                        <div>
+                            <OcrResult initialCoordinates={uploadedCoordinates} />
+                        </div>
+                    )}
                 </div>
             )}
         </div>
+
+
             {/*https://api.reactrouter.com/v7/functions/react_router.useLocation.html*/}
             <Backdrop sx={{
                 color: '#fff',
