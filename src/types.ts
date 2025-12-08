@@ -106,3 +106,16 @@ export type Coordinate = {
 }
 //για ελεγχο του status του response
 export type JobStatus = 'Processing'|'Completed'|'Failed';
+
+
+//Props του πινακα συντεταγμένων
+export type CoordinatesTableProps={
+    coordinates: Coordinate[];
+    onChange:(updated:Coordinate[]) => void;
+}
+
+// Props του MapPreview
+export type MapPreviewProps = {
+    coordinates: Coordinate[];
+    area: number;
+};
