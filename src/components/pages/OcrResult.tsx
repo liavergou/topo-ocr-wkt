@@ -42,12 +42,12 @@ const OcrResult = ({ initialCoordinates }: CoordinatesResultProps) => {
 
         // ΧΑΡΤΗΣ
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, height: '100%' }}>
-            <Paper variant="outlined" sx={{ p: 2 }}>
+            <Paper variant="outlined">
                 <MapPreview coordinates={coordinates} area={area} />
             </Paper>
 
         {/*ΠΙΝΑΚΑΣ ΣΥΝΤΕΤΑΓΜΕΝΩΝ*/}
-            <Paper variant="outlined" sx={{ p: 2}}>
+            <Paper variant="outlined">
                 <CoordinatesTable
                     coordinates={coordinates}
                     onChange={handleCoordinatesChange}
