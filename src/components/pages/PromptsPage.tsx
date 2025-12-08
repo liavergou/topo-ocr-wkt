@@ -76,26 +76,16 @@ const PromptsPage = () => {
                     : text;
 
                 return (
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' }}>
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                flex: 1,
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap'
-                            }}
-                        >
-                            {preview}
-                        </Typography>
-                        <IconButton
-                            size="small"
-                            onClick={() => setSelectedPrompt(text)}
-                            title="Προβολή πλήρους κειμένου"
-                        >
-                            <VisibilityIcon fontSize="small" />
-                        </IconButton>
-                    </Box>
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap'
+                        }}
+                    >
+                        {preview}
+                    </Typography>
                 );
             }
         },
@@ -106,6 +96,13 @@ const PromptsPage = () => {
             sortable: false,
             renderCell: (params) => (
                 <Box sx={{ display: 'flex', gap: 1 }}>
+                    <IconButton
+                        size="small"
+                        onClick={() => setSelectedPrompt(params.row.promptText)}
+                        title="Προβολή πλήρους κειμένου"
+                    >
+                        <VisibilityIcon fontSize="small" />
+                    </IconButton>
                     <IconButton
                         size="small"
                         color="primary"
