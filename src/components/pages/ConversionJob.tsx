@@ -1,7 +1,7 @@
-import UploadArea from "./pages/UploadArea.tsx";
+import UploadArea from "../conversion/UploadArea.tsx";
 import {useState, useEffect, useRef} from "react";
-import ImageToolbar from "./pages/ImageToolbar.tsx";
-import ImageDisplay from "./pages/ImageDisplay.tsx";
+import ImageToolbar from "../conversion/ImageToolbar.tsx";
+import ImageDisplay from "../conversion/ImageDisplay.tsx";
 import type {Prompt} from '@/schemas/prompts.ts'
 import {getPrompts} from "@/services/api.prompts.ts";
 import {getErrorMessage} from "@/utils/errorHandler.ts";
@@ -10,22 +10,14 @@ import {useParams} from "react-router-dom";
 import {uploadImage} from "@/services/api.jobs.ts";
 import {Backdrop, CircularProgress} from "@mui/material";
 import type {Coordinate} from "@/types.ts";
-import OcrResult from "@/components/pages/OcrResult.tsx";
+import OcrResult from "@/components/conversion/OcrResult.tsx";
 
 // import * as pdfjsLib from 'pdfjs-dist';
 // Το PDF.js χρησιμοποιεί έναν "Web Worker" για να μην "παγώνει" το UI κατά την επεξεργασία.
 //είναι στα Modules.
 //https://www.youtube.com/watch?v=zbL2Z4ZhLlo STATES και για multipage
-//https://react-leaflet.js.org/docs/start-introduction/
-//https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z} google satellite
 
-//<MapContainer>->Map Container
-//<TileLayer>->Tile basemap (Google)
-//<WMSTileLayer>->WMS layers (GeoServer)
-//<Popup>-> Popups
-//<Polygon>->Polygons
-
-const Cropper = () => {
+const ConversionJob = () => {
 
     //****STATE MANAGEMENT*****
     const [isDragging, setIsDragging] = useState(false);
@@ -67,7 +59,7 @@ const Cropper = () => {
     //memory management προσοχη - https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Schemes/blob ****To release an object URL, call revokeObjectURL().
     useEffect(() => {
         return () => {
-            if (image && image.startsWith("blob:")) //react dev tools στο hooks στο Cropper component είναι "blob:http://localhost:5173/147bfe22-9e8e-4063-93e5-3a0fa9c7dfea"
+            if (image && image.startsWith("blob:")) //react dev tools στο hooks στο ConversionJob component είναι "blob:http://localhost:5173/147bfe22-9e8e-4063-93e5-3a0fa9c7dfea"
             URL.revokeObjectURL(image);
         };
     }, [image]);
@@ -183,10 +175,7 @@ const Cropper = () => {
             setIsUploading(false);
             alert(`Επιτυχής επεξεργασία! Βρέθηκαν ${result.coordinates.length} σημεία`);
             handleCancelCrop();
-
-
-            handleCancelCrop(); //TODO ΕΔΩ ΘΑ ΓΙΝΕΙ Η ΕΜΦΑΝΙΣΗ ΠΙΝΑΚΑ ΚΑΙ ΧΑΡΤΗ
-            handleReset();
+            // handleReset();
 
             console.log("OCR Result:", result); //προσωρινα
 
@@ -285,4 +274,4 @@ const Cropper = () => {
 
         </>
     )}
-export default Cropper;
+export default ConversionJob;

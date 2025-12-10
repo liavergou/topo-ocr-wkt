@@ -8,7 +8,7 @@ import {useNavigate} from "react-router-dom";
 import {getMyAssignedProjects} from "@/services/api.account.ts";
 import {getAllProjects} from "@/services/api.projects.ts";
 import {CircularProgress, Grid} from "@mui/material";
-import ProjectCard from "@/ui/ProjectCard.tsx";
+import ProjectCard from "@/components/ui/ProjectCard.tsx";
 
 const SelectProjectPage =() => {
 

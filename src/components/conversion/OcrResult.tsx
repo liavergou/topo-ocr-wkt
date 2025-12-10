@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Box, Paper, Button } from '@mui/material';
-import MapPreview from './MapPreview';
-
-import type { Coordinate} from '@/types';
+import MapPreview from "@/components/map/MapPreview.tsx";
+import type { Coordinate} from '@/types.ts';
 import {calculatePolygonArea} from "@/utils/areaCalculator.ts";
-import CoordinatesTable from "@/components/pages/CoordinatesTable.tsx";
+import CoordinatesTable from "@/components/map/CoordinatesTable.tsx";
 
 
 type CoordinatesResultProps = {
@@ -41,7 +40,7 @@ const OcrResult = ({ initialCoordinates }: CoordinatesResultProps) => {
     return (
 
         // ΧΑΡΤΗΣ
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, height: '100%' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, height: '100%',pt:1 }}>
             <Paper variant="outlined">
                 <MapPreview coordinates={coordinates} area={area} />
             </Paper>

@@ -11,14 +11,14 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Footer from "./Footer.tsx";
 import {Outlet, useNavigate} from "react-router-dom";
-import type {MenuItemProps} from "../types.ts";
+import type {MenuItemProps} from "@/types";
 import HomeIcon from '@mui/icons-material/Map';
 import FolderIcon from '@mui/icons-material/Folder';
 import CropIcon from '@mui/icons-material/Crop';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { IconButton } from '@mui/material';
 import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
-import cflogo from "../assets/img/cf.jpg";
+import cflogo from "@/assets/img/cf.jpg"
 import useAuth from "@/hooks/useAuth.ts";
 
 

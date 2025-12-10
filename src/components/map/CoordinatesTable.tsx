@@ -1,4 +1,4 @@
-import type {Coordinate, CoordinatesTableProps} from "@/types.ts";
+import type {Coordinate, CoordinatesTableProps} from "@/types";
 import {useState} from "react";
 import {TextField} from "@mui/material";
 
