@@ -107,7 +107,7 @@ const PromptsPage = () => {
                         size="small"
                         color="primary"
                         onClick={() => navigate(`/prompts/${params.row.id}`)}
-                        title="Edit"
+                        title="Επεξεργασία"
                     >
                         <EditIcon fontSize="small" />
                     </IconButton>
@@ -115,7 +115,7 @@ const PromptsPage = () => {
                         size="small"
                         color="error"
                         onClick={() => handleDelete(params.row.id)}
-                        title="Delete"
+                        title="Διαγραφή"
                     >
                         <DeleteIcon fontSize="small" />
                     </IconButton>
@@ -207,7 +207,7 @@ const PromptsPage = () => {
             </DialogContent>
             <DialogActions>
                 <Button onClick={() => setSelectedPrompt(null)}>
-                    Κλείσιμο
+                    ΚΛΕΙΣΙΜΟ
                 </Button>
             </DialogActions>
         </Dialog>
