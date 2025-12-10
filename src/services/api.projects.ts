@@ -52,3 +52,10 @@ export async function updateProject(id: number, data:Partial<Omit<Project,'id'>>
 export async function deleteProject(id: number): Promise<void> {
     await apiService.delete(`${PROJECTS_ENDPOINT}/${id}`);
 }
+
+
+//GET PROJECT-JOBS ΑΠΟ GEOSERVER /api/projects/{id}/jobs
+export async function getProjectGeoserverJobs(id:number): Promise<GeoJSON.FeatureCollection>{
+    const response = await apiService.get<GeoJSON.FeatureCollection>(`${PROJECTS_ENDPOINT}/${id}/jobs`);
+    return response.data;
+}
