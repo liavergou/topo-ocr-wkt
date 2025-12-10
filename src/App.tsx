@@ -12,7 +12,7 @@ import ProjectMapPage from "@/components/pages/ProjectMapPage.tsx";
 import PromptsPage from "@/components/pages/PromptsPage.tsx";
 import PromptPage from "@/components/pages/PromptPage.tsx";
 import SelectProjectPage from "@/components/pages/SelectProjectPage.tsx";
-import ConversionJob from "@/components/pages/ConversionJob.tsx";
+import ConversionJobsPage from "@/components/pages/ConversionJobsPage.tsx";
 
 function App() {
 
@@ -26,7 +26,7 @@ function App() {
                             {/* Οι authenticated users */}
                             <Route index element={<HomePage />} />
                             <Route path="/select-project" element={<SelectProjectPage />} />
-                            <Route path={"/projects/:projectId/cropper"} element={<ConversionJob />}/>
+                            <Route path={"/projects/:projectId/cropper"} element={<ConversionJobsPage />}/>
 
                             {/*Admin και Manager μόνο*/}
                             <Route element={<ProtectedRoute roles={['Admin', 'Manager']} />}>

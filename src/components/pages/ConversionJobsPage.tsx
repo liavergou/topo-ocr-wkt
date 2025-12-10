@@ -17,7 +17,7 @@ import OcrResult from "@/components/conversion/OcrResult.tsx";
 //είναι στα Modules.
 //https://www.youtube.com/watch?v=zbL2Z4ZhLlo STATES και για multipage
 
-const ConversionJob = () => {
+const ConversionJobsPage = () => {
 
     //****STATE MANAGEMENT*****
     const [isDragging, setIsDragging] = useState(false);
@@ -59,7 +59,7 @@ const ConversionJob = () => {
     //memory management προσοχη - https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Schemes/blob ****To release an object URL, call revokeObjectURL().
     useEffect(() => {
         return () => {
-            if (image && image.startsWith("blob:")) //react dev tools στο hooks στο ConversionJob component είναι "blob:http://localhost:5173/147bfe22-9e8e-4063-93e5-3a0fa9c7dfea"
+            if (image && image.startsWith("blob:")) //react dev tools στο hooks στο ConversionJobsPage component είναι "blob:http://localhost:5173/147bfe22-9e8e-4063-93e5-3a0fa9c7dfea"
             URL.revokeObjectURL(image);
         };
     }, [image]);
@@ -274,4 +274,4 @@ const ConversionJob = () => {
 
         </>
     )}
-export default ConversionJob;
+export default ConversionJobsPage;
