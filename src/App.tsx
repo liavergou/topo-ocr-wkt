@@ -1,17 +1,18 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Dashboard from "./layout/Dashboard.tsx";
+import Dashboard from "@/components/layout/Dashboard.tsx";
 import HomePage from "./components/pages/HomePage.tsx";
 import {ThemeProvider} from "@mui/material";
 import theme from "./theme.ts";
-import ProtectedRoute from "@/ui/ProtectedRoute.tsx";
+import ProtectedRoute from "@/components/ui/ProtectedRoute.tsx";
 import UserPage from "@/components/pages/UserPage.tsx";
 import UsersPage from "@/components/pages/UsersPage.tsx";
 import ProjectsPage from "@/components/pages/ProjectsPage.tsx";
 import ProjectPage from "@/components/pages/ProjectPage.tsx";
+import ProjectMapPage from "@/components/pages/ProjectMapPage.tsx";
 import PromptsPage from "@/components/pages/PromptsPage.tsx";
 import PromptPage from "@/components/pages/PromptPage.tsx";
 import SelectProjectPage from "@/components/pages/SelectProjectPage.tsx";
-import Cropper from "@/components/Cropper.tsx";
+import ConversionJob from "@/components/pages/ConversionJob.tsx";
 
 function App() {
 
@@ -25,7 +26,7 @@ function App() {
                             {/* Οι authenticated users */}
                             <Route index element={<HomePage />} />
                             <Route path="/select-project" element={<SelectProjectPage />} />
-                            <Route path={"/projects/:projectId/cropper"} element={<Cropper />}/>
+                            <Route path={"/projects/:projectId/cropper"} element={<ConversionJob />}/>
 
                             {/*Admin και Manager μόνο*/}
                             <Route element={<ProtectedRoute roles={['Admin', 'Manager']} />}>
@@ -40,6 +41,8 @@ function App() {
                                 <Route path="/projects/new" element={<ProjectPage />} />
                                 {/*/!*edit*!/*/}
                                 <Route path="/projects/:projectId" element={<ProjectPage />} />
+                                {/*/!*map view*!/*/}
+                                <Route path="/projects/:projectId/map" element={<ProjectMapPage />} />
 
                                 <Route path="/prompts" element={<PromptsPage />} />
                                 {/*/!*create*!/*/}
