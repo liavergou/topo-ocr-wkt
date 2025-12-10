@@ -4,6 +4,7 @@ import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import MapIcon from '@mui/icons-material/Map';
 import {useEffect, useState} from "react";
 import {getPaginatedProjects} from "@/services/api.projects.ts";
 import {deleteProject} from "@/services/api.projects.ts";
@@ -69,25 +70,39 @@ const ProjectsPage = () => {
     {
         field: 'actions',
         headerName: 'Ενέργειες',
-        width: 150,
+        width: 200,
         sortable: false,
         renderCell: (params) => (
             <Box sx={{ display: 'flex', gap: 1 }}>
+
+                {/*EDIT*/}
                 <IconButton
                     size="small"
                     color="primary"
                     onClick={() => navigate(`/projects/${params.row.id}`)}
-                    title="Edit"
+                    title="Επεξεργασία"
                 >
                     <EditIcon fontSize="small" />
                 </IconButton>
+
+                {/*DELETE*/}
                 <IconButton
                     size="small"
                     color="error"
                     onClick={() => handleDelete(params.row.id)}
-                    title="Delete"
+                    title="Διαγραφή"
                 >
                     <DeleteIcon fontSize="small" />
+                </IconButton>
+
+                {/*ΧΑΡΤΗΣ*/}
+                <IconButton
+                    size="small"
+                    color="info"
+                    onClick={() => navigate(`/projects/${params.row.id}/map`)}
+                    title="Χάρτης"
+                >
+                    <MapIcon fontSize="small" />
                 </IconButton>
             </Box>
         ),
@@ -109,6 +124,7 @@ const ProjectsPage = () => {
                 }}
                 />
             </Box>
+
             {/* Header με τίτλο και κουμπί */}
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
                 <Typography variant="h4" component="h1">
