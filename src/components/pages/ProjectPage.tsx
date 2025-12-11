@@ -1,7 +1,7 @@
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate, useParams } from "react-router-dom";
-import {type Project, projectSchema} from "@/schemas/projects";
+import {type ProjectBase, projectBaseSchema} from "@/schemas/projects";
 import { useEffect } from "react";
 import {TextField, Box, Stack} from "@mui/material";
 import Button from "@mui/material/Button";
@@ -21,11 +21,10 @@ const ProjectPage = () => {
         formState: { errors, isSubmitting },
         reset,
     } = useForm({
-        resolver: zodResolver(projectSchema.omit({id:true})),
+        resolver: zodResolver(projectBaseSchema),
         defaultValues: {
             projectName: "",
             description: "",
-            jobsCount:0
         }
     });
 
@@ -47,7 +46,7 @@ const ProjectPage = () => {
             });
     }, [isEdit, projectId, reset]);
 
-    const onSubmit = async (data:Omit<Project,'id'>) => {
+    const onSubmit = async (data: ProjectBase) => {
         try {
             if (isEdit && projectId) {
                 await updateProject(Number(projectId), data);
@@ -122,17 +121,23 @@ const ProjectPage = () => {
                         )}
                     />
 
-
+                    <Box sx={{ display: 'flex', gap:4, justifyContent:'space-between', mt: 2 }}>
                     {/* Submit Button */}
                     <Button
                         type="submit"
                         variant="contained"
                         color="primary"
                         disabled={isSubmitting}
-                        fullWidth
                     >
-                        {isSubmitting ? 'Αποστολή...' : (isEdit ? 'Ενημέρωση' : 'Δημιουργία')}
+                        {isSubmitting ? 'Αποστολή...' : (isEdit ? 'ΕΝΗΜΕΡΩΣΗ' : 'ΔΗΜΙΟΥΡΓΙΑ')}
                     </Button>
+
+                    {/*Cancel button*/}
+                    <Box>
+                        <Button variant={"contained"} color={"secondary"}
+                                onClick={()=> navigate("/projects")}>ΕΞΟΔΟΣ</Button>
+                    </Box>
+                    </Box>
 
                 </Stack>
             </Box>
