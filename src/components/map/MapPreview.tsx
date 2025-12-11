@@ -3,7 +3,7 @@ import type { MapPreviewProps } from '@/types';
 import 'leaflet/dist/leaflet.css';
 import {MapContainer, TileLayer, Polygon, WMSTileLayer, LayersControl, CircleMarker, Popup} from 'react-leaflet';
 import L, { latLngBounds } from 'leaflet';
-import { egsa87ToWgs84 } from '@/utils/ProjectionConverter';
+import { egsa87ToWgs84 } from '@/utils/projectionConverter';
 //https://react-leaflet.js.org/docs/start-introduction/
 //https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z} google satellite
 
