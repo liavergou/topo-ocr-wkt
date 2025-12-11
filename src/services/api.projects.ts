@@ -1,6 +1,5 @@
-
 import apiService from './api.service';
-import { type Project } from '../schemas/projects';
+import { type Project , type ProjectBase} from '../schemas/projects';
 
 const PROJECTS_ENDPOINT = '/api/projects';
 
@@ -36,14 +35,14 @@ export async function getAllProjectById(id: number): Promise<Project>  {
 }
 
 // POST /api/projects
-export async function createProject(projectData: Omit<Project, 'id'>): Promise<Project>{
+export async function createProject(projectData: ProjectBase): Promise<Project>{
     const response = await apiService.post<Project>(PROJECTS_ENDPOINT, projectData);
     return response.data;
 
 }
 
 // PUT /api/projects/:id update
-export async function updateProject(id: number, data:Partial<Omit<Project,'id'>>): Promise<Project> {
+export async function updateProject(id: number, data:ProjectBase): Promise<Project> {
     const response = await apiService.put<Project>(`${PROJECTS_ENDPOINT}/${id}`,data);
     return response.data;
 }
