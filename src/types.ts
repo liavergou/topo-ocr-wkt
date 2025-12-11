@@ -70,7 +70,7 @@ export type ImageToolbarProps = {
     onUpload: () => void;
 }
 
-//Το react-cropper αποθηκευει το Cropper.js instance στο ReactCropperElement.cropper. cropperRef.current?.cropper?.rotate()
+//Το react-cropper αποθηκευει το ConversionJobsPage.js instance στο ReactCropperElement.cropper. cropperRef.current?.cropper?.rotate()
 //https://www.jsdocs.io/package/react-cropper#Cropper
 //https://github.com/react-cropper/react-cropper
 export type ImageDisplayProps = {
@@ -119,3 +119,19 @@ export type MapPreviewProps = {
     coordinates: Coordinate[];
     area: number;
 };
+
+//Props του JobData από τον geoserver
+export type JobDataProps = {
+    id: string;
+    JobId?: number;
+    OriginalFile?: string;
+    CroppedFile?: string;
+    GenAIModel?: string;
+    PromptName?: string;
+    UserId?: number;
+    Username?: string;
+    JobStatus?: string;
+    ProjectId?: number;
+    ProjectName?: string;
+    Area?: number;
+}
