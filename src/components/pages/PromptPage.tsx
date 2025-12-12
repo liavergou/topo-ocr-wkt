@@ -41,7 +41,7 @@ const PromptPage = () => {
                 reset(values);
             })
             .catch((err) => {
-                console.error("Error getting project:", err);
+                console.error("Error getting prompt:", err);
                 alert(getErrorMessage(err));
             });
     }, [isEdit, promptId, reset]);
@@ -56,7 +56,7 @@ const PromptPage = () => {
                 await createPrompt(data);
                 alert("Το κείμενο δημιουργήθηκε επιτυχώς");
             }
-            navigate("/projects");
+            navigate("/prompts");
         } catch (err) {
             console.error("Error:", err);
             alert(getErrorMessage(err));
@@ -66,7 +66,8 @@ const PromptPage = () => {
     return (
         <Box
             sx={{
-                maxWidth: '150rem',
+                maxWidth: '100rem',
+                maxHeight: '100rem',
                 mx: 'auto',
                 mt: 6,
                 p: 4,
@@ -94,7 +95,7 @@ const PromptPage = () => {
                         render={({ field }) => (
                             <TextField
                                 {...field}
-                                label="Μελέτη"
+                                label="Prompt"
                                 error={!!errors.promptName}
                                 helperText={errors.promptName?.message}
                                 fullWidth
@@ -126,16 +127,23 @@ const PromptPage = () => {
                     />
 
 
-                    {/* Submit Button */}
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        disabled={isSubmitting}
-                        fullWidth
-                    >
-                        {isSubmitting ? 'Αποστολή...' : (isEdit ? 'Ενημέρωση' : 'Δημιουργία')}
-                    </Button>
+                    <Box sx={{ display: 'flex', gap:4, justifyContent:'space-between', mt: 2 }}>
+                        {/* Submit Button */}
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting ? 'Αποστολή...' : (isEdit ? 'ΕΝΗΜΕΡΩΣΗ' : 'ΔΗΜΙΟΥΡΓΙΑ')}
+                        </Button>
+
+                        {/*Cancel button*/}
+                        <Box>
+                            <Button variant={"contained"} color={"secondary"}
+                                    onClick={()=> navigate("/prompts")}>ΕΞΟΔΟΣ</Button>
+                        </Box>
+                    </Box>
 
                 </Stack>
             </Box>
