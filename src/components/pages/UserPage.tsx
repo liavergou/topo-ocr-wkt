@@ -196,16 +196,23 @@ const UserPage = () => {
 
 
 
-                    {/* Submit Button */}
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        disabled={isSubmitting}
-                        fullWidth
-                    >
-                        {isSubmitting ? 'Αποστολή...' : (isEdit ? 'Ενημέρωση' : 'Δημιουργία')}
-                    </Button>
+                    <Box sx={{ display: 'flex', gap:4, justifyContent:'space-between', mt: 2 }}>
+                        {/* Submit Button */}
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting ? 'Αποστολή...' : (isEdit ? 'ΕΝΗΜΕΡΩΣΗ' : 'ΔΗΜΙΟΥΡΓΙΑ')}
+                        </Button>
+
+                        {/*Cancel button*/}
+                        <Box>
+                            <Button variant={"contained"} color={"secondary"}
+                                    onClick={()=> navigate("/users")}>ΕΞΟΔΟΣ</Button>
+                        </Box>
+                    </Box>
 
                 </Stack>
             </Box>
