@@ -2,7 +2,7 @@
 // Backend: UserController.cs endpoints
 
 import apiService from '@/services/api.service';
-import type { User } from '@/types';
+import type {User, UserProjects} from '@/types';
 import type { UserCreate, UserUpdate } from '@/schemas/users';
 
 const USERS_ENDPOINT = '/api/users';
@@ -60,4 +60,17 @@ export async function updateUser(id: number, userData: UserUpdate): Promise<User
 // DELETE /api/users/:id
 export async function deleteUser(id: number): Promise<void> {
     await apiService.delete(`${USERS_ENDPOINT}/${id}`);
+}
+
+//user get assigned projects (user management console)
+// GET /api/users/:id/projects
+export async function getUserProjects(id: number): Promise<UserProjects> {
+    const response = await apiService.get<UserProjects>(`${USERS_ENDPOINT}/${id}/projects`);
+    return response.data
+}
+//user update assigned projects (user management console)
+// PUT /api/users/:id/projects
+export async function updateUserProjects(id: number, data: UserProjects): Promise<UserProjects> {
+    const response = await apiService.put<UserProjects>(`${USERS_ENDPOINT}/${id}/projects`,data )
+    return response.data;
 }

@@ -52,6 +52,10 @@ export type ProjectCardProps={
     onClick?:()=>void;
 }
 
+//UserProjects για assign project σε χρήστη
+export type UserProjects ={
+    projectIds: number[];
+}
 
 //Props για το ImageToolbar component
 export type ImageToolbarProps = {
