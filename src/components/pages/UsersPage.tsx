@@ -5,6 +5,7 @@ import { DataGrid, type GridColDef } from '@mui/x-data-grid';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import type { User } from '@/types';
 import { getUsers, deleteUser } from '@/services/api.users';
 import {getErrorMessage} from "@/utils/errorHandler.ts";
@@ -62,7 +63,7 @@ const UsersPage = () => {
                         size="small"
                         color="primary"
                         onClick={() => navigate(`/users/${params.row.id}`)}
-                        title="Edit"
+                        title="Επεξεργασία"
                     >
                         <EditIcon fontSize="small" />
                     </IconButton>
@@ -70,10 +71,21 @@ const UsersPage = () => {
                         size="small"
                         color="error"
                         onClick={() => handleDelete(params.row.id)}
-                        title="Delete"
+                        title="Διαγραφή"
                     >
                         <DeleteIcon fontSize="small" />
                     </IconButton>
+
+                    {/*ASSIGN PROJECTS*/}
+                    {params.row.role === 'Member' && (
+                    <IconButton
+                        size="small"
+                        color="info"
+                        onClick={() => navigate(`/users/${params.row.id}/projects`)}
+                        title="Μελέτες"
+                    >
+                        <AssignmentIndIcon fontSize="small" />
+                    </IconButton>)}
                 </Box>
             ),
         },
