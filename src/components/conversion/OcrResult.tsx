@@ -34,7 +34,11 @@ const OcrResult = ({ initialCoordinates }: CoordinatesResultProps) => {
     };
 
     const handleExportText = () => {
-        // TODO: Export TXT
+        const content = coordinates.map(coord => `${coord.x},${coord.y}`).join('\n');
+        const link = document.createElement('a');
+        link.href = 'data:text/plain;charset=utf-8,'+content;
+        link.download = 'coordinates.txt';
+        link.click();
     };
 
     return (
