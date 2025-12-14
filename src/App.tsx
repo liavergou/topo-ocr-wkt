@@ -13,6 +13,7 @@ import PromptsPage from "@/components/pages/PromptsPage.tsx";
 import PromptPage from "@/components/pages/PromptPage.tsx";
 import SelectProjectPage from "@/components/pages/SelectProjectPage.tsx";
 import ConversionJobsPage from "@/components/pages/ConversionJobsPage.tsx";
+import UserProjectsPage from "@/components/pages/UserProjectsPage.tsx";
 
 function App() {
 
@@ -26,7 +27,7 @@ function App() {
                             {/* Οι authenticated users */}
                             <Route index element={<HomePage />} />
                             <Route path="/select-project" element={<SelectProjectPage />} />
-                            <Route path={"/projects/:projectId/cropper"} element={<ConversionJobsPage />}/>
+                            <Route path={"/projects/:projectId/conversion-jobs"} element={<ConversionJobsPage />}/>
 
                             {/*Admin και Manager μόνο*/}
                             <Route element={<ProtectedRoute roles={['Admin', 'Manager']} />}>
@@ -35,6 +36,8 @@ function App() {
                                 <Route path="/users/new" element={<UserPage />} />
                                 {/*edit*/}
                                 <Route path="/users/:userId" element={<UserPage />} />
+                                {/*assign projects*/}
+                                <Route path="/users/:userId/projects" element={<UserProjectsPage />} />
 
                                 <Route path="/projects" element={<ProjectsPage />} />
                                 {/*/!*create*!/*/}

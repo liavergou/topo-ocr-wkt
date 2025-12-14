@@ -62,7 +62,7 @@ const SelectProjectPage =() => {
                         <ProjectCard
                             id={p.id}
                             projectName={p.projectName}
-                            onClick={() => navigate(`/projects/${p.id}/cropper`)}
+                            onClick={() => navigate(`/projects/${p.id}/conversion-jobs`)}
                         />
                     ))}
                 </Grid>
