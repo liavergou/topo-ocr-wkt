@@ -97,7 +97,6 @@ export type UploadJobResponse={
     croppedFileName: string;
     modelUsed?: string;
     status: JobStatus; //καλύτερα
-    wkt?: string; //TODO ΠΡΟΣΩΡΙΝΟ. ΘΑ ΑΦΑΙΡΕΘΕΙ.
     errorMessage: string;
     coordinates?: Coordinate[];
 }
