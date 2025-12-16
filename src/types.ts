@@ -110,11 +110,20 @@ export type Coordinate = {
 //για ελεγχο του status του response
 export type JobStatus = 'Processing'|'Completed'|'Failed';
 
+//props του OCR Result
+export type CoordinatesResultProps = {
+    jobId:number;
+    initialCoordinates: Coordinate[];
+};
 
 //Props του πινακα συντεταγμένων
 export type CoordinatesTableProps={
     coordinates: Coordinate[];
     onChange:(updated:Coordinate[]) => void;
+}
+
+export type ConversionJobUpdate = {
+    coordinates:Coordinate[];
 }
 
 // Props του MapPreview
