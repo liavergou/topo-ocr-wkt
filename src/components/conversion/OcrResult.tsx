@@ -1,19 +1,21 @@
 import { useState, useEffect } from 'react';
 import { Box, Paper, Button } from '@mui/material';
 import MapPreview from "@/components/map/MapPreview.tsx";
-import type { Coordinate} from '@/types.ts';
+import type {Coordinate, CoordinatesResultProps} from '@/types.ts';
 import {calculatePolygonArea} from "@/utils/areaCalculator.ts";
 import CoordinatesTable from "@/components/map/CoordinatesTable.tsx";
+import {updateConversionJob} from "@/services/api.jobs.ts";
+import {getErrorMessage} from "@/utils/errorHandler.ts";
 
-
-type CoordinatesResultProps = {
-    initialCoordinates: Coordinate[];
-};
-
-const OcrResult = ({ initialCoordinates }: CoordinatesResultProps) => {
+const OcrResult = ({ initialCoordinates ,jobId }: CoordinatesResultProps) => {
 
     const [coordinates, setCoordinates] = useState<Coordinate[]>(initialCoordinates); //ΣΥΝΤΕΤΑΓΜΕΝΕΣ προσοχή source of truth για να το δώσει στα children. αλλάζει στο onChange των children
     const [area, setArea] = useState(0); //ΕΜΒΑΔΟΝ
+
+    //αν αλλαξουν οι αρχικες συντεταγμενες (νεο job χωρις αλλαγη αρχειου) επανυπολογισμος χαρτη και πινακα συντεταγμενων
+    useEffect(() => {
+        setCoordinates(initialCoordinates);
+    }, [initialCoordinates]);
 
     //Επανυπολογισμός εμβαδού όταν αλλάζει κάτι στις συντεταγμένες. προσοχη το state στο CoordinatesTable θα φέρει αλλαγή
     useEffect(() => {
@@ -27,10 +29,14 @@ const OcrResult = ({ initialCoordinates }: CoordinatesResultProps) => {
         setCoordinates(updated);
     };
 
-    const handleSave = () => {
-        // TODO: Save to backend
-        console.log('Saving coordinates:', coordinates);
-        alert('Αποθήκευση στο backend (TODO)');
+    const handleSave = async () => {
+        try{
+            await updateConversionJob(jobId,{coordinates:coordinates});
+            alert("Οι συντεταγμένες ενημερώθηκαν επιτυχώς")
+        }catch (err){
+            console.error("Error updating coordinates:", err);
+            alert(getErrorMessage(err));
+        }
     };
 
     const handleExportText = () => {
@@ -64,7 +70,7 @@ const OcrResult = ({ initialCoordinates }: CoordinatesResultProps) => {
                         onClick={handleSave}
                         fullWidth
                     >
-                        ΑΠΟΘΗΚΕΥΣΗ
+                        ΑΠΟΘΗΚΕΥΣΗ ΑΛΛΑΓΩΝ
                     </Button>
 
                     {/*EXPORT TXT ΓΙΑ ΘΕΑΣΗ*/}
