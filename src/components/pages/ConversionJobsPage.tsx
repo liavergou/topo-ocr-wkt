@@ -36,6 +36,7 @@ const ConversionJobsPage = () => {
     const [isUploading, setIsUploading] = useState(false); //για mui elements. Backdrop https://mui.com/material-ui/react-backdrop/ The Backdrop component narrows the user's focus to a particular element on the screen.
 
     const [uploadedCoordinates, setUploadedCoordinates] = useState<Coordinate[]>([]);
+    const [uploadedJobId, setUploadedJobId] = useState<number | null>(null);
 
     useEffect(() => {
         getPrompts()
@@ -171,6 +172,7 @@ const ConversionJobsPage = () => {
                 return;
             }
 
+            setUploadedJobId(result.id);
             setUploadedCoordinates(result.coordinates);
             setIsUploading(false);
             alert(`Επιτυχής επεξεργασία! Βρέθηκαν ${result.coordinates.length} σημεία`);
@@ -251,7 +253,9 @@ const ConversionJobsPage = () => {
                     {/* Right Column - OCR Results (conditional) */}
                     {uploadedCoordinates.length > 0 && (
                         <div>
-                            <OcrResult initialCoordinates={uploadedCoordinates} />
+                            <OcrResult initialCoordinates={uploadedCoordinates}
+                            jobId={uploadedJobId!}/>
+                            {/*! για το null*/}
                         </div>
                     )}
                 </div>
