@@ -1,5 +1,5 @@
 import apiService from "@/services/api.service.ts";
-import type {UploadJobRequest, UploadJobResponse} from "@/types.ts";
+import type {ConversionJobUpdate, UploadJobRequest, UploadJobResponse} from "@/types.ts";
 
 const JOBS_ENDPOINT = '/api/conversion-jobs';
 
@@ -27,5 +27,16 @@ export async function uploadImage(request: UploadJobRequest): Promise<UploadJobR
 
     );
     return response.data
+
+}
+
+
+//PUT /api/conversion-jobs/:id
+export async function updateConversionJob(
+    id: number,
+    data: ConversionJobUpdate):Promise<UploadJobResponse>{
+    const response = await apiService.put<UploadJobResponse>(
+        `${JOBS_ENDPOINT}/${id}`,data);
+    return response.data;
 
 }
