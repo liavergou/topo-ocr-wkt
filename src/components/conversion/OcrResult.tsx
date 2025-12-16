@@ -64,6 +64,7 @@ const OcrResult = ({ initialCoordinates ,jobId }: CoordinatesResultProps) => {
         {/*ΠΙΝΑΚΑΣ ΣΥΝΤΕΤΑΓΜΕΝΩΝ*/}
             <Paper variant="outlined">
                 <CoordinatesTable
+                    key={jobId} //key αναγνωριστικό του component. οταν αλλαζει το jobΙδ , η react κανει remount, καταστρεφει το παλιο component και δημιουργεί νέο με καινουριο state.
                     coordinates={coordinates}
                     onChange={handleCoordinatesChange}
                 />

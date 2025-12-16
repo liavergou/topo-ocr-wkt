@@ -1,5 +1,5 @@
 import type {Coordinate, CoordinatesTableProps} from "@/types";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {TextField} from "@mui/material";
 
 
@@ -48,11 +48,6 @@ import {TextField} from "@mui/material";
         };
 
         const [text, setText] = useState(() => coordinatesToText(coordinates)); //οχι το state στον parent μονο. προβλημα με συνεχες rerender
-
-        //rerender Πινακας συντεταγμενων οταν αλλαζουν τα coordinates (δευτερο crop στο ιδιο αρχειο)
-        useEffect(() => {
-            setText(coordinatesToText(coordinates))
-        }, [coordinates]);
 
         return(
         <>
