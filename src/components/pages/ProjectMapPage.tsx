@@ -144,9 +144,9 @@ const ProjectMapPage = () => {
                             key={statusFilter} //force rerender https://dev.to/malapashish/mastering-react-re-renders-the-key-prop-hack-you-need-to-know-17hh
                             data={displayedGeoData}
                             style={{
-                                color: '#F5F02A',
+                                color: '#ff00ff',
                                 weight: 4,
-                                fillOpacity: 0.2
+                                fillOpacity: 0.1
                             }}
                             //https://leafletjs.com/reference.html#geojson-resetstyle
                             onEachFeature={(feature, layer) => {
