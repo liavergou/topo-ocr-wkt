@@ -39,6 +39,12 @@ const OcrResult = ({ initialCoordinates ,jobId }: CoordinatesResultProps) => {
         }
     };
 
+    const handleReset = ()=>{
+        if (confirm('Επαναφορά στις αρχικές συντεταγμένες.')){
+            setCoordinates(initialCoordinates);
+        }
+    }
+
     const handleExportText = () => {
         const content = coordinates.map(coord => `${coord.x},${coord.y}`).join('\n');
         const link = document.createElement('a');
@@ -71,6 +77,16 @@ const OcrResult = ({ initialCoordinates ,jobId }: CoordinatesResultProps) => {
                         fullWidth
                     >
                         ΑΠΟΘΗΚΕΥΣΗ ΑΛΛΑΓΩΝ
+                    </Button>
+
+                    {/*RESET ΑΛΛΑΓΩΝ*/}
+                    <Button
+                        variant="contained"
+                        color="warning"
+                        onClick={handleReset}
+                        fullWidth
+                    >
+                        ΕΠΑΝΑΦΟΡΑ
                     </Button>
 
                     {/*EXPORT TXT ΓΙΑ ΘΕΑΣΗ*/}
