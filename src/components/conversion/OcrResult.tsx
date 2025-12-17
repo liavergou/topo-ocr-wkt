@@ -7,7 +7,7 @@ import CoordinatesTable from "@/components/map/CoordinatesTable.tsx";
 import {updateConversionJob} from "@/services/api.jobs.ts";
 import {getErrorMessage} from "@/utils/errorHandler.ts";
 
-const OcrResult = ({ initialCoordinates ,jobId }: CoordinatesResultProps) => {
+const OcrResult = ({ initialCoordinates ,jobId, onDelete }: CoordinatesResultProps) => {
 
     const [coordinates, setCoordinates] = useState<Coordinate[]>(initialCoordinates); //ΣΥΝΤΕΤΑΓΜΕΝΕΣ προσοχή source of truth για να το δώσει στα children. αλλάζει στο onChange των children
     const [area, setArea] = useState(0); //ΕΜΒΑΔΟΝ
@@ -90,6 +90,16 @@ const OcrResult = ({ initialCoordinates ,jobId }: CoordinatesResultProps) => {
                         ΕΠΑΝΑΦΟΡΑ
                     </Button>
 
+                    {/*DELETE CONVERSION JOB*/}
+                    <Button
+                        variant="contained"
+                        color="error"
+                        onClick={onDelete}
+                        fullWidth
+                    >
+                        ΔΙΑΓΡΑΦΗ
+                    </Button>
+
                     {/*EXPORT TXT ΓΙΑ ΘΕΑΣΗ*/}
                     <Button
                         variant="contained"
@@ -99,6 +109,7 @@ const OcrResult = ({ initialCoordinates ,jobId }: CoordinatesResultProps) => {
                     >
                         ΕΞΑΓΩΓΗ TXT
                     </Button>
+
                 </Box>
             </Paper>
         </Box>

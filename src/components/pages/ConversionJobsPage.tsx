@@ -7,7 +7,7 @@ import {getPrompts} from "@/services/api.prompts.ts";
 import {getErrorMessage} from "@/utils/errorHandler.ts";
 import type {ReactCropperElement} from 'react-cropper';
 import {useParams} from "react-router-dom";
-import {uploadImage} from "@/services/api.jobs.ts";
+import {deleteConversionJob, uploadImage} from "@/services/api.jobs.ts";
 import {Backdrop, CircularProgress} from "@mui/material";
 import type {Coordinate} from "@/types.ts";
 import OcrResult from "@/components/conversion/OcrResult.tsx";
@@ -84,6 +84,7 @@ const ConversionJobsPage = () => {
         setShowToolbar(false);
         setFileName('');
         setUploadedCoordinates([]);
+        setUploadedJobId(null);
     }
 
 
@@ -190,6 +191,21 @@ const ConversionJobsPage = () => {
         }
     };
 
+    const handleDelete=async ()=>{
+        if(!uploadedJobId) return;
+        if (!confirm('Θέλετε να διαγράψετε την μετατροπή συντεταγμένων;')){
+            return;
+        }
+        try {
+            await deleteConversionJob(uploadedJobId);
+            handleClearAll();
+            alert('Η εργασία διαγράφηκε επιτυχώς');
+        } catch (err) {
+            console.error('Error deleting conversion job:', err);
+            alert(getErrorMessage(err));
+        }
+    };
+
 
     return (
         <>
@@ -254,7 +270,8 @@ const ConversionJobsPage = () => {
                     {uploadedCoordinates.length > 0 && (
                         <div>
                             <OcrResult initialCoordinates={uploadedCoordinates}
-                            jobId={uploadedJobId!}/>
+                            jobId={uploadedJobId!}
+                            onDelete={handleDelete}/>
                             {/*! για το null*/}
                         </div>
                     )}

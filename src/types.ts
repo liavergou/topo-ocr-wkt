@@ -114,6 +114,7 @@ export type JobStatus = 'Processing'|'Completed'|'Failed';
 export type CoordinatesResultProps = {
     jobId:number;
     initialCoordinates: Coordinate[];
+    onDelete?: () => void;
 };
 
 //Props του πινακα συντεταγμένων
