@@ -40,3 +40,8 @@ export async function updateConversionJob(
     return response.data;
 
 }
+
+//DELETE /api/conversion-jobs/:id
+export async function deleteConversionJob(id:number):Promise<void>{
+    await apiService.delete(`${JOBS_ENDPOINT}/${id}`);
+}
