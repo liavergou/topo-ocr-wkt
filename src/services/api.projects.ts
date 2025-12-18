@@ -58,3 +58,10 @@ export async function getProjectGeoserverJobs(id:number): Promise<GeoJSON.Featur
     const response = await apiService.get<GeoJSON.FeatureCollection>(`${PROJECTS_ENDPOINT}/${id}/jobs`);
     return response.data;
 }
+
+//GET GEOSERVER SHP EXPORT /api/{id}/shapefile
+export async function exportSHPProjectGeoserverJobs(id:number): Promise<Blob>{
+    const response = await apiService.get(`${PROJECTS_ENDPOINT}/${id}/jobs/shp`,{responseType: 'blob'})
+    return response.data;
+
+}

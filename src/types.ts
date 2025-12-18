@@ -147,4 +147,5 @@ export type JobDataProps = {
     ProjectId?: number;
     ProjectName?: string;
     Area?: number;
+    DeletedAt?: string | null;
 }

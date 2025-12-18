@@ -5,9 +5,10 @@ import { MapContainer, TileLayer, WMSTileLayer, LayersControl, GeoJSON, useMapEv
 import type { FeatureCollection } from 'geojson'; // npm package με type definitions για GeoJSON
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { getProjectGeoserverJobs } from '@/services/api.projects';
+import {exportSHPProjectGeoserverJobs, getProjectGeoserverJobs} from '@/services/api.projects';
 import { getErrorMessage } from '@/utils/errorHandler';
 import type { JobDataProps } from "@/types.ts";
+import Button from "@mui/material/Button";
 
 const ProjectMapPage = () => {
     const { projectId } = useParams<{ projectId: string }>(); //απο το project id του url
@@ -15,7 +16,21 @@ const ProjectMapPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedJob, setSelectedJob] = useState<JobDataProps | null>(null); // Επιλεγμένο job για προβολή
-    const [statusFilter, setStatusFilter] = useState('All'); // για το φίλτρο στο status
+    const [activatedFilter, setActivatedFilter] = useState<'ΕΝΕΡΓΑ' | 'ΔΙΕΓΡΑΜΜΕΝΑ' | 'ΟΛΑ'>('ΟΛΑ'); // για το φίλτρο στα ενεργά/διεγραμμενα
+
+    const handleExportSHP = async () => {
+        try {
+            const blob = await exportSHPProjectGeoserverJobs(Number(projectId));
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `project_${projectId}`;
+            link.click();
+            window.URL.revokeObjectURL(url);
+        }catch(err){
+            alert(getErrorMessage(err))
+        }
+    };
 
     // υπολογισμός bounds για zoom (από τα αρχικά δεδομένα για να μην αλλάζει το zoom με το φίλτρο)
     const bounds = geoData ? L.geoJSON(geoData).getBounds() : undefined;
@@ -46,23 +61,24 @@ const ProjectMapPage = () => {
             .finally(() => setLoading(false)); //καθάρισμα
     }, [projectId]);
 
-    //φίλτρο
+    //φίλτρο για ενεργα/διεγραμμενα/ολα
     let displayedGeoData: FeatureCollection | null = null; //για να μπορω να κανω reassign μετα
 
     if (geoData) {
-        if (statusFilter === 'All') {
-            displayedGeoData = geoData; //φίλτρο all-> όλα
-        } else {
-            const filteredFeatures = geoData.features.filter( //αλλιως φιλτρο στα features
-                f => f.properties?.JobStatus === statusFilter //το ? για το Null
-            );
-
-            //νεο object GeoJSON με τα φιλτραρισμένα features
-            displayedGeoData = {
-                ...geoData, // spread operator για να κρατήσουμε τα υπόλοιπα properties (π.χ. crs)
-                features: filteredFeatures
-            };
+        let filteredFeatures= geoData.features;
+        switch (activatedFilter){
+            case 'ΕΝΕΡΓΑ':  filteredFeatures = geoData.features.filter(f => f.properties?.DeletedAt ===null);
+            break;
+            case 'ΔΙΕΓΡΑΜΜΕΝΑ': filteredFeatures = geoData.features.filter(f => f.properties?.DeletedAt !==null);
+            break;
+            case "ΟΛΑ":
+                break;
         }
+                //νεο object GeoJSON με τα φιλτραρισμένα features
+        displayedGeoData = {
+            ...geoData, // spread operator για να κρατήσουμε τα υπόλοιπα properties
+            features: filteredFeatures
+                };
     }
 
     if (loading) {
@@ -91,20 +107,27 @@ const ProjectMapPage = () => {
 
     return (
         <>
-        <Box sx={{ p: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, p: 2 }}>
 
-            {/*ΦΙΛΤΡΟ ΣΤΟ STATUS*/}
-            <FormControl sx={{ p: 2 }}>
+            {/*ΦΙΛΤΡΟ*/}
+            <FormControl>
                 <Select
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}>
+                    value={activatedFilter}
+                    onChange={(e) => setActivatedFilter(e.target.value as 'ΕΝΕΡΓΑ' | 'ΔΙΕΓΡΑΜΜΕΝΑ' | 'ΟΛΑ')}>
 
-                    <MenuItem value="All">All</MenuItem>
-                    <MenuItem value="Completed">Completed</MenuItem>
-                    <MenuItem value="Failed">Failed</MenuItem>
-                    <MenuItem value="Pending">Pending</MenuItem>
+                    <MenuItem value="ΟΛΑ">ΟΛΑ</MenuItem>
+                    <MenuItem value="ΕΝΕΡΓΑ">ΕΝΕΡΓΑ</MenuItem>
+                    <MenuItem value="ΔΙΕΓΡΑΜΜΕΝΑ">ΔΙΕΓΡΑΜΜΕΝΑ</MenuItem>
                 </Select>
             </FormControl>
+
+            <Button
+                variant="contained"
+                color='secondary'
+                onClick={handleExportSHP}>
+                ΕΞΑΓΩΓΗ SHP
+            </Button>
+        </Box>
 
             <Box sx={{ height: '77vh', border: '2px solid', borderColor: 'primary.main', borderRadius: 2 }}>
                 {/*ΧΑΡΤΗΣ MAP CONTAINER ΤΟΥ LEAFLET*/}
@@ -141,7 +164,7 @@ const ProjectMapPage = () => {
                     {/* Αν υπάρχουν δεδομένα για εμφάνιση, τότε σχεδίασε το GeoJSON layer */}
                     {displayedGeoData && (
                         <GeoJSON
-                            key={statusFilter} //force rerender https://dev.to/malapashish/mastering-react-re-renders-the-key-prop-hack-you-need-to-know-17hh
+                            key={activatedFilter} //force rerender https://dev.to/malapashish/mastering-react-re-renders-the-key-prop-hack-you-need-to-know-17hh
                             data={displayedGeoData}
                             style={{
                                 color: '#ff00ff',
@@ -187,13 +210,13 @@ const ProjectMapPage = () => {
                                 <Typography>Μοντέλο: {selectedJob.GenAIModel || '-'}</Typography>
                                 <Typography>Prompt: {selectedJob.PromptName || '-'}</Typography>
                                 <Typography>Χρήστης: {selectedJob.Username || '-'}</Typography>
+                                <Typography>Διαγραφή: {selectedJob.DeletedAt || '-'}</Typography>
                                 <Typography>Status: {selectedJob.JobStatus || '-'}</Typography>
                             </Box>
                         </Box>
                     )}
                 </MapContainer>
             </Box>
-        </Box>
         </>
     );
 };
