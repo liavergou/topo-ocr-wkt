@@ -45,7 +45,7 @@ function App() {
                                 {/*/!*edit*!/*/}
                                 <Route path="/projects/:projectId" element={<ProjectPage />} />
                                 {/*/!*map view*!/*/}
-                                <Route path="/projects/:projectId/map" element={<ProjectMapPage />} />
+                                <Route path="/projects/:projectId/jobs" element={<ProjectMapPage />} />
 
                                 <Route path="/prompts" element={<PromptsPage />} />
                                 {/*/!*create*!/*/}
