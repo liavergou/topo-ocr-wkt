@@ -1,22 +1,46 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Typography, CircularProgress, FormControl, Select, MenuItem } from '@mui/material';
-import { MapContainer, TileLayer, WMSTileLayer, LayersControl, GeoJSON, useMapEvents } from 'react-leaflet';
+import { Box, Typography, CircularProgress, FormControl, Select, MenuItem, IconButton, Button } from '@mui/material';
+import { MapContainer, TileLayer, WMSTileLayer, LayersControl, GeoJSON, useMapEvents, useMap } from 'react-leaflet';
 import type { FeatureCollection } from 'geojson'; // npm package με type definitions για GeoJSON
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import {exportSHPProjectGeoserverJobs, getProjectGeoserverJobs} from '@/services/api.projects';
+import { exportSHPProjectGeoserverJobs, getProjectGeoserverJobs } from '@/services/api.projects';
+import { deleteConversionJob } from "@/services/api.jobs";
 import { getErrorMessage } from '@/utils/errorHandler';
+import { DataGrid, type GridColDef } from "@mui/x-data-grid";
+import DeleteIcon from "@mui/icons-material/Delete";
 import type { JobDataProps } from "@/types.ts";
-import Button from "@mui/material/Button";
 
 const ProjectMapPage = () => {
     const { projectId } = useParams<{ projectId: string }>(); //απο το project id του url
     const [geoData, setGeoData] = useState<FeatureCollection | null>(null); //state για τα GeoJSON δεδομένα. τύπος FeatureCollection
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [selectedJob, setSelectedJob] = useState<JobDataProps | null>(null); // Επιλεγμένο job για προβολή
+    const [selectedJobId, setSelectedJobId] = useState<number | null>(null); // Επιλεγμένο job για προβολή
     const [activatedFilter, setActivatedFilter] = useState<'ΕΝΕΡΓΑ' | 'ΔΙΕΓΡΑΜΜΕΝΑ' | 'ΟΛΑ'>('ΟΛΑ'); // για το φίλτρο στα ενεργά/διεγραμμενα
+
+    // Data loading με useCallback για να μην κανει loop στο render μετα το useEffect
+    const loadData = useCallback(async () => {
+        if (!projectId) return;
+
+        try {
+            setLoading(true);
+            const data = await getProjectGeoserverJobs(Number(projectId));
+            setGeoData(data);
+            setError(null);
+        } catch (err) {
+            console.error('Error loading GeoJSON:', err);
+            setError(getErrorMessage(err));
+        } finally {
+            setLoading(false);
+        }
+    }, [projectId]);
+
+
+    useEffect(() => {
+        loadData();
+    }, [loadData]);
 
     const handleExportSHP = async () => {
         try {
@@ -32,58 +56,123 @@ const ProjectMapPage = () => {
         }
     };
 
-    // υπολογισμός bounds για zoom (από τα αρχικά δεδομένα για να μην αλλάζει το zoom με το φίλτρο)
-    const bounds = geoData ? L.geoJSON(geoData).getBounds() : undefined;
+    const handleDeleteJob = async (jobId: number) => {
+        if (!confirm('Θέλετε να διαγράψετε αυτό το πολύγωνο;')) return;
+
+        try {
+            await deleteConversionJob(jobId);
+            setSelectedJobId(null);
+            loadData(); //load data ξανα
+            alert('Το πολύγωνο διαγράφηκε επιτυχώς');
+        } catch (err) {
+            console.error('Error deleting job:', err);
+            alert(getErrorMessage(err));
+        }
+    };
 
     // για να κλείνει το info box όταν click έξω από polygon
     function MapClickHandler({ onMapClick }: { onMapClick: () => void }) {
         useMapEvents({
             click: () => {
                 onMapClick();
-            },
+            }
         });
         return null;
     }
 
-    useEffect(() => {
-        if (!projectId) return;
+    // https://react-leaflet.js.org/docs/api-map/
+    function ZoomToFeature({ id, data }: { id: number | null, data: FeatureCollection | null }) {
+        const map = useMap();
 
-        setLoading(true);
-        getProjectGeoserverJobs(Number(projectId))
-            .then((data) => {
-                setGeoData(data);
-                setError(null);
-            })
-            .catch((err) => {
-                console.error('Error loading GeoJSON:', err);
-                setError(getErrorMessage(err));
-            })
-            .finally(() => setLoading(false)); //καθάρισμα
-    }, [projectId]);
+        useEffect(() => {
+            if (id && data) {
+                const feature = data.features.find(f => f.properties?.JobId === id);
+                if (feature) {
+                    const layer = L.geoJSON(feature);
+                    const bounds = layer.getBounds();
+                    if (bounds.isValid()) {
+                        map.fitBounds(bounds, { padding: [50, 50], maxZoom: 18 });
+                    }
+                }
+            }
+        }, [id, data, map]);
+
+        return null;
+    }
 
     //φίλτρο για ενεργα/διεγραμμενα/ολα
     let displayedGeoData: FeatureCollection | null = null; //για να μπορω να κανω reassign μετα
 
     if (geoData) {
-        let filteredFeatures= geoData.features;
+        let filteredFeatures = geoData.features;
         switch (activatedFilter){
-            case 'ΕΝΕΡΓΑ':  filteredFeatures = geoData.features.filter(f => f.properties?.DeletedAt ===null);
-            break;
-            case 'ΔΙΕΓΡΑΜΜΕΝΑ': filteredFeatures = geoData.features.filter(f => f.properties?.DeletedAt !==null);
-            break;
+            case 'ΕΝΕΡΓΑ':
+                filteredFeatures = geoData.features.filter(f => f.properties?.DeletedAt === null);
+                break;
+            case 'ΔΙΕΓΡΑΜΜΕΝΑ':
+                filteredFeatures = geoData.features.filter(f => f.properties?.DeletedAt !== null);
+                break;
             case "ΟΛΑ":
                 break;
         }
-                //νεο object GeoJSON με τα φιλτραρισμένα features
+        //νεο object GeoJSON με τα φιλτραρισμένα features
         displayedGeoData = {
             ...geoData, // spread operator για να κρατήσουμε τα υπόλοιπα properties
             features: filteredFeatures
-                };
+        };
     }
+
+    // ΠΙΝΑΚΑΣ JOBS
+    const rows = displayedGeoData?.features.map(f => f.properties as JobDataProps) || [];
+
+    // sorting : επιλεγμένο row πρώτο
+    const sortedRows = selectedJobId
+        ? [
+            ...rows.filter(r => r.JobId === selectedJobId),  //επιλεγμένο πρώτο
+            ...rows.filter(r => r.JobId !== selectedJobId)   //υπόλοιπα μετά
+          ]
+        : rows;
+
+    //columns
+    const columns: GridColDef[] = [
+        { field: 'JobId', headerName: 'Job ID', width: 80 },
+        { field: 'ProjectName', headerName: 'Μελέτη', width: 150 },
+        { field: 'OriginalFile', headerName: 'Original File', width: 180 },
+        { field: 'CroppedFile', headerName: 'Cropped File', width: 180 },
+        { field: 'Area', headerName: 'Εμβαδόν (τ.μ.)', width: 130, type: 'number' },
+        { field: 'GenAIModel', headerName: 'Μοντέλο', width: 120 },
+        { field: 'PromptName', headerName: 'Prompt', width: 150 },
+        { field: 'Username', headerName: 'Χρήστης', width: 120 },
+        { field: 'JobStatus', headerName: 'Status', width: 100 },
+        { field: 'DeletedAt',headerName: 'Διαγραφή',width: 150},
+        {
+            field: 'actions',
+            headerName: 'Ενέργειες',
+            width: 80,
+            sortable: false,
+            renderCell: (params) => (
+                <IconButton
+                    color="error"
+                    size="small"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        if (params.row.JobId) handleDeleteJob(params.row.JobId);
+                    }}
+                    disabled={params.row.DeletedAt !== null}
+                >
+                    <DeleteIcon fontSize="small" />
+
+                </IconButton>
+            ),
+        },
+    ];
+
+    // υπολογισμός bounds για zoom (από τα αρχικά δεδομένα για να μην αλλάζει το zoom με το φίλτρο)
+    const bounds = geoData ? L.geoJSON(geoData).getBounds() : undefined;
 
     if (loading) {
         return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', height: '100vh', alignItems: 'center' }}>
                 <CircularProgress />
             </Box>
         );
@@ -97,47 +186,37 @@ const ProjectMapPage = () => {
         );
     }
 
-    if (!geoData || !geoData.features || geoData.features.length === 0) {
-        return (
-            <Box sx={{ p: 3 }}>
-                <Typography>Δεν βρέθηκαν δεδομένα για αυτό το project.</Typography>
-            </Box>
-        );
-    }
-
     return (
-        <>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, p: 2 }}>
+        <Box sx={{ p: 2, height: '90vh', display: 'flex', flexDirection: 'column', gap: 2, overflow: 'hidden' }}>
+            {/* Header: Φίλτρο + Export */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', flexShrink: 0 }}>
+                <FormControl size="small" sx={{ minWidth: 200 }}>
+                    <Select
+                        value={activatedFilter}
+                        onChange={(e) => setActivatedFilter(e.target.value as 'ΕΝΕΡΓΑ' | 'ΔΙΕΓΡΑΜΜΕΝΑ' | 'ΟΛΑ')}
+                    >
+                        <MenuItem value="ΟΛΑ">ΟΛΑ</MenuItem>
+                        <MenuItem value="ΕΝΕΡΓΑ">ΕΝΕΡΓΑ</MenuItem>
+                        <MenuItem value="ΔΙΕΓΡΑΜΜΕΝΑ">ΔΙΕΓΡΑΜΜΕΝΑ</MenuItem>
+                    </Select>
+                </FormControl>
+                <Button variant="contained" color="secondary" onClick={handleExportSHP}>
+                    ΕΞΑΓΩΓΗ SHP
+                </Button>
+            </Box>
 
-            {/*ΦΙΛΤΡΟ*/}
-            <FormControl>
-                <Select
-                    value={activatedFilter}
-                    onChange={(e) => setActivatedFilter(e.target.value as 'ΕΝΕΡΓΑ' | 'ΔΙΕΓΡΑΜΜΕΝΑ' | 'ΟΛΑ')}>
+            {/*ΠΙΝΑΚΑΣ DATA*/}
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1, minHeight: 0 }}>
 
-                    <MenuItem value="ΟΛΑ">ΟΛΑ</MenuItem>
-                    <MenuItem value="ΕΝΕΡΓΑ">ΕΝΕΡΓΑ</MenuItem>
-                    <MenuItem value="ΔΙΕΓΡΑΜΜΕΝΑ">ΔΙΕΓΡΑΜΜΕΝΑ</MenuItem>
-                </Select>
-            </FormControl>
-
-            <Button
-                variant="contained"
-                color='secondary'
-                onClick={handleExportSHP}>
-                ΕΞΑΓΩΓΗ SHP
-            </Button>
-        </Box>
-
-            <Box sx={{ height: '77vh', border: '2px solid', borderColor: 'primary.main', borderRadius: 2 }}>
                 {/*ΧΑΡΤΗΣ MAP CONTAINER ΤΟΥ LEAFLET*/}
-                <MapContainer
-                    style={{ height: '100%', width: '100%' }}
-                    bounds={bounds}
-                    boundsOptions={{ padding: [50, 50], maxZoom: 30 }}
-                >
-                    {/* Layer Control - Radio buttons για basemaps */}
-                    <LayersControl position="topright">
+                <Box sx={{ height: '60%', border: '1px solid', borderRadius: 1 }}>
+                    <MapContainer
+                        style={{ height: '100%', width: '100%' }}
+                        bounds={bounds}
+                        boundsOptions={{ padding: [50, 50], maxZoom: 30 }}
+                    >
+                        {/* Layer Control - Radio buttons για basemaps */}
+                        <LayersControl position="topright">
 
                         {/*GOOGLE SATELLITE*/}
                         <LayersControl.BaseLayer checked name="Google Satellite">
@@ -161,65 +240,61 @@ const ProjectMapPage = () => {
                         </LayersControl.BaseLayer>
                     </LayersControl>
 
-                    {/* Αν υπάρχουν δεδομένα για εμφάνιση, τότε σχεδίασε το GeoJSON layer */}
-                    {displayedGeoData && (
-                        <GeoJSON
-                            key={activatedFilter} //force rerender https://dev.to/malapashish/mastering-react-re-renders-the-key-prop-hack-you-need-to-know-17hh
-                            data={displayedGeoData}
-                            style={{
-                                color: '#ff00ff',
-                                weight: 4,
-                                fillOpacity: 0.1
-                            }}
-                            //https://leafletjs.com/reference.html#geojson-resetstyle
-                            onEachFeature={(feature, layer) => {
-                                layer.on('click', (e) => {
-                                    L.DomEvent.stopPropagation(e) // Σταματά το event να φτάσει στο map (οχι e.stopPropagation does not exist σφαλμα. βλ. stopPropagation(<DOMEvent> ev) στο documentation)
-                                    setSelectedJob(feature.properties);
-                                });
-                            }}
-                        />
-                    )}
+                        {/* Αν υπάρχουν δεδομένα για εμφάνιση, τότε σχεδίασε το GeoJSON layer */}
+                        {displayedGeoData && (
+                            <GeoJSON
+                                key={activatedFilter}
+                                data={displayedGeoData}
+                                style={(feature) => {
+                                    const isSelected = feature?.properties?.JobId === selectedJobId;
+                                    const isDeleted = feature?.properties?.DeletedAt !== null;
+                                    return {
+                                        color: isSelected ? '#FFFF00' : (isDeleted ? '#d32f2f' : '#ff00ff'), //κίτρινο, κόκκινο, magenta
+                                        weight: isSelected ? 5 : 2,
+                                        fillOpacity: 0.1
+                                    };
+                                }}
+                                //https://leafletjs.com/reference.html#geojson-resetstyle
+                                onEachFeature={(feature, layer) => {
+                                    layer.on('click', (e) => {
+                                        L.DomEvent.stopPropagation(e); // Σταματά το event να φτάσει στο map (οχι e.stopPropagation does not exist σφαλμα. βλ. stopPropagation(<DOMEvent> ev) στο documentation)
+                                        setSelectedJobId(feature.properties?.JobId || null);
+                                    });
+                                }}
+                            />
+                        )}
 
-                    {/* Handler για να κλείνει το info box όταν κάνεις click έξω από polygon */}
-                    <MapClickHandler onMapClick={() => setSelectedJob(null)} />
+                        {/* Map click handler */}
+                        <MapClickHandler onMapClick={() => setSelectedJobId(null)} />
 
-                    {/* Σταθερός πίνακας πληροφοριών */}
-                    {selectedJob && (
-                        <Box
-                            sx={{
-                                position: 'absolute',
-                                bottom: 15,
-                                left: 15,
-                                bgcolor: '#F2DADA',
-                                px: 1,
-                                py: 1,
-                                zIndex: 1000, //για να κάτσει πανω απο τον χάρτη
-                            }}
-                        >
-                            <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.main', mb: 1 }}>
-                                JobId:{selectedJob.JobId}
-                            </Typography>
+                        {/* Zoom to selected feature */}
+                        <ZoomToFeature id={selectedJobId} data={displayedGeoData} />
+                    </MapContainer>
+                </Box>
 
-                            {/*ΠΙΝΑΚΑΣ ΔΕΔΟΜΕΝΩΝ ΑΠΟ GEOJSON*/}
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 2 }}>
-                                <Typography>Μελέτη: {selectedJob.ProjectName || '-'}</Typography>
-                                <Typography>Εμβαδόν: {selectedJob.Area || '-'} τ.μ.</Typography>
-                                <Typography>Original File: {selectedJob.OriginalFile || '-'}</Typography>
-                                <Typography>Cropped File: {selectedJob.CroppedFile || '-'}</Typography>
-                                <Typography>Μοντέλο: {selectedJob.GenAIModel || '-'}</Typography>
-                                <Typography>Prompt: {selectedJob.PromptName || '-'}</Typography>
-                                <Typography>Χρήστης: {selectedJob.Username || '-'}</Typography>
-                                <Typography>Διαγραφή: {selectedJob.DeletedAt || '-'}</Typography>
-                                <Typography>Status: {selectedJob.JobStatus || '-'}</Typography>
-                            </Box>
-                        </Box>
-                    )}
-                </MapContainer>
+                {/*DATAGRID JOBS*/}
+                <Box sx={{ height: '40%', border: '1px solid', borderRadius: 1 }}>
+                    <DataGrid
+                        sx={{
+                            '& .selected-row': {
+                                backgroundColor: '#769dbd !important',
+                            },
+                            '& .MuiDataGrid-row.selected-row:hover': {
+                                backgroundColor: '#769dbd !important',
+                            },
+                        }}
+                        rows={sortedRows}
+                        columns={columns}
+                        getRowId={(row) => row.JobId!}
+                        onRowClick={(params) => setSelectedJobId(params.row.JobId || null)}
+                        getRowClassName={(params) => params.id === selectedJobId ? 'selected-row' : ''}
+                        disableRowSelectionOnClick
+                        hideFooterPagination
+                    />
+                </Box>
             </Box>
-        </>
+        </Box>
     );
 };
-
 
 export default ProjectMapPage;
