@@ -14,7 +14,7 @@ export const keycloak = new Keycloak({
 });
 
 export const initOptions = {
-    onLoad: 'check-sso',                      // αν υπάρχει ήδη session
+    onLoad: 'login-required',
     flow: 'standard',                         // openID standard flow
     pkceMethod: 'S256',                       // για να μην κλαπεί το token
     silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`, //το html του silent sso check
