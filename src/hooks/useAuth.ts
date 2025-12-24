@@ -26,7 +26,7 @@ const useAuth = () => {
     //USER LOGIN Keycloak.login
     const login = useCallback(() => { //callback για να μη καλεί ξανά το function σε κάθε render, παρά μόνο αν αλλάξει το instance
         keycloak.login({
-            redirectUri: 'http://localhost:5173/', //αν οκ redirect
+            redirectUri: window.location.origin, //αν οκ redirect dev και production
         });
     }, [keycloak]);
 
