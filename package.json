@@ -21,7 +21,7 @@
     "@tailwindcss/vite": "^4.1.16",
     "@types/proj4leaflet": "^1.0.12",
     "axios": "^1.13.2",
-    "keycloak-js": "^26.2.1",
+    "keycloak-js": "^25.0.0",
     "leaflet": "^1.9.4",
     "pdfjs-dist": "^5.4.296",
     "react": "^19.1.1",
