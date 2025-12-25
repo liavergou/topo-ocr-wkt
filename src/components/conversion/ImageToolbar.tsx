@@ -30,7 +30,7 @@ const ImageToolbar = ({
             <div className="flex flex-col gap-4 p-4 bg-gray-500 rounded">
 
                 {/*ΠΆΝΩ ΣΕΙΡΑ*/}
-                <div className="flex items-center justify-center gap-4">
+                <div className="flex items-center justify-center gap-4 flex-wrap">
 
                     {/*    /!*ZOOM*!/*/}
                     {/*    <div className="flex items-center gap-2">*/}
