@@ -1,5 +1,5 @@
 import type {Coordinate, CoordinatesTableProps} from "@/types";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {TextField} from "@mui/material";
 
 
@@ -48,6 +48,10 @@ import {TextField} from "@mui/material";
         };
 
         const [text, setText] = useState(() => coordinatesToText(coordinates)); //οχι το state στον parent μονο. προβλημα με συνεχες rerender
+        //fix για την επαναφορά συντεταγμένων. όταν αλλαζει το coordinates να ενημερώνει το text
+        useEffect(() => {
+            setText(coordinatesToText(coordinates));
+        }, [coordinates]);
 
         return(
         <>
