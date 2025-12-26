@@ -74,7 +74,7 @@ export type ImageToolbarProps = {
     onUpload: () => void;
 }
 
-//Το react-cropper αποθηκευει το ConversionJobsPage.js instance στο ReactCropperElement.cropper. cropperRef.current?.cropper?.rotate()
+//Το react-cropper αποθηκευει το ConversionJobPage.js instance στο ReactCropperElement.cropper. cropperRef.current?.cropper?.rotate()
 //https://www.jsdocs.io/package/react-cropper#Cropper
 //https://github.com/react-cropper/react-cropper
 export type ImageDisplayProps = {
@@ -99,6 +99,9 @@ export type UploadJobResponse={
     status: JobStatus; //καλύτερα
     errorMessage: string;
     coordinates?: Coordinate[];
+    projectId: number,
+    promptId: number,
+    deletedAt?: string | null;
 }
 
 export type Coordinate = {
@@ -113,6 +116,7 @@ export type JobStatus = 'Processing'|'Completed'|'Failed';
 //props του OCR Result
 export type CoordinatesResultProps = {
     jobId:number;
+    projectId: number;
     initialCoordinates: Coordinate[];
     onDelete?: () => void;
 };

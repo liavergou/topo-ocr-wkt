@@ -7,7 +7,7 @@ import CoordinatesTable from "@/components/map/CoordinatesTable.tsx";
 import {updateConversionJob} from "@/services/api.jobs.ts";
 import {getErrorMessage} from "@/utils/errorHandler.ts";
 
-const OcrResult = ({ initialCoordinates ,jobId, onDelete }: CoordinatesResultProps) => {
+const OcrResult = ({ initialCoordinates ,jobId, projectId, onDelete }: CoordinatesResultProps) => {
 
     const [coordinates, setCoordinates] = useState<Coordinate[]>(initialCoordinates); //ΣΥΝΤΕΤΑΓΜΕΝΕΣ προσοχή source of truth για να το δώσει στα children. αλλάζει στο onChange των children
     const [area, setArea] = useState(0); //ΕΜΒΑΔΟΝ
@@ -31,7 +31,7 @@ const OcrResult = ({ initialCoordinates ,jobId, onDelete }: CoordinatesResultPro
 
     const handleSave = async () => {
         try{
-            await updateConversionJob(jobId,{coordinates:coordinates});
+            await updateConversionJob(projectId,jobId,{coordinates:coordinates});
             alert("Οι συντεταγμένες ενημερώθηκαν επιτυχώς")
         }catch (err){
             console.error("Error updating coordinates:", err);

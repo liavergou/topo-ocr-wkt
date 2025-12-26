@@ -1,298 +1,331 @@
-import UploadArea from "../conversion/UploadArea.tsx";
-import {useState, useEffect, useRef} from "react";
-import ImageToolbar from "../conversion/ImageToolbar.tsx";
-import ImageDisplay from "../conversion/ImageDisplay.tsx";
-import type {Prompt} from '@/schemas/prompts.ts'
-import {getPrompts} from "@/services/api.prompts.ts";
-import {getErrorMessage} from "@/utils/errorHandler.ts";
-import type {ReactCropperElement} from 'react-cropper';
-import {useParams} from "react-router-dom";
-import {deleteConversionJob, uploadImage} from "@/services/api.jobs.ts";
-import {Backdrop, CircularProgress} from "@mui/material";
-import type {Coordinate} from "@/types.ts";
-import OcrResult from "@/components/conversion/OcrResult.tsx";
-
-// import * as pdfjsLib from 'pdfjs-dist';
-// Το PDF.js χρησιμοποιεί έναν "Web Worker" για να μην "παγώνει" το UI κατά την επεξεργασία.
-//είναι στα Modules.
-//https://www.youtube.com/watch?v=zbL2Z4ZhLlo STATES και για multipage
+import { useEffect, useState, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
+import { Box, Typography, CircularProgress, FormControl, Select, MenuItem, IconButton, Button } from '@mui/material';
+import { MapContainer, TileLayer, WMSTileLayer, LayersControl, GeoJSON, useMapEvents, useMap } from 'react-leaflet';
+import type { FeatureCollection } from 'geojson'; // npm package με type definitions για GeoJSON
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import { exportSHPProjectGeoserverJobs, getProjectGeoserverJobs } from '@/services/api.projects';
+import { deleteConversionJob } from "@/services/api.jobs";
+import { getErrorMessage } from '@/utils/errorHandler';
+import { DataGrid, type GridColDef } from "@mui/x-data-grid";
+import DeleteIcon from "@mui/icons-material/Delete";
+import type { JobDataProps } from "@/types.ts";
+import {useNavigate} from "react-router-dom";
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
 
 const ConversionJobsPage = () => {
+    const { projectId } = useParams<{ projectId: string }>(); //απο το project id του url
+    const [geoData, setGeoData] = useState<FeatureCollection | null>(null); //state για τα GeoJSON δεδομένα. τύπος FeatureCollection
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [selectedJobId, setSelectedJobId] = useState<number | null>(null); // Επιλεγμένο job για προβολή
+    const [activatedFilter, setActivatedFilter] = useState<'ΕΝΕΡΓΑ' | 'ΔΙΕΓΡΑΜΜΕΝΑ' | 'ΟΛΑ'>('ΟΛΑ'); // για το φίλτρο στα ενεργά/διεγραμμενα
+    const navigate = useNavigate();
 
-    //****STATE MANAGEMENT*****
-    const [isDragging, setIsDragging] = useState(false);
-    const [showToolbar, setShowToolbar] = useState(false);
-    const [image, setImage] = useState<string>(''); //για να κρατήσει το url της εικόνας που εχει ανέβει
-    const [fileName, setFileName] = useState<string>(''); //αρχικό
+    // Data loading με useCallback για να μην κανει loop στο render μετα το useEffect
+    const loadData = useCallback(async () => {
+        if (!projectId) return;
 
-    const [prompts, setPrompts] = useState<Prompt[]>([]); //τα prompts από το api
-    const [selectedPromptId, setSelectedPromptId] = useState<number | null>(null); //το id του selected
-
-    const [isCropping, setIsCropping] = useState(false); //οταν crop mode true αλλιως false
-
-    const cropperRef = useRef<ReactCropperElement>(null);
-
-    const {projectId} = useParams(); //πιάνουμε το projectId απο το url
-    const [isUploading, setIsUploading] = useState(false); //για mui elements. Backdrop https://mui.com/material-ui/react-backdrop/ The Backdrop component narrows the user's focus to a particular element on the screen.
-
-    const [uploadedCoordinates, setUploadedCoordinates] = useState<Coordinate[]>([]);
-    const [uploadedJobId, setUploadedJobId] = useState<number | null>(null);
-
-    useEffect(() => {
-        getPrompts()
-            .then((data) => {
-                setPrompts(data);
-
-                const prevPromptId = localStorage.getItem("lastPromptId");
-                if (prevPromptId && data.some(p => p.id === Number(prevPromptId))) //αν υπάρχει τιμή στο local storage και είναι ακόμα υπαρκτή, προσοχη ειναι text να γινει Number
-                {
-                    setSelectedPromptId(Number(prevPromptId));
-                } else if (data.length > 0) {
-                    setSelectedPromptId(data[0].id);
-                }
-            })
-        .catch((err) => {
-            console.error("Error loading prompts:", err);
-            alert(getErrorMessage(err));
-        });
-        },[]);
-
-    //memory management προσοχη - https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Schemes/blob ****To release an object URL, call revokeObjectURL().
-    useEffect(() => {
-        return () => {
-            if (image && image.startsWith("blob:")) //react dev tools στο hooks στο ConversionJobsPage component είναι "blob:http://localhost:5173/147bfe22-9e8e-4063-93e5-3a0fa9c7dfea"
-            URL.revokeObjectURL(image);
-        };
-    }, [image]);
-
-
-    const handleFileChange = (file: File) => {
-        setImage(URL.createObjectURL(file)); //αποθηκευω στη μνήμη το url του αρχείου https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL_static
-        setFileName(file.name);
-        setShowToolbar(true); //για να ενεργοποιήσει το conditional rendering για την εμφάνιση της εικόνας
-    }
-
-
-    const handlePromptChange = (promptId:number)=>
-    {
-        setSelectedPromptId(promptId);
-        localStorage.setItem("lastPromptId", String(promptId));
-    }
-
-    const handleClearAll = ()=>{
-        setImage('');
-        setShowToolbar(false);
-        setFileName('');
-        setUploadedCoordinates([]);
-        setUploadedJobId(null);
-    }
-
-
-    // const handleZoomIn = ()=> cropperRef.current?.cropper?.zoom(0.1);
-    // const handleZoomOut =()=> cropperRef.current?.cropper?.zoom(-0.1);
-    const handleRotateLeft =()=> cropperRef.current?.cropper?.rotate(-90);
-    const handleRotateRight =()=> cropperRef.current?.cropper?.rotate(90);
-
-    const handleReset =()=> {
-        cropperRef.current?.cropper?.reset();
-        setIsCropping(false);
-    }
-
-    const handleStartCrop =()=> {
-        setIsCropping(true);
-        cropperRef.current?.cropper?.setDragMode('crop');
-    }
-
-    const handleCancelCrop =()=> {
-        setIsCropping(false);
-        const cropper = cropperRef.current?.cropper;
-        if (cropper){
-            cropper.clear(); //αφαιρεί το selection box
-            cropper.setDragMode('move'); //ξαναπάει σε move mode
-        }
-    };
-
-    //εχω το cropper instance, καλώ το getCroppedCanvas ->μετατροπή σε Blob canvas.toBlob
-    const getCropperBlob = (): Promise<Blob | null>=>{
-        return new Promise((resolve) => {
-            const cropper = cropperRef.current?.cropper;
-            if(!cropper){
-                resolve(null);
-                return;
-            }
-
-            const canvas = cropper.getCroppedCanvas();
-            if (!canvas){
-                resolve(null);
-                return;
-            }
-            canvas.toBlob((blob) => resolve(blob), 'image/jpeg',0.9);
-        });
-    };
-
-    //UPLOAD IMAGE HANDLER******
-    const handleUpload = async()=>{
-        try{
-            //έλεγχος promptId
-            if (selectedPromptId === null){
-                alert("Παρακαλούμε επιλέξτε το κατάλληλο Prompt από την προτεινόμενη λίστα")
-            }
-            //ελεγχος projectId
-            if (!projectId){
-                alert("Δεν βρέθηκε επιλεγμένο projectId")
-            }
-
-            //getCroppedBlob
-            setIsUploading(true);
-            const blob = await getCropperBlob();
-
-            //ελεγχος blob
-            if (!blob){
-                alert("Δεν βρέθηκε ο αποκομμένος πίνακας συντεταγμένων προς αποστολή")
-                setIsUploading(false);
-                return;
-            }
-
-            //UPLOAD
-            const result = await uploadImage({
-                imageFile: blob,
-                projectId: Number(projectId),
-                promptId: selectedPromptId!, //αναγκαστικά ! γιατι εχω κανει ήδη ελεγχο για null
-                fileName: fileName
-            });
-
-            if (result.status === 'Failed') {
-                setIsUploading(false);
-                alert(`OCR Failed: ${result.errorMessage || 'Unknown error'}`);
-                return;
-            }
-
-            if (!result.coordinates || result.coordinates.length === 0) {
-                setIsUploading(false);
-                alert('Δεν βρέθηκαν συντεταγμένες στην εικόνα');
-                return;
-            }
-
-            setUploadedJobId(result.id);
-            setUploadedCoordinates(result.coordinates);
-            setIsUploading(false);
-            alert(`Επιτυχής επεξεργασία! Βρέθηκαν ${result.coordinates.length} σημεία`);
-            handleCancelCrop();
-            // handleReset();
-
-            console.log("OCR Result:", result); //προσωρινα
-
-        } catch (err){
-            console.error ("Upload error:", err)
-            alert(getErrorMessage(err))
-            setIsUploading(false);
-            handleCancelCrop();
-            handleReset();
-        }
-    };
-
-    const handleDelete=async ()=>{
-        if(!uploadedJobId) return;
-        if (!confirm('Θέλετε να διαγράψετε την μετατροπή συντεταγμένων;')){
-            return;
-        }
         try {
-            await deleteConversionJob(uploadedJobId);
-            handleClearAll();
-            alert('Η εργασία διαγράφηκε επιτυχώς');
+            setLoading(true);
+            const data = await getProjectGeoserverJobs(Number(projectId));
+            setGeoData(data);
+            setError(null);
         } catch (err) {
-            console.error('Error deleting conversion job:', err);
+            console.error('Error loading GeoJSON:', err);
+            setError(getErrorMessage(err));
+        } finally {
+            setLoading(false);
+        }
+    }, [projectId]);
+
+
+    useEffect(() => {
+        loadData();
+    }, [loadData]);
+
+    const handleExportSHP = async () => {
+        try {
+            const blob = await exportSHPProjectGeoserverJobs(Number(projectId));
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `project_${projectId}`;
+            link.click();
+            window.URL.revokeObjectURL(url);
+        }catch(err){
+            alert(getErrorMessage(err))
+        }
+    };
+
+    const handleDeleteJob = async (jobId: number) => {
+        if (!confirm('Θέλετε να διαγράψετε αυτό το πολύγωνο;')) return;
+
+        try {
+            await deleteConversionJob(Number(projectId), jobId);
+            setSelectedJobId(null);
+            loadData(); //load data ξανα
+            alert('Το πολύγωνο διαγράφηκε επιτυχώς');
+        } catch (err) {
+            console.error('Error deleting job:', err);
             alert(getErrorMessage(err));
         }
     };
 
+    // για να κλείνει το info box όταν click έξω από polygon
+    function MapClickHandler({ onMapClick }: { onMapClick: () => void }) {
+        useMapEvents({
+            click: () => {
+                onMapClick();
+            }
+        });
+        return null;
+    }
+
+    // https://react-leaflet.js.org/docs/api-map/
+    function ZoomToFeature({ id, data }: { id: number | null, data: FeatureCollection | null }) {
+        const map = useMap();
+
+        useEffect(() => {
+            if (id && data) {
+                const feature = data.features.find(f => f.properties?.JobId === id);
+                if (feature) {
+                    const layer = L.geoJSON(feature);
+                    const bounds = layer.getBounds();
+                    if (bounds.isValid()) {
+                        map.fitBounds(bounds, { padding: [50, 50], maxZoom: 18 });
+                    }
+                }
+            }
+        }, [id, data, map]);
+
+        return null;
+    }
+
+    //φίλτρο για ενεργα/διεγραμμενα/ολα
+    let displayedGeoData: FeatureCollection | null = null; //για να μπορω να κανω reassign μετα
+
+    if (geoData) {
+        let filteredFeatures = geoData.features;
+        switch (activatedFilter){
+            case 'ΕΝΕΡΓΑ':
+                filteredFeatures = geoData.features.filter(f => f.properties?.DeletedAt === null);
+                break;
+            case 'ΔΙΕΓΡΑΜΜΕΝΑ':
+                filteredFeatures = geoData.features.filter(f => f.properties?.DeletedAt !== null);
+                break;
+            case "ΟΛΑ":
+                break;
+        }
+        //νεο object GeoJSON με τα φιλτραρισμένα features
+        displayedGeoData = {
+            ...geoData, // spread operator για να κρατήσουμε τα υπόλοιπα properties
+            features: filteredFeatures
+        };
+    }
+
+    // ΠΙΝΑΚΑΣ JOBS
+    const rows = displayedGeoData?.features.map(f => f.properties as JobDataProps) || [];
+
+    // sorting : επιλεγμένο row πρώτο
+    const sortedRows = selectedJobId
+        ? [
+            ...rows.filter(r => r.JobId === selectedJobId),  //επιλεγμένο πρώτο
+            ...rows.filter(r => r.JobId !== selectedJobId)   //υπόλοιπα μετά
+          ]
+        : rows;
+
+    //columns
+    const columns: GridColDef[] = [
+        { field: 'JobId', headerName: 'Κωδικός ocr', width: 80 },
+        { field: 'ProjectName', headerName: 'Μελέτη', width: 150 },
+        { field: 'OriginalFile', headerName: 'Αρχικό αρχείο', width: 180 },
+        { field: 'CroppedFile', headerName: 'Αποκομμένος πίνακας', width: 180 },
+        { field: 'Area', headerName: 'Εμβαδόν (τ.μ.)', width: 130, type: 'number' },
+        { field: 'GenAIModel', headerName: 'Μοντέλο', width: 120 },
+        { field: 'PromptName', headerName: 'Prompt', width: 150 },
+        { field: 'Username', headerName: 'Χρήστης', width: 120 },
+        { field: 'JobStatus', headerName: 'Κατάσταση', width: 100 },
+        { field: 'DeletedAt',headerName: 'Διαγραμμένο',width: 150},
+        {
+            field: 'actions',
+            headerName: 'Ενέργειες',
+            width: 120,
+            sortable: false,
+            renderCell: (params) => (
+                <>
+
+                <IconButton
+                    color="primary"
+                    size="small"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        if (params.row.JobId) {
+                            navigate(`/projects/${projectId}/conversion-jobs/${params.row.JobId}`);
+                        }
+                    }}
+                    disabled={params.row.DeletedAt !== null}
+                >
+                    <EditIcon fontSize="small" />
+                </IconButton>
+
+                <IconButton
+                    color="error"
+                    size="small"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        if (params.row.JobId) handleDeleteJob(params.row.JobId);
+                    }}
+                    disabled={params.row.DeletedAt !== null}
+                >
+                    <DeleteIcon fontSize="small" />
+
+                </IconButton>
+                </>
+            ),
+        },
+    ];
+
+    // υπολογισμός bounds για zoom (από τα αρχικά δεδομένα για να μην αλλάζει το zoom με το φίλτρο)
+    const bounds = geoData ? L.geoJSON(geoData).getBounds() : undefined;
+
+    if (loading) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', height: '100vh', alignItems: 'center' }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+    if (error) {
+        return (
+            <Box sx={{ p: 3 }}>
+                <Typography color="error">Σφάλμα: {error}</Typography>
+            </Box>
+        );
+    }
 
     return (
-        <>
-        <div className="w-full">
-            {/*conditional rendering*/}
-            {!showToolbar && (
-                <UploadArea
-                    onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+        <Box sx={{ p: 2, height: '90vh', display: 'flex', flexDirection: 'column', gap: 2, overflow: 'hidden' }}>
+            {/* Header: Φίλτρο + Export */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', flexShrink: 0 }}>
+                <FormControl size="small" sx={{ minWidth: 200 }}>
+                    <Select
+                        value={activatedFilter}
+                        onChange={(e) => setActivatedFilter(e.target.value as 'ΕΝΕΡΓΑ' | 'ΔΙΕΓΡΑΜΜΕΝΑ' | 'ΟΛΑ')}
+                    >
+                        <MenuItem value="ΟΛΑ">ΟΛΑ</MenuItem>
+                        <MenuItem value="ΕΝΕΡΓΑ">ΕΝΕΡΓΑ</MenuItem>
+                        <MenuItem value="ΔΙΕΓΡΑΜΜΕΝΑ">ΔΙΕΓΡΑΜΜΕΝΑ</MenuItem>
+                    </Select>
+                </FormControl>
 
-                    onDragLeave={(e) => { e.preventDefault(); setIsDragging(false); }}
+                <Button
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<AddIcon />}
+                    onClick={() => navigate(`/projects/${projectId}/conversion-jobs/new`)}
+                >
+                    ΝΕΑ ΕΡΓΑΣΙΑ
+                </Button>
 
-                    //FileList που περιέχουν files
-                    // για το drag n drop
-                    onDrop={(e) => {
-                        e.preventDefault();
-                        setIsDragging(false);
-                        const files = e.dataTransfer.files;
-                        if (files && files.length > 0) {
-                            handleFileChange(files[0])
-                        }
-                        // setShowToolbar(true);
+                <Button variant="contained" color="secondary" onClick={handleExportSHP}>
+                    ΕΞΑΓΩΓΗ SHP
+                </Button>
+            </Box>
 
-                    }}
-                    // για το file input
-                    onFileChange={(e) => {
-                        // e.preventDefault(); μονο για το drag. δεν χρειάζεται εδώ.
-                        const files = e.target.files;
-                        if (files && files.length > 0) {
-                            handleFileChange(files[0])
-                        }
+            {/*ΠΙΝΑΚΑΣ DATA*/}
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1, minHeight: 0 }}>
 
-                    }}
-                    isDragging={isDragging}
-                />
-            )}
+                {/*ΧΑΡΤΗΣ MAP CONTAINER ΤΟΥ LEAFLET*/}
+                <Box sx={{ height: '60%', border: '1px solid', borderRadius: 1 }}>
+                    <MapContainer
+                        style={{ height: '100%', width: '100%' }}
+                        bounds={bounds}
+                        boundsOptions={{ padding: [50, 50], maxZoom: 30 }}
+                    >
+                        {/* Layer Control - Radio buttons για basemaps */}
+                        <LayersControl position="topright">
 
-            {showToolbar && (
-                <div className={`grid gap-6 ${uploadedCoordinates.length > 0 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
-                    {/* Left Column - Image Display */}
-                    <div className="space-y-4">
-                        <ImageToolbar
-                            prompts={prompts}
-                            selectedPromptId={selectedPromptId}
-                            onPromptChange={handlePromptChange}
-                            onClearAll={handleClearAll}
-                            onRotateLeft={handleRotateLeft}
-                            onRotateRight={handleRotateRight}
-                            onReset={handleReset}
-                            onStartCrop={handleStartCrop}
-                            onCancelCrop={handleCancelCrop}
-                            isCropping={isCropping}
-                            onUpload={handleUpload}
-                        />
-                        <ImageDisplay
-                            src={image}
-                            cropperRef={cropperRef}
-                            dragMode={isCropping ? 'crop' : 'move'}
-                        />
-                    </div>
+                        {/*GOOGLE SATELLITE*/}
+                        <LayersControl.BaseLayer checked name="Google Satellite">
+                            <TileLayer
+                                url="https://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}"
+                                maxZoom={30}
+                            />
+                        </LayersControl.BaseLayer>
 
-                    {/* Right Column - OCR Results (conditional) */}
-                    {uploadedCoordinates.length > 0 && (
-                        <div>
-                            <OcrResult initialCoordinates={uploadedCoordinates}
-                            jobId={uploadedJobId!}
-                            onDelete={handleDelete}/>
-                            {/*! για το null*/}
-                        </div>
-                    )}
-                </div>
-            )}
-        </div>
+                        {/* ΕΚΧΑ Ορθοφωτοχάρτης */}
+                        <LayersControl.BaseLayer name="ΕΚΧΑ Ορθοφωτοχάρτης">
+                            <WMSTileLayer
+                                url="https://gis.ktimanet.gr/wms/wmsopen/wmsserver.aspx"
+                                maxZoom={30}
+                                maxNativeZoom={18}
+                                layers="ORTHOPHOTOS"
+                                format="image/png"
+                                transparent={true}
+                                crs={L.CRS.EPSG3857}
+                            />
+                        </LayersControl.BaseLayer>
+                    </LayersControl>
 
+                        {/* Αν υπάρχουν δεδομένα για εμφάνιση, τότε σχεδίασε το GeoJSON layer */}
+                        {displayedGeoData && (
+                            <GeoJSON
+                                key={activatedFilter}
+                                data={displayedGeoData}
+                                style={(feature) => {
+                                    const isSelected = feature?.properties?.JobId === selectedJobId;
+                                    const isDeleted = feature?.properties?.DeletedAt !== null;
+                                    return {
+                                        color: isSelected ? '#FFFF00' : (isDeleted ? '#d32f2f' : '#ff00ff'), //κίτρινο, κόκκινο, magenta
+                                        weight: isSelected ? 5 : 2,
+                                        fillOpacity: 0.1
+                                    };
+                                }}
+                                //https://leafletjs.com/reference.html#geojson-resetstyle
+                                onEachFeature={(feature, layer) => {
+                                    layer.on('click', (e) => {
+                                        L.DomEvent.stopPropagation(e); // Σταματά το event να φτάσει στο map (οχι e.stopPropagation does not exist σφαλμα. βλ. stopPropagation(<DOMEvent> ev) στο documentation)
+                                        setSelectedJobId(feature.properties?.JobId || null);
+                                    });
+                                }}
+                            />
+                        )}
 
-            {/*https://api.reactrouter.com/v7/functions/react_router.useLocation.html*/}
-            <Backdrop sx={{
-                color: '#fff',
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                zIndex: (theme) => theme.zIndex.drawer + 1,
-                backdropFilter: 'blur(2px)', // Adds a blur effect
-            }}
-                      open={isUploading}>
+                        {/* Map click handler */}
+                        <MapClickHandler onMapClick={() => setSelectedJobId(null)} />
 
-                <CircularProgress size={50}/>
+                        {/* Zoom to selected feature */}
+                        <ZoomToFeature id={selectedJobId} data={displayedGeoData} />
+                    </MapContainer>
+                </Box>
 
-            </Backdrop>
+                {/*DATAGRID JOBS*/}
+                <Box sx={{ height: '40%', border: '1px solid', borderRadius: 1 }}>
+                    <DataGrid
+                        sx={{
+                            '& .selected-row': {
+                                backgroundColor: '#769dbd !important',
+                            },
+                            '& .MuiDataGrid-row.selected-row:hover': {
+                                backgroundColor: '#769dbd !important',
+                            },
+                        }}
+                        rows={sortedRows}
+                        columns={columns}
+                        getRowId={(row) => row.JobId!}
+                        onRowClick={(params) => setSelectedJobId(params.row.JobId || null)}
+                        getRowClassName={(params) => params.id === selectedJobId ? 'selected-row' : ''}
+                        disableRowSelectionOnClick
+                        hideFooterPagination
+                    />
+                </Box>
+            </Box>
+        </Box>
+    );
+};
 
-        </>
-    )}
 export default ConversionJobsPage;

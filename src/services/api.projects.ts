@@ -55,13 +55,13 @@ export async function deleteProject(id: number): Promise<void> {
 
 //GET PROJECT-JOBS ΑΠΟ GEOSERVER /api/projects/{id}/jobs
 export async function getProjectGeoserverJobs(id:number): Promise<GeoJSON.FeatureCollection>{
-    const response = await apiService.get<GeoJSON.FeatureCollection>(`${PROJECTS_ENDPOINT}/${id}/jobs`);
+    const response = await apiService.get<GeoJSON.FeatureCollection>(`${PROJECTS_ENDPOINT}/${id}/conversion-jobs`);
     return response.data;
 }
 
 //GET GEOSERVER SHP EXPORT /api/{id}/shapefile
 export async function exportSHPProjectGeoserverJobs(id:number): Promise<Blob>{
-    const response = await apiService.get(`${PROJECTS_ENDPOINT}/${id}/jobs/shp`,{responseType: 'blob'})
+    const response = await apiService.get(`${PROJECTS_ENDPOINT}/${id}/conversion-jobs/shp`,{responseType: 'blob'})
     return response.data;
 
 }

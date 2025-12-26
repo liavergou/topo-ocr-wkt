@@ -1,10 +1,10 @@
 import apiService from "@/services/api.service.ts";
 import type {ConversionJobUpdate, UploadJobRequest, UploadJobResponse} from "@/types.ts";
 
-const JOBS_ENDPOINT = '/api/conversion-jobs';
+const JOBS_ENDPOINT = '/api/projects';
 
 
-//POST /api/conversion-jobs
+//POST /api/projects/{projectId}/conversion-jobs/new
 export async function uploadImage(request: UploadJobRequest): Promise<UploadJobResponse> {
     //συνθεση του FormData
     const formData = new FormData();
@@ -15,9 +15,8 @@ export async function uploadImage(request: UploadJobRequest): Promise<UploadJobR
     formData.append('ProjectId', String(request.projectId));
     formData.append('PromptId', String(request.promptId));
 
-    //POST /api/conversion-jobs
     const response = await apiService.post<UploadJobResponse>(
-        JOBS_ENDPOINT,
+        `${JOBS_ENDPOINT}/${request.projectId}/conversion-jobs/new`,
         formData,
         {
             headers: {
@@ -31,17 +30,29 @@ export async function uploadImage(request: UploadJobRequest): Promise<UploadJobR
 }
 
 
-//PUT /api/conversion-jobs/:id
+//PUT /api/projects/{projectId}/conversion-jobs/{jobId}
 export async function updateConversionJob(
-    id: number,
+    projectId: number,jobId: number,
     data: ConversionJobUpdate):Promise<UploadJobResponse>{
     const response = await apiService.put<UploadJobResponse>(
-        `${JOBS_ENDPOINT}/${id}`,data);
+        `${JOBS_ENDPOINT}/${projectId}/conversion-jobs/${jobId}`,data);
     return response.data;
 
 }
 
-//DELETE /api/conversion-jobs/:id
-export async function deleteConversionJob(id:number):Promise<void>{
-    await apiService.delete(`${JOBS_ENDPOINT}/${id}`);
+//DELETE /api/projects/{projectId}/conversion-jobs/{jobId}
+export async function deleteConversionJob(
+    projectId: number,jobId: number): Promise<void> {
+    await apiService.delete(
+        `${JOBS_ENDPOINT}/${projectId}/conversion-jobs/${jobId}`
+    );
+}
+
+//GET /api/projects/{projectId}/conversion-jobs/{jobId}
+export async function getConversionJob(
+    projectId: number,jobId: number): Promise<UploadJobResponse> {
+    const response = await apiService.get<UploadJobResponse>(
+        `${JOBS_ENDPOINT}/${projectId}/conversion-jobs/${jobId}`
+    );
+    return response.data;
 }

@@ -99,7 +99,7 @@ const ProjectsPage = () => {
                 <IconButton
                     size="small"
                     color="info"
-                    onClick={() => navigate(`/projects/${params.row.id}/jobs`)}
+                    onClick={() => navigate(`/projects/${params.row.id}/conversion-jobs`)}
                     title="Χάρτης"
                 >
                     <MapIcon fontSize="small" />

@@ -8,11 +8,11 @@ import UserPage from "@/components/pages/UserPage.tsx";
 import UsersPage from "@/components/pages/UsersPage.tsx";
 import ProjectsPage from "@/components/pages/ProjectsPage.tsx";
 import ProjectPage from "@/components/pages/ProjectPage.tsx";
-import ProjectMapPage from "@/components/pages/ProjectMapPage.tsx";
+import ConversionJobsPage from "@/components/pages/ConversionJobsPage.tsx";
 import PromptsPage from "@/components/pages/PromptsPage.tsx";
 import PromptPage from "@/components/pages/PromptPage.tsx";
 import SelectProjectPage from "@/components/pages/SelectProjectPage.tsx";
-import ConversionJobsPage from "@/components/pages/ConversionJobsPage.tsx";
+import ConversionJobPage from "@/components/pages/ConversionJobPage.tsx";
 import UserProjectsPage from "@/components/pages/UserProjectsPage.tsx";
 
 function App() {
@@ -27,7 +27,13 @@ function App() {
                             {/* Οι authenticated users */}
                             <Route index element={<HomePage />} />
                             <Route path="/select-project" element={<SelectProjectPage />} />
+                            {/*/!*map view*!/*/}
                             <Route path={"/projects/:projectId/conversion-jobs"} element={<ConversionJobsPage />}/>
+                            {/*/!*create*!/*/}
+                            <Route path={"/projects/:projectId/conversion-jobs/new"} element={<ConversionJobPage />}/>
+                            {/*/!*edit*!/*/}
+                            <Route path={"/projects/:projectId/conversion-jobs/:jobId"} element={<ConversionJobPage />}/>
+
 
                             {/*Admin και Manager μόνο*/}
                             <Route element={<ProtectedRoute roles={['Admin', 'Manager']} />}>
@@ -44,8 +50,6 @@ function App() {
                                 <Route path="/projects/new" element={<ProjectPage />} />
                                 {/*/!*edit*!/*/}
                                 <Route path="/projects/:projectId" element={<ProjectPage />} />
-                                {/*/!*map view*!/*/}
-                                <Route path="/projects/:projectId/jobs" element={<ProjectMapPage />} />
 
                                 <Route path="/prompts" element={<PromptsPage />} />
                                 {/*/!*create*!/*/}
