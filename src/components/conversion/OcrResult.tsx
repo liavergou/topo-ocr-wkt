@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Paper, Button } from '@mui/material';
+import { Box, Paper, Button, Typography } from '@mui/material';
 import MapPreview from "@/components/map/MapPreview.tsx";
 import type {Coordinate, CoordinatesResultProps} from '@/types.ts';
 import {calculatePolygonArea} from "@/utils/areaCalculator.ts";
@@ -63,6 +63,9 @@ const OcrResult = ({ initialCoordinates ,jobId, projectId, onDelete }: Coordinat
 
         {/*ΠΙΝΑΚΑΣ ΣΥΝΤΕΤΑΓΜΕΝΩΝ*/}
             <Paper variant="outlined">
+                <Typography variant="h6" sx={{ p: 2, pb: 1 }}>
+                    Κωδικός OCR: {jobId}
+                </Typography>
                 <CoordinatesTable
                     key={jobId} //key αναγνωριστικό του component. οταν αλλαζει το jobΙδ , η react κανει remount, καταστρεφει το παλιο component και δημιουργεί νέο με καινουριο state.
                     coordinates={coordinates}
