@@ -14,6 +14,7 @@ import type { JobDataProps } from "@/types.ts";
 import {useNavigate} from "react-router-dom";
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
+import useAuth from '@/hooks/useAuth';
 
 const ConversionJobsPage = () => {
     const { projectId } = useParams<{ projectId: string }>(); //απο το project id του url
@@ -23,6 +24,7 @@ const ConversionJobsPage = () => {
     const [selectedJobId, setSelectedJobId] = useState<number | null>(null); // Επιλεγμένο job για προβολή
     const [activatedFilter, setActivatedFilter] = useState<'ΕΝΕΡΓΑ' | 'ΔΙΕΓΡΑΜΜΕΝΑ' | 'ΟΛΑ'>('ΟΛΑ'); // για το φίλτρο στα ενεργά/διεγραμμενα
     const navigate = useNavigate();
+    const { hasAnyRole } = useAuth();
 
     // Data loading με useCallback για να μην κανει loop στο render μετα το useEffect
     const loadData = useCallback(async () => {
@@ -166,7 +168,6 @@ const ConversionJobsPage = () => {
                             navigate(`/projects/${projectId}/conversion-jobs/${params.row.JobId}`);
                         }
                     }}
-                    disabled={params.row.DeletedAt !== null}
                 >
                     <EditIcon fontSize="small" />
                 </IconButton>
@@ -222,19 +223,19 @@ const ConversionJobsPage = () => {
                     </Select>
                 </FormControl>
 
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    startIcon={<AddIcon />}
-                    onClick={() => navigate(`/projects/${projectId}/conversion-jobs/new`)}
-                >
-                    ΝΕΑ ΕΡΓΑΣΙΑ
-                </Button>
-
-                <Button variant="contained" color="secondary" onClick={handleExportSHP}>
-                    ΕΞΑΓΩΓΗ SHP
-                </Button>
+                {/*ΕΜΦΑΝΙΣΗ ΜΟΝΟ ADMIN MANAGER*/}
+                {hasAnyRole(['Admin', 'Manager']) && (
+                    <Button
+                        variant="contained"
+                        sx={{ bgcolor: 'primary.light' }}
+                        onClick={handleExportSHP}
+                    >
+                        ΕΞΑΓΩΓΗ SHP
+                    </Button>
+                )}
             </Box>
+
+
 
             {/*ΠΙΝΑΚΑΣ DATA*/}
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1, minHeight: 0 }}>
@@ -301,6 +302,17 @@ const ConversionJobsPage = () => {
                         {/* Zoom to selected feature */}
                         <ZoomToFeature id={selectedJobId} data={displayedGeoData} />
                     </MapContainer>
+                </Box>
+
+                <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 1 }}>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<AddIcon />}
+                        onClick={() => navigate(`/projects/${projectId}/conversion-jobs/new`)}
+                    >
+                        ΝΕΟ OCR
+                    </Button>
                 </Box>
 
                 {/*DATAGRID JOBS*/}
