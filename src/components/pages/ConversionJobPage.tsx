@@ -6,8 +6,8 @@ import type {Prompt} from '@/schemas/prompts.ts'
 import {getPrompts} from "@/services/api.prompts.ts";
 import {getErrorMessage} from "@/utils/errorHandler.ts";
 import type {ReactCropperElement} from 'react-cropper';
-import {useParams} from "react-router-dom";
-import {deleteConversionJob, uploadImage} from "@/services/api.jobs.ts";
+import {useParams,useNavigate} from "react-router-dom";
+import {deleteConversionJob, uploadImage, getConversionJob} from "@/services/api.jobs.ts";
 import {Backdrop, CircularProgress} from "@mui/material";
 import type {Coordinate} from "@/types.ts";
 import OcrResult from "@/components/conversion/OcrResult.tsx";
@@ -32,11 +32,14 @@ const ConversionJobPage = () => {
 
     const cropperRef = useRef<ReactCropperElement>(null);
 
-    const {projectId} = useParams(); //πιάνουμε το projectId απο το url
+    const {projectId, jobId} = useParams<{ projectId: string; jobId?: string }>(); //πιάνουμε το projectId και jobId απο το url
     const [isUploading, setIsUploading] = useState(false); //για mui elements. Backdrop https://mui.com/material-ui/react-backdrop/ The Backdrop component narrows the user's focus to a particular element on the screen.
 
     const [uploadedCoordinates, setUploadedCoordinates] = useState<Coordinate[]>([]);
     const [uploadedJobId, setUploadedJobId] = useState<number | null>(null);
+
+    const isEditMode = Boolean(jobId);
+    const navigate = useNavigate();
 
     useEffect(() => {
         getPrompts()
@@ -65,6 +68,36 @@ const ConversionJobPage = () => {
         };
     }, [image]);
 
+    // EDIT MODE
+    useEffect(() => {
+        if (isEditMode && projectId && jobId) {
+            const loadJob = async () => {
+                try {
+                    setIsUploading(true);
+                    const job = await getConversionJob(Number(projectId), Number(jobId));
+
+                    const imagePath = `${import.meta.env.VITE_API_BASE}/storage/images/Project_${projectId}/original/${job.originalFileName}`;
+
+                    setImage(imagePath);
+                    setShowToolbar(true);
+
+                    setUploadedCoordinates(job.coordinates || []);
+                    setUploadedJobId(job.id);
+                    setSelectedPromptId(job.promptId);
+
+                } catch (err) {
+                    console.error('Error loading job:', err);
+                    alert(getErrorMessage(err));
+                } finally {
+                    setIsUploading(false);
+                }
+            };
+            void loadJob(); //προσθηκη void γιατι ειναι async και επιστρέφει promise αλλα δεν κανω await.
+        }
+    }, [isEditMode, projectId, jobId]);
+
+
+
 
     const handleFileChange = (file: File) => {
         setImage(URL.createObjectURL(file)); //αποθηκευω στη μνήμη το url του αρχείου https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL_static
@@ -85,6 +118,7 @@ const ConversionJobPage = () => {
         setFileName('');
         setUploadedCoordinates([]);
         setUploadedJobId(null);
+        navigate(`/projects/${projectId}/conversion-jobs/new`);
     }
 
 
@@ -198,8 +232,15 @@ const ConversionJobPage = () => {
         }
         try {
             await deleteConversionJob(Number(projectId),uploadedJobId);
-            handleClearAll();
             alert('Η εργασία διαγράφηκε επιτυχώς');
+
+            if (isEditMode) {
+                navigate(`/projects/${projectId}/conversion-jobs`);
+            }else {
+                setUploadedCoordinates([]);
+                setUploadedJobId(null);
+            }
+
         } catch (err) {
             console.error('Error deleting conversion job:', err);
             alert(getErrorMessage(err));
@@ -211,7 +252,7 @@ const ConversionJobPage = () => {
         <>
         <div className="w-full">
             {/*conditional rendering*/}
-            {!showToolbar && (
+            {!showToolbar && !isEditMode && (
                 <UploadArea
                     onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
 
