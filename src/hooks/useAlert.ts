@@ -1,25 +1,23 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 export const useAlert = () => {
     const [success, setSuccess] = useState('');
     const [error, setError] = useState('');
 
-    const showSuccess = (msg: string) => {
+    const showSuccess = useCallback((msg: string) => {
         setSuccess(msg);
         setError('');
-    };
+    }, []);
 
-    const showError = (msg: string) => {
+    const showError = useCallback((msg: string) => {
         setError(msg);
         setSuccess('');
-    };
+    }, []);
 
-    const clear = () => {
+    const clear = useCallback(() => {
         setSuccess('');
         setError('');
-    };
-
-
+    }, []);
 
     return { success, error, showSuccess, showError, clear };
 };
