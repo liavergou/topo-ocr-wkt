@@ -124,6 +124,10 @@ const ConversionJobPage = () => {
         navigate(`/projects/${projectId}/conversion-jobs/new`);
     }
 
+    const handleBackToMap = () => {
+        navigate(`/projects/${projectId}/conversion-jobs`);
+    };
+
 
     // const handleZoomIn = ()=> cropperRef.current?.cropper?.zoom(0.1);
     // const handleZoomOut =()=> cropperRef.current?.cropper?.zoom(-0.1);
@@ -285,6 +289,7 @@ const ConversionJobPage = () => {
 
                     }}
                     isDragging={isDragging}
+                    onBackToMap={handleBackToMap}
                 />
             )}
 
@@ -304,6 +309,7 @@ const ConversionJobPage = () => {
                             onCancelCrop={handleCancelCrop}
                             isCropping={isCropping}
                             onUpload={handleUpload}
+                            onBackToMap={handleBackToMap}
                         />
                         <ImageDisplay
                             src={image}

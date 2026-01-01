@@ -1,4 +1,6 @@
 import type { UploadAreaProps } from '@/types.ts';
+import Button from '@mui/material/Button';
+import MapIcon from '@mui/icons-material/Map';
 //https://claritydev.net/blog/react-typescript-drag-drop-file-upload-guide
 //https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/file
 
@@ -9,11 +11,12 @@ const UploadArea = ({
                         , onDrop
                         ,onFileChange
                         , isDragging
+                        , onBackToMap
                     }: UploadAreaProps) => {
     return (
 
         <div
-            className={`flex items-center justify-center border-8 border-dashed rounded-xl p-8 min-h-[400px] mt-20
+            className={`relative flex items-center justify-center border-8 border-dashed rounded-xl p-8 min-h-[400px] mt-20
           ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-700 bg-gray-100'}`}
             //conditional για αλλαγη χρώματος στο drag πανω απο το element
 
@@ -22,6 +25,19 @@ const UploadArea = ({
             onDrop={onDrop}            // Ενεργοποιείται όταν αφήνουμε το αρχείο
 
         >
+            {/* Back button - top right */}
+            <div className="absolute top-4 right-4">
+                <Button
+                    onClick={onBackToMap}
+                    variant="text"
+                    color="primary"
+                    size="medium"
+                    startIcon={<MapIcon />}
+                    sx={{ color: 'gray' }}
+                >
+                    ΕΠΙΣΤΡΟΦΗ
+                </Button>
+            </div>
 
             <div className="text-center">
                 <p className="mt-2 mb-5 text-gray-500 font-semibold text-2xl">

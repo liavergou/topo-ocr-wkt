@@ -3,6 +3,7 @@ import Button from '@mui/material/Button';
 import {FormControl, IconButton, MenuItem, Select} from "@mui/material";
 import RotateLeftOutlinedIcon from '@mui/icons-material/RotateLeftOutlined';
 import RotateRightOutlinedIcon from '@mui/icons-material/RotateRightOutlined';
+import MapIcon from '@mui/icons-material/Map';
 import type {ImageToolbarProps} from '@/types.ts';
 //https://mui.com/material-ui/api/icon-button/#props
 //area-label είναι accessibility attribute
@@ -21,6 +22,7 @@ const ImageToolbar = ({
                           onCancelCrop,
                           onUpload,
                           isCropping,
+                          onBackToMap,
                       }: ImageToolbarProps
 ) => {
 
@@ -100,14 +102,14 @@ const ImageToolbar = ({
 
 
                 {/*Η CROP ΚΟΥΜΠΙ Ή CANCEL*/}
-                <div className="flex items-center justify-center px-8 w-full gap-4">
+                <div className="relative flex items-center justify-center px-8 w-full gap-4">
                     {!isCropping ? (
                         <Button
                             onClick={onStartCrop}
                             variant="contained"
                             color="secondary"
                             size="large"
-                            sx={{width:'50%'}}
+                            sx={{minWidth: '300px'}}
                         >Crop</Button>
                     ) : (
                         <>
@@ -116,7 +118,7 @@ const ImageToolbar = ({
                             variant="outlined"
                             color='secondary'
                             size="large"
-                            sx={{width:'25%'}}
+                            sx={{minWidth: '150px'}}
                         >Cancel Crop
 
                         </Button>
@@ -126,13 +128,27 @@ const ImageToolbar = ({
                             variant="contained"
                             color='secondary'
                             size="large"
-                            sx={{width:'25%'}}
+                            sx={{minWidth: '150px'}}
                         >UPLOAD
 
                         </Button>
                         </>
 
                     )}
+
+                    {/*ΕΠΙΣΤΡΟΦΗ*/}
+                    <div className="absolute right-8">
+                        <Button
+                            onClick={onBackToMap}
+                            variant="text"
+                            color="primary"
+                            size="medium"
+                            startIcon={<MapIcon />}
+                            sx={{ color: 'lightgray' }}
+                        >
+                            ΕΠΙΣΤΡΟΦΗ
+                        </Button>
+                    </div>
                 </div>
 
 

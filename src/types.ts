@@ -17,6 +17,7 @@ export type UploadAreaProps = {
     onDrop: (e: React.DragEvent<HTMLDivElement>) => void;
     onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     isDragging: boolean;
+    onBackToMap: () => void;
 };
 
 //η πληροφορία απο token extracted
@@ -72,6 +73,7 @@ export type ImageToolbarProps = {
     selectedPromptId: number | null;
     onPromptChange: (promptId: number) =>void;
     onUpload: () => void;
+    onBackToMap: () => void;
 }
 
 //Το react-cropper αποθηκευει το ConversionJobPage.js instance στο ReactCropperElement.cropper. cropperRef.current?.cropper?.rotate()
