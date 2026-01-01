@@ -40,7 +40,7 @@ const ConversionJobPage = () => {
     const [uploadedCoordinates, setUploadedCoordinates] = useState<Coordinate[]>([]);
     const [uploadedJobId, setUploadedJobId] = useState<number | null>(null);
 
-    const isEditMode = Boolean(jobId);
+    const isEdit = Boolean(jobId);
     const navigate = useNavigate();
     const { success, error, showSuccess, showError, clear } = useAlert();
 
@@ -73,7 +73,7 @@ const ConversionJobPage = () => {
 
     // EDIT MODE
     useEffect(() => {
-        if (isEditMode && projectId && jobId) {
+        if (isEdit && projectId && jobId) {
             const loadJob = async () => {
                 try {
                     setIsUploading(true);
@@ -97,7 +97,7 @@ const ConversionJobPage = () => {
             };
             void loadJob(); //προσθηκη void γιατι ειναι async και επιστρέφει promise αλλα δεν κανω await.
         }
-    }, [isEditMode, projectId, jobId, showError]);
+    }, [isEdit, projectId, jobId, showError]);
 
 
 
@@ -241,7 +241,7 @@ const ConversionJobPage = () => {
             await deleteConversionJob(Number(projectId),uploadedJobId);
             showSuccess('Η εργασία διαγράφηκε επιτυχώς');
 
-            if (isEditMode) {
+            if (isEdit) {
                 navigate(`/projects/${projectId}/conversion-jobs`);
             }else {
                 setUploadedCoordinates([]);
@@ -261,7 +261,7 @@ const ConversionJobPage = () => {
             <AlertDisplay success={success} error={error} onClose={clear} />
 
             {/*conditional rendering*/}
-            {!showToolbar && !isEditMode && (
+            {!showToolbar && !isEdit && (
                 <UploadArea
                     onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
 
@@ -310,6 +310,7 @@ const ConversionJobPage = () => {
                             isCropping={isCropping}
                             onUpload={handleUpload}
                             onBackToMap={handleBackToMap}
+                            isEdit={isEdit}
                         />
                         <ImageDisplay
                             src={image}

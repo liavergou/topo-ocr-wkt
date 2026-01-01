@@ -23,6 +23,7 @@ const ImageToolbar = ({
                           onUpload,
                           isCropping,
                           onBackToMap,
+                          isEdit,
                       }: ImageToolbarProps
 ) => {
 
@@ -101,7 +102,8 @@ const ImageToolbar = ({
                 </div>
 
 
-                {/*Η CROP ΚΟΥΜΠΙ Ή CANCEL*/}
+                {/*Η CROP ΚΟΥΜΠΙ Ή CANCEL (σε new mode)*/}
+                {!isEdit && (
                 <div className="relative flex items-center justify-center px-8 w-full gap-4">
                     {!isCropping ? (
                         <Button
@@ -148,8 +150,25 @@ const ImageToolbar = ({
                         >
                             ΕΠΙΣΤΡΟΦΗ
                         </Button>
+                        </div>
                     </div>
-                </div>
+                )}
+
+                {/*ΕΠΙΣΤΡΟΦΗ - σε edit mode*/}
+                {isEdit && (
+                    <div className="flex items-center justify-end px-8 w-full">
+                        <Button
+                            onClick={onBackToMap}
+                            variant="text"
+                            color="primary"
+                            size="medium"
+                            startIcon={<MapIcon />}
+                            sx={{ color: 'lightgray' }}
+                        >
+                            ΕΠΙΣΤΡΟΦΗ
+                        </Button>
+                    </div>
+                )}
 
 
             </div>

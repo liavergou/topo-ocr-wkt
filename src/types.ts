@@ -74,6 +74,7 @@ export type ImageToolbarProps = {
     onPromptChange: (promptId: number) =>void;
     onUpload: () => void;
     onBackToMap: () => void;
+    isEdit: boolean;
 }
 
 //Το react-cropper αποθηκευει το ConversionJobPage.js instance στο ReactCropperElement.cropper. cropperRef.current?.cropper?.rotate()
