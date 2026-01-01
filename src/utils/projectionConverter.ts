@@ -9,3 +9,8 @@ export const egsa87ToWgs84 = (x: number, y: number): [number, number] => {
     return [lat, lng];
 };
 
+export const wgs84ToEgsa87 = (lat: number, lng: number): [number, number] => {
+    const [x, y] = proj4('EPSG:4326', 'EPSG:2100', [lng, lat]);
+    return [x, y];
+};
+
