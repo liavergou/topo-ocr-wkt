@@ -153,3 +153,10 @@ export type JobDataProps = {
     Area?: number;
     DeletedAt?: string | null;
 }
+
+// Props για το AlertDisplay
+export type AlertDisplayProps = {
+    success?: string;
+    error?: string;
+    onClose: () => void;
+};
