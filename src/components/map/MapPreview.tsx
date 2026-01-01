@@ -4,6 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import {MapContainer, TileLayer, Polygon, WMSTileLayer, LayersControl, CircleMarker, Popup} from 'react-leaflet';
 import L, { latLngBounds } from 'leaflet';
 import { egsa87ToWgs84 } from '@/utils/projectionConverter';
+import MouseCoordinatesDisplay from './MouseCoordinatesDisplay';
 //https://react-leaflet.js.org/docs/start-introduction/
 //https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z} google satellite
 
@@ -95,6 +96,8 @@ const MapPreview = ({ coordinates, area }: MapPreviewProps) => {
                     </CircleMarker>
                 ))}
 
+                {/*ΕΜΦΑΝΙΣΗ ΣΥΝΤΕΤΑΓΜΕΝΩΝ ΧΑΡΤΗ*/}
+                <MouseCoordinatesDisplay />
 
             </MapContainer>
 

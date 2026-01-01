@@ -9,6 +9,7 @@ import { exportSHPProjectGeoserverJobs, getProjectGeoserverJobs } from '@/servic
 import { deleteConversionJob } from "@/services/api.jobs";
 import { getErrorMessage } from '@/utils/errorHandler';
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
+import MouseCoordinatesDisplay from '@/components/map/MouseCoordinatesDisplay';
 import DeleteIcon from "@mui/icons-material/Delete";
 import type { JobDataProps } from "@/types.ts";
 import {useNavigate} from "react-router-dom";
@@ -308,6 +309,9 @@ const ConversionJobsPage = () => {
 
                         {/* Zoom to selected feature */}
                         <ZoomToFeature id={selectedJobId} data={displayedGeoData} />
+
+                        {/*ΕΜΦΑΝΙΣΗ ΣΥΝΤΕΤΑΓΜΕΝΩΝ ΧΑΡΤΗ*/}
+                        <MouseCoordinatesDisplay />
                     </MapContainer>
                 </Box>
 
