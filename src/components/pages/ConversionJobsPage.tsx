@@ -249,10 +249,10 @@ const ConversionJobsPage = () => {
                 <Box sx={{ height: '60%', border: '1px solid', borderRadius: 1 }}>
                     <MapContainer
                         style={{ height: '100%', width: '100%' }}
-                        center={[37.983936, 23.728130]}
-                        zoom={6}
+                        center={bounds? undefined:[37.983936, 23.728130]}
+                        zoom={bounds ? undefined : 6}
                         bounds={bounds}
-                        boundsOptions={{ padding: [50, 50], maxZoom: 30 }}
+                        boundsOptions={bounds ? { padding: [50, 50], maxZoom: 30 }:undefined}
                     >
                         {/* Layer Control - Radio buttons για basemaps */}
                         <LayersControl position="topright">
