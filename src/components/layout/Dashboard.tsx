@@ -9,10 +9,10 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import Footer from "./Footer.tsx";
 import {Outlet, useNavigate} from "react-router-dom";
 import type {MenuItemProps} from "@/types";
-import HomeIcon from '@mui/icons-material/Map';
 import FolderIcon from '@mui/icons-material/Folder';
 import CropIcon from '@mui/icons-material/Crop';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -20,6 +20,7 @@ import { IconButton } from '@mui/material';
 import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
 import cflogo from "@/assets/img/cf.jpg"
 import useAuth from "@/hooks/useAuth.ts";
+import Home from "@mui/icons-material/Home";
 
 
 //https://mui.com/material-ui/react-drawer/#permanent-drawer
@@ -32,14 +33,14 @@ const Dashboard =   ()=> {
     const { userInfo:{name},logout, hasAnyRole } = useAuth();
 
     const menuItems: MenuItemProps[] = [
-        { label: 'Αρχική', path: '/', icon: <HomeIcon /> },
+        { label: 'Αρχική', path: '/', icon: <Home /> },
         { label: 'OCR Τοπογραφικών', path: '/select-project', icon: <CropIcon /> },
 
         // Conditional rendering - μόνο Admin/Manager βλέπουν αυτό το menu
         ...(hasAnyRole(['Admin', 'Manager']) ? [
             { label: 'Διαχείριση Χρηστών', path: '/users', icon: <PeopleOutlineIcon /> },
             { label: 'Διαχείριση Μελετών', path: '/projects', icon: <FolderIcon /> },
-            { label: 'Διαχείριση Prompts', path: '/prompts', icon: <FolderIcon /> },
+            { label: 'Διαχείριση Prompts', path: '/prompts', icon: <AutoAwesomeIcon /> },
         ] : []),
     ];
 
@@ -101,7 +102,7 @@ const Dashboard =   ()=> {
                             width: drawerWidth,
                             boxSizing: 'border-box',
                             bgcolor: '#c9cdd1',
-                            color: '#272a2e',
+                            color: '#083251',
                             marginTop: '125px'
                         },
                     }}
@@ -125,7 +126,7 @@ const Dashboard =   ()=> {
                                             // ρυθμίσεις text μέσα στο LIST
                                             '& .MuiTypography-root': {
                                                 fontWeight: 500,
-                                                fontSize: '1.2rem'
+                                                fontSize: '1.4rem'
                                             }
                                         }}/>
 
