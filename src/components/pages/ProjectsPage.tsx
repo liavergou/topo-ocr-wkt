@@ -11,10 +11,13 @@ import {deleteProject} from "@/services/api.projects.ts";
 import type {Project} from "@/schemas/projects.ts";
 import {getErrorMessage} from "@/utils/errorHandler.ts";
 import { Pagination } from '@mui/material';
+import {useAlert} from "@/hooks/useAlert";
+import {AlertDisplay} from "@/components/ui/AlertDisplay";
 
 
 const ProjectsPage = () => {
     const navigate = useNavigate();
+    const { success, error, showSuccess, showError, clear } = useAlert();
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -38,10 +41,10 @@ const ProjectsPage = () => {
 
             .catch((err) => {
                 console.error("Error loading projects:", err);
-                alert(getErrorMessage(err));
+                showError(getErrorMessage(err));
             })
             .finally(() => setLoading(false));
-    }, [filter, page]);
+    }, [filter, page, showError]);
 
     // Delete project
     const handleDelete = async (id: number) => {
@@ -53,10 +56,10 @@ const ProjectsPage = () => {
 
             // Αφαίρεση από το state
             setProjects(projects.filter(project => project.id !== id));
-            alert('Η μελέτη διαγράφηκε επιτυχώς');
+            showSuccess('Η μελέτη διαγράφηκε επιτυχώς');
         } catch (err) {
             console.error("Failed to delete project:", err);
-            alert(getErrorMessage(err));
+            showError(getErrorMessage(err));
         }
     };
 
@@ -111,6 +114,8 @@ const ProjectsPage = () => {
 
     return (
         <Box sx={{ p: 2, width: '100%' }}>
+            <AlertDisplay success={success} error={error} onClose={clear} />
+
             {/*φιλτρο*/}
             <Box sx={{ my: 2 }}>
                 <TextField

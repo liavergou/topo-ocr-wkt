@@ -6,6 +6,8 @@ import {getAllProjects} from "@/services/api.projects.ts";
 import {getErrorMessage} from "@/utils/errorHandler.ts";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import {useAlert} from "@/hooks/useAlert";
+import {AlertDisplay} from "@/components/ui/AlertDisplay";
 import {Checkbox, FormControlLabel, FormGroup, Stack} from "@mui/material";
 import Button from "@mui/material/Button";
 
@@ -13,6 +15,7 @@ const UserProjectsPage=()=>{
 
     const { userId } = useParams();
     const navigate = useNavigate();
+    const { success, error, showSuccess, showError, clear } = useAlert();
 
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
@@ -33,10 +36,10 @@ const UserProjectsPage=()=>{
             })
             .catch((err) => {
                 console.error("Error loading user:", err);
-                alert(getErrorMessage(err));
+                showError(getErrorMessage(err));
             })
             .finally(() => setLoading(false));
-    }, [userId]);
+    }, [userId, showError]);
 
     const handleCheckboxChange = (projectId:number, checked:boolean)=>{
         if (checked){
@@ -53,11 +56,11 @@ const UserProjectsPage=()=>{
         setSaving(true);
         try {
             await updateUserProjects(Number(userId), {projectIds: selectedProjectIds});
-            alert ('Οι μελέτες ενημερώθηκαν επιτυχώς')
+            showSuccess('Οι μελέτες ενημερώθηκαν επιτυχώς')
             navigate('/users')
         } catch (err) {
             console.error("Error:", err);
-            alert(getErrorMessage(err));
+            showError(getErrorMessage(err));
         }finally {
             setSaving(false);
         }
@@ -69,6 +72,8 @@ const UserProjectsPage=()=>{
                 <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', mb: 4 }}>
                     Ανάθεση Μελετών
                 </Typography>
+
+                <AlertDisplay success={success} error={error} onClose={clear} />
 
                 {loading ? (
                     <Typography>Φόρτωση...</Typography>

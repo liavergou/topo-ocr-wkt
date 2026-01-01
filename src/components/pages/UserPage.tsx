@@ -7,6 +7,8 @@ import {TextField, Box, Stack, FormControl, InputLabel, Select, MenuItem, FormHe
 import Button from "@mui/material/Button";
 import { getUser, createUser, updateUser } from "@/services/api.users";
 import {getErrorMessage} from "@/utils/errorHandler.ts";
+import {useAlert} from "@/hooks/useAlert";
+import {AlertDisplay} from "@/components/ui/AlertDisplay";
 
 
 
@@ -14,6 +16,7 @@ const UserPage = () => {
     const { userId } = useParams();
     const isEdit = Boolean(userId);
     const navigate = useNavigate();
+    const { success, error, showSuccess, showError, clear } = useAlert();
 
 
     const {
@@ -55,23 +58,23 @@ const UserPage = () => {
             })
             .catch((err) => {
                 console.error("Error loading user:", err);
-                alert(getErrorMessage(err));
+                showError(getErrorMessage(err));
             });
-    }, [isEdit, userId, reset]);
+    }, [isEdit, userId, reset, showError]);
 
     const onSubmit = async (data: UserCreate | UserUpdate) => {
         try {
             if (isEdit && userId) {
                 await updateUser(Number(userId), data as UserUpdate);
-                alert("Ο χρήστης ενημερώθηκε επιτυχώς");
+                showSuccess("Ο χρήστης ενημερώθηκε επιτυχώς");
             } else {
                 await createUser(data as UserCreate);
-                alert("Ο χρήστης δημιουργήθηκε επιτυχώς");
+                showSuccess("Ο χρήστης δημιουργήθηκε επιτυχώς");
             }
             navigate("/users");
         } catch (err) {
             console.error("Error:", err);
-            alert(getErrorMessage(err));
+            showError(getErrorMessage(err));
         }
     };
 
@@ -80,6 +83,8 @@ const UserPage = () => {
             <h1 className="text-2xl font-bold mb-6">
                 {isEdit ? 'Επεξεργασία Χρήστη' : 'Νέος Χρήστης'}
             </h1>
+
+            <AlertDisplay success={success} error={error} onClose={clear} />
 
             <Box
                 component="form"

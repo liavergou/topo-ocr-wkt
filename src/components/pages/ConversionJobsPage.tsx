@@ -15,6 +15,8 @@ import {useNavigate} from "react-router-dom";
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import useAuth from '@/hooks/useAuth';
+import {useAlert} from '@/hooks/useAlert';
+import {AlertDisplay} from '@/components/ui/AlertDisplay';
 
 const ConversionJobsPage = () => {
     const { projectId } = useParams<{ projectId: string }>(); //απο το project id του url
@@ -25,6 +27,7 @@ const ConversionJobsPage = () => {
     const [activatedFilter, setActivatedFilter] = useState<'ΕΝΕΡΓΑ' | 'ΔΙΕΓΡΑΜΜΕΝΑ' | 'ΟΛΑ'>('ΟΛΑ'); // για το φίλτρο στα ενεργά/διεγραμμενα
     const navigate = useNavigate();
     const { hasAnyRole } = useAuth();
+    const { success: alertSuccess, error: alertError, showSuccess, showError, clear } = useAlert();
 
     // Data loading με useCallback για να μην κανει loop στο render μετα το useEffect
     const loadData = useCallback(async () => {
@@ -58,7 +61,7 @@ const ConversionJobsPage = () => {
             link.click();
             window.URL.revokeObjectURL(url);
         }catch(err){
-            alert(getErrorMessage(err))
+            showError(getErrorMessage(err))
         }
     };
 
@@ -69,10 +72,10 @@ const ConversionJobsPage = () => {
             await deleteConversionJob(Number(projectId), jobId);
             setSelectedJobId(null);
             loadData(); //load data ξανα
-            alert('Το πολύγωνο διαγράφηκε επιτυχώς');
+            showSuccess('Το πολύγωνο διαγράφηκε επιτυχώς');
         } catch (err) {
             console.error('Error deleting job:', err);
-            alert(getErrorMessage(err));
+            showError(getErrorMessage(err));
         }
     };
 
@@ -190,7 +193,7 @@ const ConversionJobsPage = () => {
     ];
 
     // υπολογισμός bounds για zoom (από τα αρχικά δεδομένα για να μην αλλάζει το zoom με το φίλτρο)
-    const bounds = geoData ? L.geoJSON(geoData).getBounds() : undefined;
+    const bounds = geoData && geoData.features.length > 0 ? L.geoJSON(geoData).getBounds() : undefined;
 
     if (loading) {
         return (
@@ -210,6 +213,8 @@ const ConversionJobsPage = () => {
 
     return (
         <Box sx={{ p: 2, height: '90vh', display: 'flex', flexDirection: 'column', gap: 2, overflow: 'hidden' }}>
+            <AlertDisplay success={alertSuccess} error={alertError} onClose={clear} />
+
             {/* Header: Φίλτρο + Export */}
             <Box sx={{ display: 'flex', justifyContent: 'space-between', flexShrink: 0 }}>
                 <FormControl size="small" sx={{ minWidth: 200 }}>
@@ -244,6 +249,8 @@ const ConversionJobsPage = () => {
                 <Box sx={{ height: '60%', border: '1px solid', borderRadius: 1 }}>
                     <MapContainer
                         style={{ height: '100%', width: '100%' }}
+                        center={[37.983936, 23.728130]}
+                        zoom={6}
                         bounds={bounds}
                         boundsOptions={{ padding: [50, 50], maxZoom: 30 }}
                     >

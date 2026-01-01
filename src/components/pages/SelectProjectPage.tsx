@@ -6,6 +6,8 @@ import {useEffect, useState} from "react";
 import {getErrorMessage} from "@/utils/errorHandler.ts";
 import {useNavigate} from "react-router-dom";
 import {getMyAssignedProjects} from "@/services/api.account.ts";
+import {useAlert} from "@/hooks/useAlert";
+import {AlertDisplay} from "@/components/ui/AlertDisplay";
 import {getAllProjects} from "@/services/api.projects.ts";
 import {CircularProgress, Grid} from "@mui/material";
 import ProjectCard from "@/components/ui/ProjectCard.tsx";
@@ -14,6 +16,7 @@ const SelectProjectPage =() => {
 
     const navigate = useNavigate();
     const {userInfo} = useAuth(); //αν αλλάξει ο χρήστης πρέπει να ξανατρέξει.προσοχη επαιρνα rerender loop.εβαλα το userInfo σε Memo
+    const { success, error, showError, clear } = useAlert();
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true); //για τη φόρτωση
 
@@ -33,13 +36,13 @@ const SelectProjectPage =() => {
             })
             .catch((err) => {
                 console.error("Error loading projects:", err);
-                alert(getErrorMessage(err));
+                showError(getErrorMessage(err));
             })
             .finally(() => { // απαραίτητο
                 setLoading(false);
             });
 
-    }, [userInfo]);
+    }, [userInfo, showError]);
 
     if (loading) {
         return <CircularProgress />;
@@ -47,6 +50,8 @@ const SelectProjectPage =() => {
 
     return (
         <Box sx={{ p: 3 }}>
+            <AlertDisplay success={success} error={error} onClose={clear} />
+
             <Typography variant="h4" component="h1" gutterBottom>
                 Επιλογή Μελέτης
             </Typography>
@@ -60,6 +65,7 @@ const SelectProjectPage =() => {
                 <Grid container spacing={3} sx={{ mt: 2 }}>
                     {projects.map((p) => (
                         <ProjectCard
+                            key={p.id}
                             id={p.id}
                             projectName={p.projectName}
                             onClick={() => navigate(`/projects/${p.id}/conversion-jobs`)}

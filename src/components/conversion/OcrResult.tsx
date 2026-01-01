@@ -6,9 +6,12 @@ import {calculatePolygonArea} from "@/utils/areaCalculator.ts";
 import CoordinatesTable from "@/components/map/CoordinatesTable.tsx";
 import {updateConversionJob} from "@/services/api.jobs.ts";
 import {getErrorMessage} from "@/utils/errorHandler.ts";
+import {useAlert} from "@/hooks/useAlert";
+import {AlertDisplay} from "@/components/ui/AlertDisplay";
 
 const OcrResult = ({ initialCoordinates ,jobId, projectId, onDelete }: CoordinatesResultProps) => {
 
+    const { success, error, showSuccess, showError, clear } = useAlert();
     const [coordinates, setCoordinates] = useState<Coordinate[]>(initialCoordinates); //ΣΥΝΤΕΤΑΓΜΕΝΕΣ προσοχή source of truth για να το δώσει στα children. αλλάζει στο onChange των children
     const [area, setArea] = useState(0); //ΕΜΒΑΔΟΝ
 
@@ -32,10 +35,10 @@ const OcrResult = ({ initialCoordinates ,jobId, projectId, onDelete }: Coordinat
     const handleSave = async () => {
         try{
             await updateConversionJob(projectId,jobId,{coordinates:coordinates});
-            alert("Οι συντεταγμένες ενημερώθηκαν επιτυχώς")
+            showSuccess("Οι συντεταγμένες ενημερώθηκαν επιτυχώς");
         }catch (err){
             console.error("Error updating coordinates:", err);
-            alert(getErrorMessage(err));
+            showError(getErrorMessage(err));
         }
     };
 
@@ -66,6 +69,11 @@ const OcrResult = ({ initialCoordinates ,jobId, projectId, onDelete }: Coordinat
                 <Typography variant="h6" sx={{ p: 2, pb: 1 }}>
                     Κωδικός OCR: {jobId}
                 </Typography>
+
+                <Box sx={{ px: 2 }}>
+                    <AlertDisplay success={success} error={error} onClose={clear} />
+                </Box>
+
                 <CoordinatesTable
                     key={jobId} //key αναγνωριστικό του component. οταν αλλαζει το jobΙδ , η react κανει remount, καταστρεφει το παλιο component και δημιουργεί νέο με καινουριο state.
                     coordinates={coordinates}

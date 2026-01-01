@@ -9,9 +9,12 @@ import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import type { User } from '@/types';
 import { getUsers, deleteUser } from '@/services/api.users';
 import {getErrorMessage} from "@/utils/errorHandler.ts";
+import {useAlert} from "@/hooks/useAlert";
+import {AlertDisplay} from "@/components/ui/AlertDisplay";
 
 const UsersPage = () => {
     const navigate = useNavigate();
+    const { success, error, showSuccess, showError, clear } = useAlert();
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -22,10 +25,10 @@ const UsersPage = () => {
             .then((data) => setUsers(data))
             .catch((err) => {
                 console.error("Error loading users:", err);
-                alert(getErrorMessage(err));
+                showError(getErrorMessage(err));
             })
             .finally(() => setLoading(false));
-    }, []);
+    }, [showError]);
 
     // Delete user
     const handleDelete = async (id: number) => {
@@ -38,10 +41,10 @@ const UsersPage = () => {
 
             // Αφαίρεση από το state
             setUsers(users.filter(user => user.id !== id));
-            alert('Ο χρήστης διαγράφηκε επιτυχώς');
+            showSuccess('Ο χρήστης διαγράφηκε επιτυχώς');
         } catch (err) {
             console.error("Failed to delete user:", err);
-            alert(getErrorMessage(err));
+            showError(getErrorMessage(err));
         }
     };
 
@@ -93,6 +96,8 @@ const UsersPage = () => {
 
     return (
         <Box sx={{ p: 3, width: '100%' }}>
+            <AlertDisplay success={success} error={error} onClose={clear} />
+
             {/* Header με τίτλο και κουμπί */}
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
                 <Typography variant="h4" component="h1">

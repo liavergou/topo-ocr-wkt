@@ -9,11 +9,14 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import {getErrorMessage} from "@/utils/errorHandler.ts";
 import {createPrompt, getPromptById, updatePrompt} from "@/services/api.prompts.ts";
+import {useAlert} from "@/hooks/useAlert";
+import {AlertDisplay} from "@/components/ui/AlertDisplay";
 
 const PromptPage = () => {
     const { promptId } = useParams();
     const isEdit = Boolean(promptId);
     const navigate = useNavigate();
+    const { success, error, showSuccess, showError, clear } = useAlert();
 
 
     const {
@@ -42,24 +45,24 @@ const PromptPage = () => {
             })
             .catch((err) => {
                 console.error("Error getting prompt:", err);
-                alert(getErrorMessage(err));
+                showError(getErrorMessage(err));
             });
-    }, [isEdit, promptId, reset]);
+    }, [isEdit, promptId, reset, showError]);
 
     const onSubmit = async (data:Omit<Prompt,'id'>) => {
         try {
             if (isEdit && promptId) {
                 await updatePrompt(Number(promptId), data);
-                alert("Το κείμενο ενημερώθηκε επιτυχώς");
+                showSuccess("Το κείμενο ενημερώθηκε επιτυχώς");
             }
             else {
                 await createPrompt(data);
-                alert("Το κείμενο δημιουργήθηκε επιτυχώς");
+                showSuccess("Το κείμενο δημιουργήθηκε επιτυχώς");
             }
             navigate("/prompts");
         } catch (err) {
             console.error("Error:", err);
-            alert(getErrorMessage(err));
+            showError(getErrorMessage(err));
         }
     };
 
@@ -79,6 +82,8 @@ const PromptPage = () => {
             <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', mb: 4 }}>
                 {isEdit ? 'Επεξεργασία Prompt' : 'Νέο Prompt'}
             </Typography>
+
+            <AlertDisplay success={success} error={error} onClose={clear} />
 
             <Box
                 component="form"

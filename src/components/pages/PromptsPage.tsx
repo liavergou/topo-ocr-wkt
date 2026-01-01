@@ -11,10 +11,13 @@ import {deletePrompt} from "@/services/api.prompts.ts";
 import type {Prompt} from "@/schemas/prompts.ts";
 import {getErrorMessage} from "@/utils/errorHandler.ts";
 import { Pagination } from '@mui/material';
+import {useAlert} from "@/hooks/useAlert";
+import {AlertDisplay} from "@/components/ui/AlertDisplay";
 
 
 const PromptsPage = () => {
     const navigate = useNavigate();
+    const { success, error, showSuccess, showError, clear } = useAlert();
     const [prompts, setPrompts] = useState<Prompt[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -39,10 +42,10 @@ const PromptsPage = () => {
 
             .catch((err) => {
                 console.error("Error loading prompts:", err);
-                alert(getErrorMessage(err));
+                showError(getErrorMessage(err));
             })
             .finally(() => setLoading(false));
-    }, [filter, page]);
+    }, [filter, page, showError]);
 
     // Delete prompt
     const handleDelete = async (id: number) => {
@@ -54,10 +57,10 @@ const PromptsPage = () => {
 
             // Αφαίρεση από το state
             setPrompts(prompts.filter(prompt => prompt.id !== id));
-            alert('Το Prompt διαγράφηκε επιτυχώς');
+            showSuccess('Το Prompt διαγράφηκε επιτυχώς');
         } catch (err) {
             console.error("Failed to delete prompt:", err);
-            alert(getErrorMessage(err));
+            showError(getErrorMessage(err));
         }
     };
 
@@ -127,6 +130,8 @@ const PromptsPage = () => {
     return (
         <>
         <Box sx={{ p: 2, width: '100%' }}>
+            <AlertDisplay success={success} error={error} onClose={clear} />
+
             {/*φιλτρο*/}
             <Box sx={{ my: 2 }}>
                 <TextField

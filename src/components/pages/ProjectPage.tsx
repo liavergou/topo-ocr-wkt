@@ -8,11 +8,14 @@ import Button from "@mui/material/Button";
 import { getAllProjectById, createProject, updateProject } from "@/services/api.projects";
 import Typography from "@mui/material/Typography";
 import {getErrorMessage} from "@/utils/errorHandler.ts";
+import {useAlert} from "@/hooks/useAlert";
+import {AlertDisplay} from "@/components/ui/AlertDisplay";
 
 const ProjectPage = () => {
     const { projectId } = useParams();
     const isEdit = Boolean(projectId);
     const navigate = useNavigate();
+    const { success, error, showSuccess, showError, clear } = useAlert();
 
 
     const {
@@ -42,24 +45,24 @@ const ProjectPage = () => {
             })
             .catch((err) => {
                 console.error("Error getting project:", err);
-                alert(getErrorMessage(err));
+                showError(getErrorMessage(err));
             });
-    }, [isEdit, projectId, reset]);
+    }, [isEdit, projectId, reset, showError]);
 
     const onSubmit = async (data: Omit<Project, "id" | "jobsCount">) => {
         try {
             if (isEdit && projectId) {
                 await updateProject(Number(projectId), data);
-                alert("Η μελέτη ενημερώθηκε επιτυχώς");
+                showSuccess("Η μελέτη ενημερώθηκε επιτυχώς");
             }
             else {
                 await createProject(data);
-                alert("Η μελέτη δημιουργήθηκε επιτυχώς");
+                showSuccess("Η μελέτη δημιουργήθηκε επιτυχώς");
             }
             navigate("/projects");
         } catch (err) {
             console.error("Error:", err);
-            alert(getErrorMessage(err));
+            showError(getErrorMessage(err));
         }
     };
 
@@ -78,6 +81,8 @@ const ProjectPage = () => {
             <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', mb: 4 }}>
                 {isEdit ? 'Επεξεργασία Μελέτης' : 'Νέα Μελέτη'}
             </Typography>
+
+            <AlertDisplay success={success} error={error} onClose={clear} />
 
             <Box
                 component="form"

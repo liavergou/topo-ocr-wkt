@@ -11,6 +11,8 @@ import {deleteConversionJob, uploadImage, getConversionJob} from "@/services/api
 import {Backdrop, CircularProgress} from "@mui/material";
 import type {Coordinate} from "@/types.ts";
 import OcrResult from "@/components/conversion/OcrResult.tsx";
+import {useAlert} from "@/hooks/useAlert";
+import {AlertDisplay} from "@/components/ui/AlertDisplay";
 
 // import * as pdfjsLib from 'pdfjs-dist';
 // Το PDF.js χρησιμοποιεί έναν "Web Worker" για να μην "παγώνει" το UI κατά την επεξεργασία.
@@ -40,6 +42,7 @@ const ConversionJobPage = () => {
 
     const isEditMode = Boolean(jobId);
     const navigate = useNavigate();
+    const { success, error, showSuccess, showError, clear } = useAlert();
 
     useEffect(() => {
         getPrompts()
@@ -56,9 +59,9 @@ const ConversionJobPage = () => {
             })
         .catch((err) => {
             console.error("Error loading prompts:", err);
-            alert(getErrorMessage(err));
+            showError(getErrorMessage(err));
         });
-        },[]);
+        },[showError]);
 
     //memory management προσοχη - https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Schemes/blob ****To release an object URL, call revokeObjectURL().
     useEffect(() => {
@@ -87,14 +90,14 @@ const ConversionJobPage = () => {
 
                 } catch (err) {
                     console.error('Error loading job:', err);
-                    alert(getErrorMessage(err));
+                    showError(getErrorMessage(err));
                 } finally {
                     setIsUploading(false);
                 }
             };
             void loadJob(); //προσθηκη void γιατι ειναι async και επιστρέφει promise αλλα δεν κανω await.
         }
-    }, [isEditMode, projectId, jobId]);
+    }, [isEditMode, projectId, jobId, showError]);
 
 
 
@@ -169,11 +172,11 @@ const ConversionJobPage = () => {
         try{
             //έλεγχος promptId
             if (selectedPromptId === null){
-                alert("Παρακαλούμε επιλέξτε το κατάλληλο Prompt από την προτεινόμενη λίστα")
+                showError("Παρακαλούμε επιλέξτε το κατάλληλο Prompt από την προτεινόμενη λίστα")
             }
             //ελεγχος projectId
             if (!projectId){
-                alert("Δεν βρέθηκε επιλεγμένο projectId")
+                showError("Δεν βρέθηκε επιλεγμένο projectId")
             }
 
             //getCroppedBlob
@@ -182,7 +185,7 @@ const ConversionJobPage = () => {
 
             //ελεγχος blob
             if (!blob){
-                alert("Δεν βρέθηκε ο αποκομμένος πίνακας συντεταγμένων προς αποστολή")
+                showError("Δεν βρέθηκε ο αποκομμένος πίνακας συντεταγμένων προς αποστολή")
                 setIsUploading(false);
                 return;
             }
@@ -197,20 +200,20 @@ const ConversionJobPage = () => {
 
             if (result.status === 'Failed') {
                 setIsUploading(false);
-                alert(`OCR Failed: ${result.errorMessage || 'Unknown error'}`);
+                showError(`OCR Failed: ${result.errorMessage || 'Unknown error'}`);
                 return;
             }
 
             if (!result.coordinates || result.coordinates.length === 0) {
                 setIsUploading(false);
-                alert('Δεν βρέθηκαν συντεταγμένες στην εικόνα');
+                showError('Δεν βρέθηκαν συντεταγμένες στην εικόνα');
                 return;
             }
 
             setUploadedJobId(result.id);
             setUploadedCoordinates(result.coordinates);
             setIsUploading(false);
-            alert(`Επιτυχής επεξεργασία! Βρέθηκαν ${result.coordinates.length} σημεία`);
+            showSuccess(`Επιτυχής επεξεργασία! Βρέθηκαν ${result.coordinates.length} σημεία`);
             handleCancelCrop();
             // handleReset();
 
@@ -218,7 +221,7 @@ const ConversionJobPage = () => {
 
         } catch (err){
             console.error ("Upload error:", err)
-            alert(getErrorMessage(err))
+            showError(getErrorMessage(err))
             setIsUploading(false);
             handleCancelCrop();
             handleReset();
@@ -232,7 +235,7 @@ const ConversionJobPage = () => {
         }
         try {
             await deleteConversionJob(Number(projectId),uploadedJobId);
-            alert('Η εργασία διαγράφηκε επιτυχώς');
+            showSuccess('Η εργασία διαγράφηκε επιτυχώς');
 
             if (isEditMode) {
                 navigate(`/projects/${projectId}/conversion-jobs`);
@@ -243,7 +246,7 @@ const ConversionJobPage = () => {
 
         } catch (err) {
             console.error('Error deleting conversion job:', err);
-            alert(getErrorMessage(err));
+            showError(getErrorMessage(err));
         }
     };
 
@@ -251,6 +254,8 @@ const ConversionJobPage = () => {
     return (
         <>
         <div className="w-full">
+            <AlertDisplay success={success} error={error} onClose={clear} />
+
             {/*conditional rendering*/}
             {!showToolbar && !isEditMode && (
                 <UploadArea
