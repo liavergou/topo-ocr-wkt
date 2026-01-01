@@ -85,7 +85,13 @@ const MapPreview = ({ coordinates, area }: MapPreviewProps) => {
                             weight: 2
                         }}
                     >
-                        <Popup>Σημείο {index + 1}</Popup>
+                        <Popup>
+                            <div>
+                                <strong>Σημείο {index + 1}</strong><br/>
+                                X: {coordinates[index].x}<br/>
+                                Y: {coordinates[index].y}
+                            </div>
+                        </Popup>
                     </CircleMarker>
                 ))}
 
