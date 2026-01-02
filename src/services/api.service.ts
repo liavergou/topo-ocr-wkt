@@ -14,7 +14,7 @@ const apiService = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
-    timeout: 50000, // 50 seconds. Να μη λήξει αν αργήσει το OCR!
+    timeout: 60000, // 60 seconds. Να μη λήξει αν αργήσει το OCR!
 });
 
 //ΠΡΙΝ ΑΠΟ ΚΑΘΕ REQUEST
