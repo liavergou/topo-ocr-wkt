@@ -39,6 +39,7 @@ const ConversionJobPage = () => {
 
     const [uploadedCoordinates, setUploadedCoordinates] = useState<Coordinate[]>([]);
     const [uploadedJobId, setUploadedJobId] = useState<number | null>(null);
+    const [originalFileName, setOriginalFileName] = useState<string>('');
 
     const isEdit = Boolean(jobId);
     const navigate = useNavigate();
@@ -87,6 +88,7 @@ const ConversionJobPage = () => {
                     setUploadedCoordinates(job.coordinates || []);
                     setUploadedJobId(job.id);
                     setSelectedPromptId(job.promptId);
+                    setOriginalFileName(job.originalFileName);
 
                 } catch (err) {
                     console.error('Error loading job:', err);
@@ -215,6 +217,7 @@ const ConversionJobPage = () => {
             }
 
             setUploadedJobId(result.id);
+            setOriginalFileName(result.originalFileName);
             setUploadedCoordinates(result.coordinates);
             setIsUploading(false);
             showSuccess(`Επιτυχής επεξεργασία! Βρέθηκαν ${result.coordinates.length} σημεία`);
@@ -324,6 +327,7 @@ const ConversionJobPage = () => {
                         <div>
                             <OcrResult initialCoordinates={uploadedCoordinates}
                             jobId={uploadedJobId!}
+                            originalFileName={originalFileName}
                             projectId={Number(projectId)}
                             onDelete={handleDelete}/>
                             {/*! για το null*/}

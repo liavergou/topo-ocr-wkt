@@ -121,6 +121,7 @@ export type CoordinatesResultProps = {
     jobId:number;
     projectId: number;
     initialCoordinates: Coordinate[];
+    originalFileName: string;
     onDelete?: () => void;
 };
 

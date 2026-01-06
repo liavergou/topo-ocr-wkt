@@ -9,7 +9,7 @@ import {getErrorMessage} from "@/utils/errorHandler.ts";
 import {useAlert} from "@/hooks/useAlert";
 import {AlertDisplay} from "@/components/ui/AlertDisplay";
 
-const OcrResult = ({ initialCoordinates ,jobId, projectId, onDelete }: CoordinatesResultProps) => {
+const OcrResult = ({ initialCoordinates ,jobId, projectId,originalFileName, onDelete }: CoordinatesResultProps) => {
 
     const { success, error, showSuccess, showError, clear } = useAlert();
     const [coordinates, setCoordinates] = useState<Coordinate[]>(initialCoordinates); //ΣΥΝΤΕΤΑΓΜΕΝΕΣ προσοχή source of truth για να το δώσει στα children. αλλάζει στο onChange των children
@@ -67,7 +67,7 @@ const OcrResult = ({ initialCoordinates ,jobId, projectId, onDelete }: Coordinat
         {/*ΠΙΝΑΚΑΣ ΣΥΝΤΕΤΑΓΜΕΝΩΝ*/}
             <Paper variant="outlined">
                 <Typography variant="h6" sx={{ p: 2, pb: 1 }}>
-                    Κωδικός OCR: {jobId}
+                    Κωδικός OCR: {jobId} -  Αρχείο: {originalFileName}
                 </Typography>
 
                 <Box sx={{ px: 2 }}>
