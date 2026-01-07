@@ -1,6 +1,12 @@
 import type { UploadAreaProps } from '@/types.ts';
 import Button from '@mui/material/Button';
 import MapIcon from '@mui/icons-material/Map';
+
+/**
+ * Drag-and-drop file upload area for images (jpg,png)
+ * Used in: ConversionJobPage
+ */
+
 //https://claritydev.net/blog/react-typescript-drag-drop-file-upload-guide
 //https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/file
 

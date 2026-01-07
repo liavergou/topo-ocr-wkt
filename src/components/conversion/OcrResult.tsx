@@ -9,6 +9,12 @@ import {getErrorMessage} from "@/utils/errorHandler.ts";
 import {useAlert} from "@/hooks/useAlert";
 import {AlertDisplay} from "@/components/ui/AlertDisplay";
 
+/**
+ * Displays OCR results with editable coordinates table and map preview. Enables coordinate editing, area calculation and update functionality
+ * Uses: CoordinatesTable, MapPreview
+ * Used in: ConversionJobPage
+ */
+
 const OcrResult = ({ initialCoordinates ,jobId, projectId,originalFileName, onDelete }: CoordinatesResultProps) => {
 
     const { success, error, showSuccess, showError, clear } = useAlert();

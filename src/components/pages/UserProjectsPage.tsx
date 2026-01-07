@@ -11,6 +11,10 @@ import {AlertDisplay} from "@/components/ui/AlertDisplay";
 import {Checkbox, FormControlLabel, FormGroup, Stack} from "@mui/material";
 import Button from "@mui/material/Button";
 
+/**
+ * Admin/Manager page for assigning projects to users with role "Member"
+ */
+
 const UserProjectsPage=()=>{
 
     const { userId } = useParams();

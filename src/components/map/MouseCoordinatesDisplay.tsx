@@ -3,6 +3,11 @@ import { Box } from '@mui/material';
 import { useMapEvents } from 'react-leaflet';
 import { wgs84ToEgsa87 } from '@/utils/projectionConverter';
 
+/**
+ * Displays real-time mouse coordinates in EGSA87 format on the map
+ * Uses Leaflet map events to track mouse position and converts WGS84 to EGSA87
+ * Used in: ConversionJobsPage, MapPreview
+ */
 //https://leafletjs.com/reference.html#mouseevent
 //https://react-leaflet.js.org/docs/example-events/
 const MouseCoordinatesDisplay = () => {

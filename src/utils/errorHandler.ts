@@ -1,5 +1,7 @@
 import { AxiosError } from 'axios';
 
+/** Extracts error messages from API responses and exceptions. */
+
 //Για να πιάνει τα μηνύματα του back. Παραγωγή από llm
 export function getErrorMessage(error: unknown): string {
     if (error instanceof AxiosError && error.response) {

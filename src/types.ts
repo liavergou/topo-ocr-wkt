@@ -3,13 +3,14 @@ import type {UserRole} from "@/schemas/users.ts";
 import type {Prompt} from "@/schemas/prompts.ts";
 import type {ReactCropperElement} from 'react-cropper';
 
-
+//Dashboard component
 export type MenuItemProps = {
     label: string;
     path: string;
     icon: React.ReactNode;
 };
 
+//UploadArea component
 //https://developer.mozilla.org/en-US/docs/Web/API/DragEvent
 export type UploadAreaProps = {
     onDragOver: (e: React.DragEvent<HTMLDivElement>) => void;
@@ -20,6 +21,7 @@ export type UploadAreaProps = {
     onBackToMap: () => void;
 };
 
+//useAuth component
 //η πληροφορία απο token extracted
 export type UserInfoProps = {
     keycloakId?: string;
@@ -30,12 +32,13 @@ export type UserInfoProps = {
     name?: string;
     role?: string;
     }
-
+//ProtectedRoute component
 // roles για το protected route Admin,Manager μαζί ["Admin","Manager"]
 export type ProtectedRouteProps = {
     roles?: UserRole[]
 };
 
+//UsersPage component
 // User type (για display μόνο - από UserReadOnlyDTO backend)
 export type User = {
     id: number;
@@ -46,6 +49,7 @@ export type User = {
     role: UserRole;
 };
 
+//ProjectCard component
 //Project type για τα Project Card
 export type ProjectCardProps={
     id: number;
@@ -53,12 +57,13 @@ export type ProjectCardProps={
     onClick?:()=>void;
 }
 
+//api.users.ts (getUserProjects, updateUserProjects)
 //UserProjects για assign project σε χρήστη
 export type UserProjects ={
     projectIds: number[];
 }
 
-//Props για το ImageToolbar component
+//ImageToolbar component
 export type ImageToolbarProps = {
     // onZoomIn: () => void;
     // onZoomOut: () => void;
@@ -77,6 +82,7 @@ export type ImageToolbarProps = {
     isEdit: boolean;
 }
 
+//ImageDisplay component
 //Το react-cropper αποθηκευει το ConversionJobPage.js instance στο ReactCropperElement.cropper. cropperRef.current?.cropper?.rotate()
 //https://www.jsdocs.io/package/react-cropper#Cropper
 //https://github.com/react-cropper/react-cropper
@@ -86,6 +92,7 @@ export type ImageDisplayProps = {
     dragMode: 'move' | 'crop';
 }
 
+// api.jobs.ts (uploadImage function)
 //REQUEST
 export type UploadJobRequest ={
     imageFile: Blob;
@@ -93,6 +100,8 @@ export type UploadJobRequest ={
     promptId: number;
     fileName?: string;
 }
+
+//api.jobs.ts (response from uploadImage, getConversionJob)
 //RESPONSE
 export type UploadJobResponse={
     id: number;
@@ -131,6 +140,7 @@ export type CoordinatesTableProps={
     onChange:(updated:Coordinate[]) => void;
 }
 
+//api.jobs.ts (updateConversionJob function)
 export type ConversionJobUpdate = {
     coordinates:Coordinate[];
 }
@@ -141,6 +151,7 @@ export type MapPreviewProps = {
     area: number;
 };
 
+//ConversionJobs component
 //Props του JobData από τον geoserver
 export type JobDataProps = {
     id: string;

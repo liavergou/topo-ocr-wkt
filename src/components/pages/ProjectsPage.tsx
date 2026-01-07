@@ -14,6 +14,9 @@ import { Pagination } from '@mui/material';
 import {useAlert} from "@/hooks/useAlert";
 import {AlertDisplay} from "@/components/ui/AlertDisplay";
 
+/**
+ * Admin/Manager management console for managing projects with CRUD operations.
+ */
 
 const ProjectsPage = () => {
     const navigate = useNavigate();

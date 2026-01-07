@@ -2,6 +2,12 @@ import type {Coordinate, CoordinatesTableProps} from "@/types";
 import {useEffect, useState} from "react";
 import {TextField} from "@mui/material";
 
+/**
+ * Editable table for managing polygon coordinates.
+ * Transfer changes to parent component in real-time.
+ * Used in: OcrResult
+ */
+
 
     const CoordinatesTable = ({ coordinates, onChange }: CoordinatesTableProps) => {
 

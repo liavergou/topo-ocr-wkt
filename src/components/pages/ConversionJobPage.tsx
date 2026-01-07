@@ -14,6 +14,11 @@ import OcrResult from "@/components/conversion/OcrResult.tsx";
 import {useAlert} from "@/hooks/useAlert";
 import {AlertDisplay} from "@/components/ui/AlertDisplay";
 
+/**
+ * Page for creating new OCR job or editing existing job.
+ * Handles image upload, cropping, OCR processing, and coordinate editing
+ * Uses: UploadArea, ImageToolbar, ImageDisplay, OcrResult
+ */
 // import * as pdfjsLib from 'pdfjs-dist';
 // Το PDF.js χρησιμοποιεί έναν "Web Worker" για να μην "παγώνει" το UI κατά την επεξεργασία.
 //είναι στα Modules.

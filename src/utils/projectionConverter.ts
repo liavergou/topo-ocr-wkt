@@ -1,5 +1,9 @@
 import proj4 from 'proj4';
 
+/**
+ * Converts coordinates from EGSA87 (EPSG:2100) to WGS84 (EPSG:4326) and vice versa.
+ */
+
 //  EGSA87 (EPSG:2100)
 //https://github.com/josueggh/proj4-list/blob/master/src/list.js
 proj4.defs('EPSG:2100', '+proj=tmerc +lat_0=0 +lon_0=24 +k=0.9996 +x_0=500000 +y_0=0 +datum=GGRS87 +units=m +no_defs');

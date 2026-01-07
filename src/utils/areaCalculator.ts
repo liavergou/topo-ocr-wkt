@@ -1,9 +1,11 @@
 import type {Coordinate} from "@/types.ts";
 
 /**
- * Υπολογισμός εμβαδού πολυγώνου από συντεταγμένες με shoelace formula
- * @param coordinates πίνακας συντεταγμένων από το response του ocr
+ * Calculate polygon area using Shoelace formula
+ * @param coordinates - Array of coordinates from OCR response
+ * @returns Calculated area in square meters
  */
+
 export function calculatePolygonArea(coordinates: Coordinate[] ): number
 {
 

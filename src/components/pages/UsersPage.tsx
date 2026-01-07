@@ -12,6 +12,9 @@ import {getErrorMessage} from "@/utils/errorHandler.ts";
 import {useAlert} from "@/hooks/useAlert";
 import {AlertDisplay} from "@/components/ui/AlertDisplay";
 
+/**
+ * Admin/Manager management console for user with role assignments
+ */
 const UsersPage = () => {
     const navigate = useNavigate();
     const { success, error, showSuccess, showError, clear } = useAlert();

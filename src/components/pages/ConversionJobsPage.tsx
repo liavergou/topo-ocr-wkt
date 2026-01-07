@@ -19,6 +19,11 @@ import useAuth from '@/hooks/useAuth';
 import {useAlert} from '@/hooks/useAlert';
 import {AlertDisplay} from '@/components/ui/AlertDisplay';
 
+/**
+ * Page displaying all conversion jobs for a project (active and deleted).
+ * Shows jobs on interactive map (GeoServer data) with filtering and export options.
+ * Uses: MouseCoordinatesDisplay, DataGrid (MUI)
+ */
 const ConversionJobsPage = () => {
     const { projectId } = useParams<{ projectId: string }>(); //απο το project id του url
     const [geoData, setGeoData] = useState<FeatureCollection | null>(null); //state για τα GeoJSON δεδομένα. τύπος FeatureCollection
@@ -228,6 +233,10 @@ const ConversionJobsPage = () => {
                         <MenuItem value="ΔΙΕΓΡΑΜΜΕΝΑ">ΔΙΕΓΡΑΜΜΕΝΑ</MenuItem>
                     </Select>
                 </FormControl>
+
+                <Typography variant="h6" fontWeight="medium" color="text.secondary" >
+                    GeoServer Project Data
+                </Typography>
 
                 {/*ΕΜΦΑΝΙΣΗ ΜΟΝΟ ADMIN MANAGER*/}
                 {hasAnyRole(['Admin', 'Manager']) && (

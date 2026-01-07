@@ -1,5 +1,8 @@
 import { useState, useCallback } from 'react';
 
+/**
+ * Custom hook for managing application success and error messages.
+ */
 export const useAlert = () => {
     const [success, setSuccess] = useState('');
     const [error, setError] = useState('');

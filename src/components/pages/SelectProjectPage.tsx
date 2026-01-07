@@ -12,6 +12,12 @@ import {getAllProjects} from "@/services/api.projects.ts";
 import {CircularProgress, Grid} from "@mui/material";
 import ProjectCard from "@/components/ui/ProjectCard.tsx";
 
+/**
+ * Page for selecting the project to work
+ * Shows assigned projects for Members, all projects for Admin/Manager
+ * Uses: ProjectCard
+ */
+
 const SelectProjectPage =() => {
 
     const navigate = useNavigate();

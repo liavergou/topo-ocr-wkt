@@ -5,6 +5,15 @@ import {MapContainer, TileLayer, Polygon, WMSTileLayer, LayersControl, CircleMar
 import L, { latLngBounds } from 'leaflet';
 import { egsa87ToWgs84 } from '@/utils/projectionConverter';
 import MouseCoordinatesDisplay from './MouseCoordinatesDisplay';
+
+/**
+ * Displays polygon on interactive map with coordinates preview
+ * Shows polygon geometry, coordinate markers with popups, and calculated area
+ * Supports Google Satellite and ΕΚΧΑ orthophoto maps
+ * Uses: MouseCoordinatesDisplay
+ * Used in: OcrResult
+ */
+
 //https://react-leaflet.js.org/docs/start-introduction/
 //https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z} google satellite
 

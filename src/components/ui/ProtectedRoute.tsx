@@ -3,6 +3,11 @@ import useAuth from '@/hooks/useAuth';
 import {CircularProgress, Typography} from '@mui/material';
 import type {ProtectedRouteProps} from "@/types.ts";
 
+/**
+ * Protected route wrapper that handles authentication and role-based authorization
+ * Used in: App routing configuration
+ * @param roles - array of permitted roles
+ */
 const ProtectedRoute= ({roles}:ProtectedRouteProps) => {
 
 

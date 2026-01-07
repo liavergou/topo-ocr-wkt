@@ -14,7 +14,9 @@ import { Pagination } from '@mui/material';
 import {useAlert} from "@/hooks/useAlert";
 import {AlertDisplay} from "@/components/ui/AlertDisplay";
 
-
+/**
+ * Admin/Manager management console for managing prompts with CRUD operations.
+ */
 const PromptsPage = () => {
     const navigate = useNavigate();
     const { success, error, showSuccess, showError, clear } = useAlert();

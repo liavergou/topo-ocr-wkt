@@ -8,6 +8,10 @@ import type {ImageToolbarProps} from '@/types.ts';
 //https://mui.com/material-ui/api/icon-button/#props
 //area-label είναι accessibility attribute
 
+/**
+ * Toolbar for image manipulation and OCR processing. Provides image rotation, crop mode toggle, prompt selection, and upload controls
+ * Used in: ConversionJobPage
+ */
 const ImageToolbar = ({
                           prompts,
                           selectedPromptId,

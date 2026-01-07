@@ -6,6 +6,10 @@ import 'cropperjs/dist/cropper.css';
 import {Cropper} from 'react-cropper';
 import type {ImageDisplayProps} from "@/types.ts";
 
+/**
+ * Displays image with cropping functionality using react-cropper
+ * Used in: ConversionJobPage
+ */
 
 const ImageDisplay = ({src, cropperRef,dragMode}: ImageDisplayProps) => {
 

@@ -5,6 +5,10 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
 import {keycloak} from '@/utils/keycloak';
 
+/**
+ * Configured Axios instance with Keycloak token injection and error handling interceptors.
+ */
+
 // Base URL από .env file
 const API_BASE_URL = import.meta.env.VITE_API_BASE;
 

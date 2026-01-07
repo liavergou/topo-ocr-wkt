@@ -2,6 +2,10 @@ import { useKeycloak } from "@react-keycloak/web";
 import type {UserInfoProps} from "@/types.ts";
 import {useCallback, useMemo} from "react";
 
+/**
+ * Custom hook for managing Keycloak authentication, user state and role-based access control.
+ * @returns Authentication state, user info, login/logout functions, and role checking utils
+ */
 //authentication state
 const useAuth = () => {
 

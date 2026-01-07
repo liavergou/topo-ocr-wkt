@@ -1,5 +1,5 @@
 /**
- * Δημιουργία instance του keycloak client
+ * Configures and initializes the Keycloak instance for authentication.
  */
 import Keycloak from "keycloak-js";
 //https://www.keycloak.org/securing-apps/javascript-adapter
