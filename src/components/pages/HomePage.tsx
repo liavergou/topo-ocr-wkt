@@ -6,7 +6,7 @@ const HomePage = () => {
 
 
     useEffect(() => {
-        document.title = "CF8 Project";
+        document.title = "CoordAiExtractor";
     }, []);
 
     return (

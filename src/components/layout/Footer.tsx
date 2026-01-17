@@ -5,7 +5,7 @@ const Footer = () =>{
         <>
             <footer className="bg-gray-800 text-white">
                 <div>
-                    @{currentYear} Coding Factory 8. All Rights Reserved.
+                    &copy;{currentYear} Vergou Enangelia. Developed as final project of Coding Factory 8
                 </div>
             </footer>
 
