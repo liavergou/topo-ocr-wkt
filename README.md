@@ -254,12 +254,8 @@ npm run build
 
 
 ## 7. Demo Video
-[Watch the Demo Video](demo/demo.mp4)
 
-## 8. Μελλοντικές Επεκτάσεις (Roadmap)
-- **Υποστήριξη PDF/TIFF**: Δυνατότητα OCR από πολυσελιδα έγγραφα PDF και αρχεία TIFF.
-- **Batch Processing**: Μαζική εισαγωγή και επεξεργασία πολλαπλών εικόνων.
-- **Εξαγωγή σε GeoJSON/KML**: Επιπλέον formats εξαγωγής πέρα από το txt/wkt.
+https://github.com/user-attachments/assets/94c2ad7b-becb-403b-aebc-0fd05739b5c0
 
 ## Δημιουργός
 
