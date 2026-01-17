@@ -23,7 +23,6 @@
     "axios": "^1.13.2",
     "keycloak-js": "^25.0.0",
     "leaflet": "^1.9.4",
-    "pdfjs-dist": "^5.4.296",
     "react": "^19.1.1",
     "react-cropper": "^2.3.3",
     "react-dom": "^19.1.1",
