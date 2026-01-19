@@ -1,4 +1,4 @@
-# CoordAiExtractor - React Frontend App
+# CoordAiExtractor - React App
 
 ## Πώς Λειτουργεί
 Το έργο χωρίζεται σε δύο μέρη:
