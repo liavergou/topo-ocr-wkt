@@ -31,8 +31,8 @@ const UserProjectsPage=()=>{
 
         setLoading(true);
         Promise.all([
-            getAllProjects(), //όλα τα projects
-            getUserProjects(Number(userId)) //assigned projects του User
+            getAllProjects(),
+            getUserProjects(Number(userId))
         ])
             .then(([allProjects, userProjects]) => {
                 setProjects(allProjects);

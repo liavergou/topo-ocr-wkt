@@ -6,17 +6,12 @@ import {useCallback, useMemo} from "react";
  * Custom hook for managing Keycloak authentication, user state and role-based access control.
  * @returns Authentication state, user info, login/logout functions, and role checking utils
  */
-//authentication state
 const useAuth = () => {
 
-    const {keycloak, initialized} = useKeycloak(); //instance με ολες τις μεθόδους από τη βιβλιοθήκη login,logout, token
+    const {keycloak, initialized} = useKeycloak();
 
-    const isAuthenticated = initialized && keycloak.authenticated; //o user κάνει login μόνο αν το Keycloak ειναι Initialized και ο user ειναι authenticated
+    const isAuthenticated = initialized && keycloak.authenticated;
 
-    // Εξαγωγή User Info από το JWT Token
-    // αντιστοίχιση JWT claims σε UserInfoProps
-    //χωρις το useMemo πέφτω σε loop rerender γιατί στο select project page κανει render, δημιουργεί νέο userInfo και θεωρεί ότι αλλάζει συνέχεια! Το memo το κρατάει και επιστρέφει ίδιο object.
-    //βλέπω το memo στο Inspect/components SelectProjectsPage hooks/auth/
     const userInfo: UserInfoProps = useMemo(() => ({
         keycloakId: keycloak.tokenParsed?.sub,
         username: keycloak.tokenParsed?.preferred_username,
@@ -25,43 +20,37 @@ const useAuth = () => {
         firstname: keycloak.tokenParsed?.given_name,
         name: keycloak.tokenParsed?.name,
         role: keycloak.tokenParsed?.role
-    }), [keycloak.tokenParsed]); //υπολογισμός μονο αν αλλάξει το keycloak.tokenParsed
+    }), [keycloak.tokenParsed]);
 
-    //USER LOGIN Keycloak.login
-    const login = useCallback(() => { //callback για να μη καλεί ξανά το function σε κάθε render, παρά μόνο αν αλλάξει το instance
+    const login = useCallback(() => {
         keycloak.login({
-            redirectUri: window.location.origin, //αν οκ redirect dev και production
+            redirectUri: window.location.origin,
         });
     }, [keycloak]);
 
-    //USER LOGOUT Keycloak.logout
     const logout = useCallback(() => {
         keycloak.logout({
-            redirectUri: window.location.origin, //αν logout redirect στο login page
+            redirectUri: window.location.origin,
         });
     }, [keycloak]);
 
-    //ΕΛΕΓΧΟΣ ΡΟΛΟΥ
     const hasRole = useCallback((role: string) => {
         return keycloak.tokenParsed?.role === role;
     }, [keycloak]);
 
-    //ΕΛΕΓΧΟΣ ΑΝ Ο ΧΡΗΣΤΗΣ ΕΧΕΙ ΕΝΑΝ ΑΠΟ ΤΟΥΣ ΡΟΛΟΥΣ ΠΟΥ ΕΠΙΤΡΕΠΟΝΤΑΙ
     const hasAnyRole = useCallback((roles: string[]) => {
         return roles.includes(keycloak.tokenParsed?.role);
         }, [keycloak]);
 
     return {
-        isAuthenticated, //true αν authenticated
-        isInitialized: initialized, //true αν το keycloak έχει γίνει initialized
-        token: keycloak.token, //JWT access token
-        userInfo, // Όλα τα user data από το token
-        login, // Redirect σε Keycloak login
-        logout, // Logout και redirect σε Keycloak login
-
-        // Authorization
-        hasRole, //Έλεγχος για συγκεκριμένο role
-        hasAnyRole, //Έλεγχος για έναν από πολλούς roles. Για τον ελεγχο στο dashboard. να μη βαζω ενα ενα
+        isAuthenticated,
+        isInitialized: initialized,
+        token: keycloak.token,
+        userInfo,
+        login,
+        logout,
+        hasRole,
+        hasAnyRole,
     };
 };
 

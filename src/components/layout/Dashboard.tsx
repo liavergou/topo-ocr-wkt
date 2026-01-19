@@ -22,21 +22,14 @@ import cflogo from "@/assets/img/cf.jpg"
 import useAuth from "@/hooks/useAuth.ts";
 import Home from "@mui/icons-material/Home";
 
-
-//https://mui.com/material-ui/react-drawer/#permanent-drawer
-//https://www.youtube.com/watch?v=ZZPCXhw0WZM
-
 const Dashboard =   ()=> {
     const drawerWidth = 'clamp(250px, 20vw, 400px)'; // Min 250px, Max 400px, Ideal 20vw
 
-    // Παίρνουμε authentication info
     const { userInfo:{name},logout, hasAnyRole } = useAuth();
 
     const menuItems: MenuItemProps[] = [
         { label: 'Αρχική', path: '/', icon: <Home /> },
         { label: 'OCR Τοπογραφικών', path: '/select-project', icon: <CropIcon /> },
-
-        // Conditional rendering - μόνο Admin/Manager βλέπουν αυτό το menu
         ...(hasAnyRole(['Admin', 'Manager']) ? [
             { label: 'Διαχείριση Χρηστών', path: '/users', icon: <PeopleOutlineIcon /> },
             { label: 'Διαχείριση Μελετών', path: '/projects', icon: <FolderIcon /> },
@@ -53,19 +46,16 @@ const Dashboard =   ()=> {
 
 
     return (
-        // min-height όσο η οθόνη
         <Box className="flex flex-col min-h-screen">
             <CssBaseline />
 
-            {/* APPBAR - Full Width */}
             <AppBar
                 position="fixed"
                 sx={{
                     bgcolor: 'primary.main',
-                    zIndex: (theme) => theme.zIndex.drawer + 1 //για να καθεται απο πανω
+                    zIndex: (theme) => theme.zIndex.drawer + 1
                 }}
             >
-                {/*Μπάρα*/}
                 <Toolbar sx={{ height: 125 }}>
                     <img
                         src={cflogo}
@@ -76,7 +66,6 @@ const Dashboard =   ()=> {
                         CoordAiExtractor
                     </Typography>
 
-                    {/* LOGOUT */}
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 'auto' }}>
                         <Typography variant="body2">{name}</Typography>
                         <IconButton
@@ -93,7 +82,6 @@ const Dashboard =   ()=> {
             </AppBar>
 
             <Box className="flex flex-grow">
-                {/*DRAWER-SIDE BAR*/}
                 <Drawer
                     sx={{
                         width: drawerWidth,
@@ -123,7 +111,6 @@ const Dashboard =   ()=> {
                                     <ListItemText
                                         primary={item.label}
                                         sx={{
-                                            // ρυθμίσεις text μέσα στο LIST
                                             '& .MuiTypography-root': {
                                                 fontWeight: 500,
                                                 fontSize: '1.4rem'
@@ -136,8 +123,6 @@ const Dashboard =   ()=> {
 
                         ))}
 
-
-
                     </List>
 
 
@@ -146,12 +131,7 @@ const Dashboard =   ()=> {
                     component="main"
                     className="flex-grow bg-white p-2 overflow-x-hidden"
                     sx={{ width: `calc(100% - ${drawerWidth})`,marginTop: '115px' }}
-                    // viewport-sidebar*************αλλιως δεν κρατάει το κεντράρισμα
                 >
-                    {/*Αδειο toolbar που δημιουργεί spacing*/}
-                    {/*<Toolbar sx={{ height:50 }} />*/}
-
-                    {/* Το περιεχόμενο ξεκινάει ΕΔΩ */}
                     <div className="w-full h-full ">
                         <Outlet/>
                     </div>

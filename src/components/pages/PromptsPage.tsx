@@ -32,7 +32,6 @@ const PromptsPage = () => {
     const pageSize = 5;
 
 
-    // Φόρτωση prompts από API
     useEffect(() => {
         setLoading(true);
 
@@ -49,7 +48,7 @@ const PromptsPage = () => {
             .finally(() => setLoading(false));
     }, [filter, page, showError]);
 
-    // Delete prompt
+
     const handleDelete = async (id: number) => {
         if (!confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε αυτό το Prompt;')) {
             return;
@@ -57,7 +56,7 @@ const PromptsPage = () => {
         try {
             await deletePrompt(id);
 
-            // Αφαίρεση από το state
+
             setPrompts(prompts.filter(prompt => prompt.id !== id));
             showSuccess('Το Prompt διαγράφηκε επιτυχώς');
         } catch (err) {
@@ -134,7 +133,7 @@ const PromptsPage = () => {
         <Box sx={{ p: 2, width: '100%' }}>
             <AlertDisplay success={success} error={error} onClose={clear} />
 
-            {/*φιλτρο*/}
+
             <Box sx={{ my: 2 }}>
                 <TextField
                     fullWidth
@@ -147,7 +146,7 @@ const PromptsPage = () => {
                     }}
                 />
             </Box>
-            {/* Header με τίτλο και κουμπί */}
+
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
                 <Typography variant="h4" component="h1">
                     Διαχείριση Prompts
@@ -162,8 +161,7 @@ const PromptsPage = () => {
                 </Button>
             </Box>
 
-            {/* DataGrid */}
-            {/*//https://github.com/mui/mui-x/issues/417*/}
+
             <Box sx={{ height: 600, width: '100%' }}>
                 <DataGrid
                     rows={prompts}
@@ -186,9 +184,9 @@ const PromptsPage = () => {
             </Box>
         </Box>
 
-        {/* Modal Dialog για τη προβολή του πλήρους κειμένου prompt */}
+
         <Dialog
-            open={Boolean(selectedPrompt)} // ****** αλλιως !! πρώτο true/false . το δευτερο αντιστρέφει τη boolean τιμη του προηγούμενου και παιρνεις τη πραγματικη. αν null τοτε θα ήταν falsy
+            open={Boolean(selectedPrompt)}
             onClose={() => setSelectedPrompt(null)}
             maxWidth="md"
             fullWidth

@@ -18,15 +18,14 @@ import {AlertDisplay} from "@/components/ui/AlertDisplay";
 const OcrResult = ({ initialCoordinates ,jobId, projectId,originalFileName, onDelete }: CoordinatesResultProps) => {
 
     const { success, error, showSuccess, showError, clear } = useAlert();
-    const [coordinates, setCoordinates] = useState<Coordinate[]>(initialCoordinates); //ΣΥΝΤΕΤΑΓΜΕΝΕΣ προσοχή source of truth για να το δώσει στα children. αλλάζει στο onChange των children
-    const [area, setArea] = useState(0); //ΕΜΒΑΔΟΝ
+    const [coordinates, setCoordinates] = useState<Coordinate[]>(initialCoordinates);
+    const [area, setArea] = useState(0);
 
-    //αν αλλαξουν οι αρχικες συντεταγμενες (νεο job χωρις αλλαγη αρχειου) επανυπολογισμος χαρτη και πινακα συντεταγμενων
     useEffect(() => {
         setCoordinates(initialCoordinates);
     }, [initialCoordinates]);
 
-    //Επανυπολογισμός εμβαδού όταν αλλάζει κάτι στις συντεταγμένες. προσοχη το state στο CoordinatesTable θα φέρει αλλαγή
+
     useEffect(() => {
         if (coordinates.length >= 3) {
             const calculatedArea = calculatePolygonArea(coordinates);
@@ -64,13 +63,11 @@ const OcrResult = ({ initialCoordinates ,jobId, projectId,originalFileName, onDe
 
     return (
 
-        // ΧΑΡΤΗΣ
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4, height: '100%',pt:1 }}>
             <Paper variant="outlined">
                 <MapPreview coordinates={coordinates} area={area} />
             </Paper>
 
-        {/*ΠΙΝΑΚΑΣ ΣΥΝΤΕΤΑΓΜΕΝΩΝ*/}
             <Paper variant="outlined">
                 <Typography variant="h6" sx={{ p: 2, pb: 1 }}>
                     Κωδικός OCR: {jobId} -  Αρχείο: {originalFileName}
@@ -81,12 +78,12 @@ const OcrResult = ({ initialCoordinates ,jobId, projectId,originalFileName, onDe
                 </Box>
 
                 <CoordinatesTable
-                    key={jobId} //key αναγνωριστικό του component. οταν αλλαζει το jobΙδ , η react κανει remount, καταστρεφει το παλιο component και δημιουργεί νέο με καινουριο state.
+                    key={jobId}
                     coordinates={coordinates}
                     onChange={handleCoordinatesChange}
                 />
 
-                {/*ΑΠΟΘΗΚΕΥΣΗ ΣΕ ΠΕΡΙΠΤΩΣΗ ΑΛΛΑΓΗΣ*/}
+
                 <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
                     <Button
                         variant="contained"
@@ -97,7 +94,7 @@ const OcrResult = ({ initialCoordinates ,jobId, projectId,originalFileName, onDe
                         ΑΠΟΘΗΚΕΥΣΗ ΑΛΛΑΓΩΝ
                     </Button>
 
-                    {/*RESET ΑΛΛΑΓΩΝ*/}
+
                     <Button
                         variant="contained"
                         color="warning"
@@ -107,7 +104,7 @@ const OcrResult = ({ initialCoordinates ,jobId, projectId,originalFileName, onDe
                         ΕΠΑΝΑΦΟΡΑ
                     </Button>
 
-                    {/*DELETE CONVERSION JOB*/}
+
                     <Button
                         variant="contained"
                         color="error"
@@ -117,7 +114,7 @@ const OcrResult = ({ initialCoordinates ,jobId, projectId,originalFileName, onDe
                         ΔΙΑΓΡΑΦΗ
                     </Button>
 
-                    {/*EXPORT TXT ΓΙΑ ΘΕΑΣΗ*/}
+
                     <Button
                         variant="contained"
                         color="secondary"

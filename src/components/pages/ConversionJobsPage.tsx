@@ -25,17 +25,17 @@ import {AlertDisplay} from '@/components/ui/AlertDisplay';
  * Uses: MouseCoordinatesDisplay, DataGrid (MUI)
  */
 const ConversionJobsPage = () => {
-    const { projectId } = useParams<{ projectId: string }>(); //απο το project id του url
-    const [geoData, setGeoData] = useState<FeatureCollection | null>(null); //state για τα GeoJSON δεδομένα. τύπος FeatureCollection
+    const { projectId } = useParams<{ projectId: string }>();
+    const [geoData, setGeoData] = useState<FeatureCollection | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [selectedJobId, setSelectedJobId] = useState<number | null>(null); // Επιλεγμένο job για προβολή
-    const [activatedFilter, setActivatedFilter] = useState<'ΕΝΕΡΓΑ' | 'ΔΙΕΓΡΑΜΜΕΝΑ' | 'ΟΛΑ'>('ΟΛΑ'); // για το φίλτρο στα ενεργά/διεγραμμενα
+    const [selectedJobId, setSelectedJobId] = useState<number | null>(null);
+    const [activatedFilter, setActivatedFilter] = useState<'ΕΝΕΡΓΑ' | 'ΔΙΕΓΡΑΜΜΕΝΑ' | 'ΟΛΑ'>('ΟΛΑ');
     const navigate = useNavigate();
     const { hasAnyRole } = useAuth();
     const { success: alertSuccess, error: alertError, showSuccess, showError, clear } = useAlert();
 
-    // Data loading με useCallback για να μην κανει loop στο render μετα το useEffect
+
     const loadData = useCallback(async () => {
         if (!projectId) return;
 
@@ -85,7 +85,6 @@ const ConversionJobsPage = () => {
         }
     };
 
-    // για να κλείνει το info box όταν click έξω από polygon
     function MapClickHandler({ onMapClick }: { onMapClick: () => void }) {
         useMapEvents({
             click: () => {
@@ -95,7 +94,6 @@ const ConversionJobsPage = () => {
         return null;
     }
 
-    // https://react-leaflet.js.org/docs/api-map/
     function ZoomToFeature({ id, data }: { id: number | null, data: FeatureCollection | null }) {
         const map = useMap();
 
@@ -115,8 +113,8 @@ const ConversionJobsPage = () => {
         return null;
     }
 
-    //φίλτρο για ενεργα/διεγραμμενα/ολα
-    let displayedGeoData: FeatureCollection | null = null; //για να μπορω να κανω reassign μετα
+
+    let displayedGeoData: FeatureCollection | null = null;
 
     if (geoData) {
         let filteredFeatures = geoData.features;
@@ -130,17 +128,17 @@ const ConversionJobsPage = () => {
             case "ΟΛΑ":
                 break;
         }
-        //νεο object GeoJSON με τα φιλτραρισμένα features
+
         displayedGeoData = {
-            ...geoData, // spread operator για να κρατήσουμε τα υπόλοιπα properties
+            ...geoData,
             features: filteredFeatures
         };
     }
 
-    // ΠΙΝΑΚΑΣ JOBS
+
     const rows = displayedGeoData?.features.map(f => f.properties as JobDataProps) || [];
 
-    // sorting : επιλεγμένο row πρώτο
+
     const sortedRows = selectedJobId
         ? [
             ...rows.filter(r => r.JobId === selectedJobId),  //επιλεγμένο πρώτο
@@ -198,7 +196,7 @@ const ConversionJobsPage = () => {
         },
     ];
 
-    // υπολογισμός bounds για zoom (από τα αρχικά δεδομένα για να μην αλλάζει το zoom με το φίλτρο)
+
     const bounds = geoData && geoData.features.length > 0 ? L.geoJSON(geoData).getBounds() : undefined;
 
     if (loading) {
@@ -238,7 +236,6 @@ const ConversionJobsPage = () => {
                     GeoServer Project Data
                 </Typography>
 
-                {/*ΕΜΦΑΝΙΣΗ ΜΟΝΟ ADMIN MANAGER*/}
                 {hasAnyRole(['Admin', 'Manager']) && (
                     <Button
                         variant="contained"
@@ -252,10 +249,9 @@ const ConversionJobsPage = () => {
 
 
 
-            {/*ΠΙΝΑΚΑΣ DATA*/}
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1, minHeight: 0 }}>
 
-                {/*ΧΑΡΤΗΣ MAP CONTAINER ΤΟΥ LEAFLET*/}
+
                 <Box sx={{ height: '60%', border: '1px solid', borderRadius: 1 }}>
                     <MapContainer
                         style={{ height: '100%', width: '100%' }}
@@ -264,10 +260,10 @@ const ConversionJobsPage = () => {
                         bounds={bounds}
                         boundsOptions={bounds ? { padding: [50, 50], maxZoom: 30 }:undefined}
                     >
-                        {/* Layer Control - Radio buttons για basemaps */}
+
                         <LayersControl position="topright">
 
-                        {/*GOOGLE SATELLITE*/}
+
                         <LayersControl.BaseLayer checked name="Google Satellite">
                             <TileLayer
                                 url="https://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}"
@@ -275,7 +271,7 @@ const ConversionJobsPage = () => {
                             />
                         </LayersControl.BaseLayer>
 
-                        {/* ΕΚΧΑ Ορθοφωτοχάρτης */}
+
                         <LayersControl.BaseLayer name="ΕΚΧΑ Ορθοφωτοχάρτης">
                             <WMSTileLayer
                                 url="https://gis.ktimanet.gr/wms/wmsopen/wmsserver.aspx"
@@ -289,7 +285,7 @@ const ConversionJobsPage = () => {
                         </LayersControl.BaseLayer>
                     </LayersControl>
 
-                        {/* Αν υπάρχουν δεδομένα για εμφάνιση, τότε σχεδίασε το GeoJSON layer */}
+
                         {displayedGeoData && (
                             <GeoJSON
                                 key={activatedFilter}
@@ -306,20 +302,20 @@ const ConversionJobsPage = () => {
                                 //https://leafletjs.com/reference.html#geojson-resetstyle
                                 onEachFeature={(feature, layer) => {
                                     layer.on('click', (e) => {
-                                        L.DomEvent.stopPropagation(e); // Σταματά το event να φτάσει στο map (οχι e.stopPropagation does not exist σφαλμα. βλ. stopPropagation(<DOMEvent> ev) στο documentation)
+                                        L.DomEvent.stopPropagation(e);
                                         setSelectedJobId(feature.properties?.JobId || null);
                                     });
                                 }}
                             />
                         )}
 
-                        {/* Map click handler */}
+
                         <MapClickHandler onMapClick={() => setSelectedJobId(null)} />
 
-                        {/* Zoom to selected feature */}
+
                         <ZoomToFeature id={selectedJobId} data={displayedGeoData} />
 
-                        {/*ΕΜΦΑΝΙΣΗ ΣΥΝΤΕΤΑΓΜΕΝΩΝ ΧΑΡΤΗ*/}
+
                         <MouseCoordinatesDisplay />
                     </MapContainer>
                 </Box>
@@ -335,7 +331,7 @@ const ConversionJobsPage = () => {
                     </Button>
                 </Box>
 
-                {/*DATAGRID JOBS*/}
+
                 <Box sx={{ height: '40%', border: '1px solid', borderRadius: 1 }}>
                     <DataGrid
                         sx={{

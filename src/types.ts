@@ -11,7 +11,6 @@ export type MenuItemProps = {
 };
 
 //UploadArea component
-//https://developer.mozilla.org/en-US/docs/Web/API/DragEvent
 export type UploadAreaProps = {
     onDragOver: (e: React.DragEvent<HTMLDivElement>) => void;
     onDragLeave: (e: React.DragEvent<HTMLDivElement>) => void;
@@ -22,7 +21,6 @@ export type UploadAreaProps = {
 };
 
 //useAuth component
-//η πληροφορία απο token extracted
 export type UserInfoProps = {
     keycloakId?: string;
     username?: string;
@@ -32,14 +30,13 @@ export type UserInfoProps = {
     name?: string;
     role?: string;
     }
+
 //ProtectedRoute component
-// roles για το protected route Admin,Manager μαζί ["Admin","Manager"]
 export type ProtectedRouteProps = {
     roles?: UserRole[]
 };
 
 //UsersPage component
-// User type (για display μόνο - από UserReadOnlyDTO backend)
 export type User = {
     id: number;
     username: string;
@@ -50,7 +47,6 @@ export type User = {
 };
 
 //ProjectCard component
-//Project type για τα Project Card
 export type ProjectCardProps={
     id: number;
     projectName: string;
@@ -58,7 +54,6 @@ export type ProjectCardProps={
 }
 
 //api.users.ts (getUserProjects, updateUserProjects)
-//UserProjects για assign project σε χρήστη
 export type UserProjects ={
     projectIds: number[];
 }
@@ -83,16 +78,13 @@ export type ImageToolbarProps = {
 }
 
 //ImageDisplay component
-//Το react-cropper αποθηκευει το ConversionJobPage.js instance στο ReactCropperElement.cropper. cropperRef.current?.cropper?.rotate()
-//https://www.jsdocs.io/package/react-cropper#Cropper
-//https://github.com/react-cropper/react-cropper
 export type ImageDisplayProps = {
     src: string; //blob url από URL.createObjectURL() στο cropper.tsx
     cropperRef: React.RefObject<ReactCropperElement | null>; //ref για προσβαση στο cropper instance χωρίς να κάνει rerender
     dragMode: 'move' | 'crop';
 }
 
-// api.jobs.ts (uploadImage function)
+// api.jobs.ts
 //REQUEST
 export type UploadJobRequest ={
     imageFile: Blob;
@@ -101,7 +93,7 @@ export type UploadJobRequest ={
     fileName?: string;
 }
 
-//api.jobs.ts (response from uploadImage, getConversionJob)
+//api.jobs.ts
 //RESPONSE
 export type UploadJobResponse={
     id: number;
@@ -122,7 +114,7 @@ export type Coordinate = {
     y: number;
 
 }
-//για ελεγχο του status του response
+
 export type JobStatus = 'Processing'|'Completed'|'Failed';
 
 //props του OCR Result
@@ -134,7 +126,7 @@ export type CoordinatesResultProps = {
     onDelete?: () => void;
 };
 
-//Props του πινακα συντεταγμένων
+//CoordinatesTable Props
 export type CoordinatesTableProps={
     coordinates: Coordinate[];
     onChange:(updated:Coordinate[]) => void;
@@ -145,7 +137,7 @@ export type ConversionJobUpdate = {
     coordinates:Coordinate[];
 }
 
-// Props του MapPreview
+//MapPreview component
 export type MapPreviewProps = {
     coordinates: Coordinate[];
     area: number;
@@ -169,7 +161,7 @@ export type JobDataProps = {
     DeletedAt?: string | null;
 }
 
-// Props για το AlertDisplay
+//AlertDisplay component
 export type AlertDisplayProps = {
     success?: string;
     error?: string;

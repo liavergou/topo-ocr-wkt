@@ -6,27 +6,24 @@ const theme = createTheme({
 
         mode: 'light',
         primary: {
-            // βασικο χρώμα ραφ
+
             main: '#314a66',
         },
         secondary: {
-            // δευτερευον χρώμα
             main: '#fedc97',
         },
-        //σελίδα
+
         background: {
             default: grey[200],
-            // (Card, AppBar, Menu)
-            paper: '#ffffff', //λευκό
+
+            paper: '#ffffff',
         },
         text: {
-            // κείμενο
-            primary: grey[900], // Σκούρο γκρι
-            secondary: grey[700], // Ανοιχτό γκρι
+            primary: grey[900],
+            secondary: grey[700],
         },
     },
     typography: {
-        // γραμματοσειρά
         fontFamily: 'Roboto, "Helvetica Neue", Arial',
     },
 });

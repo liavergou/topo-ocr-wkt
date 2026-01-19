@@ -21,7 +21,7 @@ import ProjectCard from "@/components/ui/ProjectCard.tsx";
 const SelectProjectPage =() => {
 
     const navigate = useNavigate();
-    const {userInfo} = useAuth(); //αν αλλάξει ο χρήστης πρέπει να ξανατρέξει.προσοχη επαιρνα rerender loop.εβαλα το userInfo σε Memo
+    const {userInfo} = useAuth();
     const { success, error, showError, clear } = useAlert();
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true); //για τη φόρτωση
@@ -31,11 +31,10 @@ const SelectProjectPage =() => {
 
         setLoading(true);
 
-        //αν admin ή manager apo getAll αλλιως getMyAssignedProjects. πίνακας users-projects
         const getPromise = userInfo.role ==='Admin' || userInfo.role ==='Manager'
         ? getAllProjects():getMyAssignedProjects();
 
-        //επειδή εξαρτάται από το role
+
         getPromise
             .then((data) =>{
                 setProjects(data);

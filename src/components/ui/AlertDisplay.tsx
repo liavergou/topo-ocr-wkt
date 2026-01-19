@@ -1,6 +1,9 @@
 import { Alert } from '@mui/material';
 import type { AlertDisplayProps } from '@/types';
 
+/**
+ * Reusable alert component for displaying success and error messages
+ */
 export const AlertDisplay = ({ success, error, onClose }: AlertDisplayProps) => {
     return (
         <>

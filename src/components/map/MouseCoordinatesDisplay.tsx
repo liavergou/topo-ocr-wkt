@@ -8,8 +8,7 @@ import { wgs84ToEgsa87 } from '@/utils/projectionConverter';
  * Uses Leaflet map events to track mouse position and converts WGS84 to EGSA87
  * Used in: ConversionJobsPage, MapPreview
  */
-//https://leafletjs.com/reference.html#mouseevent
-//https://react-leaflet.js.org/docs/example-events/
+
 const MouseCoordinatesDisplay = () => {
     const [coords, setCoords] = useState<[number, number] | null>(null);
 
@@ -18,7 +17,7 @@ const MouseCoordinatesDisplay = () => {
             const [x, y] = wgs84ToEgsa87(e.latlng.lat, e.latlng.lng);
             setCoords([x, y]);
         },
-        // καθάρισμα όταν φευγει απο τον χάρτη
+
         mouseout: () => {
             setCoords(null);
         }

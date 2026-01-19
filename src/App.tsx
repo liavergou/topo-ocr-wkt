@@ -24,7 +24,6 @@ function App() {
                 <Routes>
                     <Route element={<ProtectedRoute />}>
                         <Route element={<Dashboard />}>
-                            {/* Οι authenticated users */}
                             <Route index element={<HomePage />} />
                             <Route path="/select-project" element={<SelectProjectPage />} />
                             {/*/!*map view*!/*/}
@@ -35,7 +34,7 @@ function App() {
                             <Route path={"/projects/:projectId/conversion-jobs/:jobId"} element={<ConversionJobPage />}/>
 
 
-                            {/*Admin και Manager μόνο*/}
+                            {/*Admin-Manager*/}
                             <Route element={<ProtectedRoute roles={['Admin', 'Manager']} />}>
                                 <Route path="/users" element={<UsersPage />} />
                                 {/*create*/}

@@ -93,7 +93,6 @@ const UserPage = () => {
             >
                 <Stack spacing={4}>
 
-                    {/* Username - μόνο σε create mode */}
                     {!isEdit && (
                         <Controller
                             name="username"
@@ -202,7 +201,7 @@ const UserPage = () => {
 
 
                     <Box sx={{ display: 'flex', gap:4, justifyContent:'space-between', mt: 2 }}>
-                        {/* Submit Button */}
+
                         <Button
                             type="submit"
                             variant="contained"
@@ -212,7 +211,7 @@ const UserPage = () => {
                             {isSubmitting ? 'Αποστολή...' : (isEdit ? 'ΕΝΗΜΕΡΩΣΗ' : 'ΔΗΜΙΟΥΡΓΙΑ')}
                         </Button>
 
-                        {/*Cancel button*/}
+
                         <Box>
                             <Button variant={"contained"} color={"secondary"}
                                     onClick={()=> navigate("/users")}>ΕΞΟΔΟΣ</Button>

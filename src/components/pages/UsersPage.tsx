@@ -21,7 +21,7 @@ const UsersPage = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // Φόρτωση users από API
+
     useEffect(() => {
         setLoading(true);
         getUsers()
@@ -33,7 +33,7 @@ const UsersPage = () => {
             .finally(() => setLoading(false));
     }, [showError]);
 
-    // Delete user
+
     const handleDelete = async (id: number) => {
         if (!confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε αυτόν τον χρήστη;')) {
             return;
@@ -42,7 +42,7 @@ const UsersPage = () => {
         try {
             await deleteUser(id);
 
-            // Αφαίρεση από το state
+
             setUsers(users.filter(user => user.id !== id));
             showSuccess('Ο χρήστης διαγράφηκε επιτυχώς');
         } catch (err) {

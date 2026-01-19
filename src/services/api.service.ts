@@ -9,34 +9,32 @@ import {keycloak} from '@/utils/keycloak';
  * Configured Axios instance with Keycloak token injection and error handling interceptors.
  */
 
-// Base URL από .env file
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE;
 
-// Δημιουργία axios instance
+// axios instance
 const apiService = axios.create({
     baseURL: API_BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },
-    timeout: 60000, // 60 seconds. Να μη λήξει αν αργήσει το OCR!
+    timeout: 60000,
 });
 
-//ΠΡΙΝ ΑΠΟ ΚΑΘΕ REQUEST
 apiService.interceptors.request.use(
     async (config: InternalAxiosRequestConfig) => {
         try {
-            await keycloak.updateToken(30); //Αν λήξει το token σε 30'' να ανανεωθεί
+            await keycloak.updateToken(30);
         } catch (error) {
             console.error('Failed to refresh token', error);
-            await keycloak.login(); // Αν το refresh απέτυχε redirect σε login
+            await keycloak.login();
             return Promise.reject(error);
         }
 
-        //Προσθήκη Authorization Header
         if (keycloak.token) {
             config.headers.Authorization = `Bearer ${keycloak.token}`;
         }
-        //logging για debugging
+
         console.log(`[API Request] ${config.method?.toUpperCase()} ${config.url}`);
         return config;
     },
@@ -46,7 +44,7 @@ apiService.interceptors.request.use(
     }
 );
 
-//ΜΕΤΑ ΑΠΟ ΚΑΘΕ RESPONSE
+
 apiService.interceptors.response.use(
     (response) => {
         //success response
@@ -54,7 +52,6 @@ apiService.interceptors.response.use(
         return response;
     },
     async (error: AxiosError) => {
-        //error response-αναλογα με το error
 
         //401 Unauthorized
         if (error.response?.status === 401) {
@@ -74,7 +71,7 @@ apiService.interceptors.response.use(
             console.error('[API 500] Server Error', error.response.data);
         }
 
-        //error logging γενικο
+        //general error logging
         console.error('[API Error]', {
             url: error.config?.url,
             status: error.response?.status,

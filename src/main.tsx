@@ -8,7 +8,6 @@ import {initOptions, keycloak} from "@/utils/keycloak.ts";
 
 createRoot(document.getElementById('root')!).render(
     // <StrictMode>
-    //authentication
     <ReactKeycloakProvider
         authClient={keycloak}
         initOptions={initOptions}

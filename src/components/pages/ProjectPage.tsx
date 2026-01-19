@@ -11,6 +11,10 @@ import {getErrorMessage} from "@/utils/errorHandler.ts";
 import {useAlert} from "@/hooks/useAlert";
 import {AlertDisplay} from "@/components/ui/AlertDisplay";
 
+/**
+ * Form page for creating new project or editing existing project.
+ * Uses react hook form with zod validation.
+ */
 const ProjectPage = () => {
     const { projectId } = useParams();
     const isEdit = Boolean(projectId);
@@ -91,7 +95,6 @@ const ProjectPage = () => {
             >
                 <Stack spacing={4}>
 
-                    {/* ProjectName - μόνο σε create mode */}
 
                     <Controller
                         name="projectName"
@@ -109,8 +112,6 @@ const ProjectPage = () => {
 
 
 
-
-                    {/* Description */}
                     <Controller
                         name="description"
                         control={control}
@@ -127,7 +128,7 @@ const ProjectPage = () => {
                     />
 
                     <Box sx={{ display: 'flex', gap:4, justifyContent:'space-between', mt: 2 }}>
-                    {/* Submit Button */}
+
                     <Button
                         type="submit"
                         variant="contained"
@@ -137,7 +138,7 @@ const ProjectPage = () => {
                         {isSubmitting ? 'Αποστολή...' : (isEdit ? 'ΕΝΗΜΕΡΩΣΗ' : 'ΔΗΜΙΟΥΡΓΙΑ')}
                     </Button>
 
-                    {/*Cancel button*/}
+
                     <Box>
                         <Button variant={"contained"} color={"secondary"}
                                 onClick={()=> navigate("/projects")}>ΕΞΟΔΟΣ</Button>

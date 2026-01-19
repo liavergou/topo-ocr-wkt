@@ -26,13 +26,10 @@ const ProjectsPage = () => {
 
     const [filter, setFilter] = useState('');
 
-    // Paginated
     const [page, setPage] = useState(1);
     const [pageCount, setPageCount] = useState(0);
     const pageSize = 5;
 
-
-    // Φόρτωση projects από API
     useEffect(() => {
         setLoading(true);
 
@@ -49,15 +46,12 @@ const ProjectsPage = () => {
             .finally(() => setLoading(false));
     }, [filter, page, showError]);
 
-    // Delete project
     const handleDelete = async (id: number) => {
         if (!confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή τη μελέτη;')) {
             return;
         }
         try {
             await deleteProject(id);
-
-            // Αφαίρεση από το state
             setProjects(projects.filter(project => project.id !== id));
             showSuccess('Η μελέτη διαγράφηκε επιτυχώς');
         } catch (err) {
@@ -80,8 +74,6 @@ const ProjectsPage = () => {
         sortable: false,
         renderCell: (params) => (
             <Box sx={{ display: 'flex', gap: 1 }}>
-
-                {/*EDIT*/}
                 <IconButton
                     size="small"
                     color="primary"
@@ -90,8 +82,6 @@ const ProjectsPage = () => {
                 >
                     <EditIcon fontSize="small" />
                 </IconButton>
-
-                {/*DELETE*/}
                 <IconButton
                     size="small"
                     color="error"
@@ -100,8 +90,6 @@ const ProjectsPage = () => {
                 >
                     <DeleteIcon fontSize="small" />
                 </IconButton>
-
-                {/*ΧΑΡΤΗΣ*/}
                 <IconButton
                     size="small"
                     color="info"
@@ -119,7 +107,6 @@ const ProjectsPage = () => {
         <Box sx={{ p: 2, width: '100%' }}>
             <AlertDisplay success={success} error={error} onClose={clear} />
 
-            {/*φιλτρο*/}
             <Box sx={{ my: 2 }}>
                 <TextField
                     fullWidth
@@ -133,7 +120,6 @@ const ProjectsPage = () => {
                 />
             </Box>
 
-            {/* Header με τίτλο και κουμπί */}
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
                 <Typography variant="h4" component="h1">
                     Διαχείριση Μελετών
@@ -148,7 +134,6 @@ const ProjectsPage = () => {
                 </Button>
             </Box>
 
-            {/* DataGrid */}
             <Box sx={{ height: 600, width: '100%' }}>
                 <DataGrid
                     rows={projects}
@@ -156,13 +141,13 @@ const ProjectsPage = () => {
                     loading={loading}
                     hideFooterPagination
                 />
+            </Box>
 
-        </Box>
             <Box sx={{ display: 'flex', justifyContent: 'center', pt: 2 }}>
                 <Pagination
                     count={pageCount}
                     page={page}
-                    onChange={(_,value) => setPage(value)} //ΙΔΙΑΙΤΕΡΗ ΔΙΟΡΘΩΣΗ***** Για να μη χρησιμοποιήσουμε την πρώτη παράμετρο του event που δεν τη χρησιμοποιούμε βάζουμε "_"
+                    onChange={(_,value) => setPage(value)}
                     color="primary"
                     showFirstButton
                     showLastButton

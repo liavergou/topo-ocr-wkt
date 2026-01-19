@@ -14,23 +14,11 @@ import MouseCoordinatesDisplay from './MouseCoordinatesDisplay';
  * Used in: OcrResult
  */
 
-//https://react-leaflet.js.org/docs/start-introduction/
-//https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z} google satellite
-
-//<MapContainer>->Map Container
-//<TileLayer>->Tile basemap (Google)
-//<WMSTileLayer>->WMS layers (GeoServer)
-//<Popup>-> Popups
-//<Polygon>->Polygons
-
-
-//αλλαγές στον πίνακα συντεταγμένων τα πιάνει απο το handleChange του CoordinateTable->setCoordinates(updated)->useEffect του calculatedArea
-
 const MapPreview = ({ coordinates, area }: MapPreviewProps) => {
 
-    //μετατροπή σε lat lon με το util
-    const latLngs: [number, number][] = coordinates.map(c => egsa87ToWgs84(c.x, c.y)); //μετατροπη ΕΓΣΑ87 -> WGS84
-    //κεντράρισμα χάρτη
+
+    const latLngs: [number, number][] = coordinates.map(c => egsa87ToWgs84(c.x, c.y));
+
     const bounds = latLngs.length > 0 ? latLngBounds(latLngs) : undefined;
 
     return (
@@ -48,16 +36,16 @@ const MapPreview = ({ coordinates, area }: MapPreviewProps) => {
                 position: 'relative',
             }}
         >
-            {/*ΧΑΡΤΗΣ MAP CONTAINER ΤΟΥ LEAFLET*/}
+
             <MapContainer
                 style={{ height: '100%', width: '100%' }}
                 bounds={bounds}
                 boundsOptions={{ padding: [50, 50], maxZoom: 30 }}
             >
-                {/* Layer Control - Radio buttons για basemaps */}
+
                 <LayersControl position="topright">
 
-                    {/*GOOGLE SATELLITE*/}
+
                     <LayersControl.BaseLayer checked name="Google Satellite">
                         <TileLayer
                             url="https://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}"
@@ -65,7 +53,7 @@ const MapPreview = ({ coordinates, area }: MapPreviewProps) => {
                         />
                     </LayersControl.BaseLayer>
 
-                    {/* ΕΚΧΑ Ορθοφωτοχάρτης */}
+
                     <LayersControl.BaseLayer name="ΕΚΧΑ Ορθοφωτοχάρτης">
                         <WMSTileLayer
                             url="https://gis.ktimanet.gr/wms/wmsopen/wmsserver.aspx"
@@ -84,7 +72,6 @@ const MapPreview = ({ coordinates, area }: MapPreviewProps) => {
                 <Polygon positions={latLngs}
                 pathOptions={{color:'#F5F02A', weight:4, fillOpacity: 0}}/>
 
-                {/* markers στις συντεταγμενες */}
                 {latLngs.map((point, index) => (
                     <CircleMarker
                         key={`point-${index}`}
@@ -105,12 +92,10 @@ const MapPreview = ({ coordinates, area }: MapPreviewProps) => {
                     </CircleMarker>
                 ))}
 
-                {/*ΕΜΦΑΝΙΣΗ ΣΥΝΤΕΤΑΓΜΕΝΩΝ ΧΑΡΤΗ*/}
                 <MouseCoordinatesDisplay />
 
             </MapContainer>
 
-            {/*AREA*/}
             <Box
                 sx={{
                     position: 'absolute',

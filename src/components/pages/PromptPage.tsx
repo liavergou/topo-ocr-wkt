@@ -12,6 +12,11 @@ import {createPrompt, getPromptById, updatePrompt} from "@/services/api.prompts.
 import {useAlert} from "@/hooks/useAlert";
 import {AlertDisplay} from "@/components/ui/AlertDisplay";
 
+/**
+ * Form page for creating new prompt or editing existing prompt.
+ * Uses react hook form with zod validation.
+ */
+
 const PromptPage = () => {
     const { promptId } = useParams();
     const isEdit = Boolean(promptId);

@@ -2,8 +2,14 @@ import type {ProjectCardProps} from "@/types.ts";
 import Typography from "@mui/material/Typography";
 import {Card, CardActionArea, CardContent} from "@mui/material";
 
+/**
+ * Reusable card component
+ * @param projectName
+ * @param onClick
+ */
+
 const ProjectCard =({projectName,onClick}: ProjectCardProps) =>{
-// αν θελω elevation ΟΧΙ variant outlined
+
     return (
         <>
         <Card elevation={3} sx={{height: '100%',backgroundColor:'secondary.light', '&:hover':{backgroundColor:'secondary.dark',elevation:6} }}>
