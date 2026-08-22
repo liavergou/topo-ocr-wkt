@@ -7,7 +7,7 @@ import {getPrompts} from "@/services/api.prompts.ts";
 import {getErrorMessage} from "@/utils/errorHandler.ts";
 import type {ReactCropperElement} from 'react-cropper';
 import {useParams,useNavigate} from "react-router-dom";
-import {deleteConversionJob, uploadImage, getConversionJob} from "@/services/api.jobs.ts";
+import {deleteConversionJob, uploadImage, getConversionJob, getImageUrl} from "@/services/api.jobs.ts";
 import {Backdrop, CircularProgress} from "@mui/material";
 import type {Coordinate} from "@/types.ts";
 import OcrResult from "@/components/conversion/OcrResult.tsx";
@@ -77,7 +77,7 @@ const ConversionJobPage = () => {
                     setIsUploading(true);
                     const job = await getConversionJob(Number(projectId), Number(jobId));
 
-                    const imagePath = `${import.meta.env.VITE_API_BASE}/storage/images/Project_${projectId}/original/${job.originalFileName}`;
+                    const imagePath = getImageUrl(Number(projectId), job.originalFileName);
 
                     setImage(imagePath);
                     setShowToolbar(true);

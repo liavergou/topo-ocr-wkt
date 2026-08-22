@@ -65,6 +65,15 @@ export async function deleteConversionJob(
 }
 
 /**
+ * Build the URL for the original image of a conversion job
+ * @param projectId - project id
+ * @param fileName - original file name
+ * @returns Full URL to the image
+ */
+export const getImageUrl = (projectId: number, fileName: string): string =>
+    `${import.meta.env.VITE_API_BASE}/storage/images/Project_${projectId}/original/${fileName}`;
+
+/**
  * Get conversion job details by id
  * @param projectId - project id
  * @param jobId - job id
