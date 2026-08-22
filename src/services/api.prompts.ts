@@ -1,14 +1,8 @@
 import apiService from './api.service';
 import { type Prompt } from '../schemas/prompts';
+import type { PaginatedResult } from '@/types';
 
 const PROMPTS_ENDPOINT = '/api/prompts';
-
-export interface PaginatedResult<T> {
-    data: T[];
-    totalRecords: number;
-    pageNumber: number;
-    pageSize: number;
-}
 
 /**
  * Get paginated list of prompts with optional filtering

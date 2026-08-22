@@ -1,14 +1,8 @@
 import apiService from './api.service';
 import { type Project} from '../schemas/projects';
+import type { PaginatedResult } from '@/types';
 
 const PROJECTS_ENDPOINT = '/api/projects';
-
-export interface PaginatedResult<T> {
-    data: T[];
-    totalRecords: number;
-    pageNumber: number;
-    pageSize: number;
-}
 
 /**
  * Get paginated list of projects with optional filtering

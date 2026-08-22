@@ -3,6 +3,13 @@ import type {UserRole} from "@/schemas/users.ts";
 import type {Prompt} from "@/schemas/prompts.ts";
 import type {ReactCropperElement} from 'react-cropper';
 
+export interface PaginatedResult<T> {
+    data: T[];
+    totalRecords: number;
+    pageNumber: number;
+    pageSize: number;
+}
+
 //Dashboard component
 export type MenuItemProps = {
     label: string;
