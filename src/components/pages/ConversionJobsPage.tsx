@@ -24,6 +24,42 @@ import {AlertDisplay} from '@/components/ui/AlertDisplay';
  * Shows jobs on interactive map (GeoServer data) with filtering and export options.
  * Uses: MouseCoordinatesDisplay, DataGrid (MUI)
  */
+
+
+/**
+ * Handles map click events to deselect the active job.
+ */
+function MapClickHandler({ onMapClick }: { onMapClick: () => void }) {
+    useMapEvents({
+        click: () => {
+            onMapClick();
+        }
+    });
+    return null;
+}
+
+/**
+ * Zooms the map to the bounds of the selected job feature.
+ */
+function ZoomToFeature({ id, data }: { id: number | null, data: FeatureCollection | null }) {
+    const map = useMap();
+
+    useEffect(() => {
+        if (id && data) {
+            const feature = data.features.find(f => f.properties?.JobId === id);
+            if (feature) {
+                const layer = L.geoJSON(feature);
+                const bounds = layer.getBounds();
+                if (bounds.isValid()) {
+                    map.fitBounds(bounds, { padding: [50, 50], maxZoom: 18 });
+                }
+            }
+        }
+    }, [id, data, map]);
+
+    return null;
+}
+
 const ConversionJobsPage = () => {
     const { projectId } = useParams<{ projectId: string }>();
     const [geoData, setGeoData] = useState<FeatureCollection | null>(null);
@@ -85,33 +121,7 @@ const ConversionJobsPage = () => {
         }
     };
 
-    function MapClickHandler({ onMapClick }: { onMapClick: () => void }) {
-        useMapEvents({
-            click: () => {
-                onMapClick();
-            }
-        });
-        return null;
-    }
 
-    function ZoomToFeature({ id, data }: { id: number | null, data: FeatureCollection | null }) {
-        const map = useMap();
-
-        useEffect(() => {
-            if (id && data) {
-                const feature = data.features.find(f => f.properties?.JobId === id);
-                if (feature) {
-                    const layer = L.geoJSON(feature);
-                    const bounds = layer.getBounds();
-                    if (bounds.isValid()) {
-                        map.fitBounds(bounds, { padding: [50, 50], maxZoom: 18 });
-                    }
-                }
-            }
-        }, [id, data, map]);
-
-        return null;
-    }
 
 
     let displayedGeoData: FeatureCollection | null = null;
