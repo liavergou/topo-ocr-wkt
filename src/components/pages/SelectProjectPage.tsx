@@ -21,7 +21,7 @@ import ProjectCard from "@/components/ui/ProjectCard.tsx";
 const SelectProjectPage =() => {
 
     const navigate = useNavigate();
-    const {userInfo} = useAuth();
+    const {userInfo, hasAnyRole} = useAuth();
     const { success, error, showError, clear } = useAlert();
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true); //για τη φόρτωση
@@ -31,8 +31,8 @@ const SelectProjectPage =() => {
 
         setLoading(true);
 
-        const getPromise = userInfo.role ==='Admin' || userInfo.role ==='Manager'
-        ? getAllProjects():getMyAssignedProjects();
+        const getPromise = hasAnyRole(['Admin', 'Manager'])
+            ? getAllProjects() : getMyAssignedProjects();
 
 
         getPromise
@@ -47,7 +47,7 @@ const SelectProjectPage =() => {
                 setLoading(false);
             });
 
-    }, [userInfo, showError]);
+    }, [userInfo, hasAnyRole, showError]);
 
     if (loading) {
         return <CircularProgress />;
