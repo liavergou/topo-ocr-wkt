@@ -276,7 +276,7 @@ const ConversionJobsPage = () => {
 
                         <LayersControl.BaseLayer checked name="Google Satellite">
                             <TileLayer
-                                url="https://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}"
+                                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
                                 maxZoom={30}
                             />
                         </LayersControl.BaseLayer>
